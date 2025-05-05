@@ -1,0 +1,138 @@
+.container1 {
+    display: flex;
+    column-gap: 10px;
+    /* border: 1px dotted yellow; */
+    height: 600px;
+    z-index: -1;
+    grid-template-columns: 60px auto ;
+
+}
+
+.child_container_2 {
+    display: flex;
+    /* border: 1px dotted lightpink; */
+    flex-grow: 58;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
+}
+
+.container2 {
+    display: flex;
+    height: 600px;
+    z-index: 1;
+}
+
+.auth_container {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 50%;
+    gap: 60px;
+    align-items: center;  /*  effect aligns horizontal */
+    justify-content: center; /*  effect aligns vertical */
+    align-content: space-around;
+    /* border: 1px dotted purple; */
+}
+
+.auth_input {
+    border-radius: 25px;
+    width:200px;
+    height:30px;
+    padding-left: 10px;
+    flex-grow: 3;
+    /* border: 1px dotted purple; */
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.sign_input {
+    border-radius: 10px;
+    width:200px;
+    height:20px;
+    padding-left: 10px;
+    font-size: 0.8em;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.sign_input:hover { 
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.auth_input_container {
+    display: flex;
+    grid-template-columns: 85% 15%;
+    padding: 0;
+    margin: 0;
+    /* border: 1px dotted orange; */
+}
+
+.eye_container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    /* border: 1px dotted green; */
+}
+
+.eye_child {
+    width: 30px;
+    height: 20px;
+}
+
+.eye {
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.button_hide {
+    opacity: 0;
+}
+
+.child_container_1 {
+    border: 1px dotted pink;
+    flex-grow: 1;
+    display: flex; 
+    grid-template-columns: 120px auto ;
+    gap: 20px;
+
+}
+
+.stop_sign_col {
+    display: flex;
+    flex-direction: column;
+    border: 1px dotted pink;
+}
+
+.stop_sign_msg {
+    display: flex;
+    flex-direction: column;
+    border: 1px dotted pink;
+}
+
+.msg_username {
+    border: 2px solid orangered;
+    font-family: Cambria, Cochin, Georgia, Time;
+    font-size: small;
+    background-color: lightgray;
+}
+
+.msg_password {
+    border: 2px solid orange;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: small;
+    background-color: lightgray;
+}
+
+.success_container {
+    /* border: 1px dotted pink; */
+    flex-grow: 1;
+    display: flex; 
+    width: 275px;
+    align-items: center;  /*  effect aligns horizontal */
+    justify-content: center; 
+}

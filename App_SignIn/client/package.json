@@ -1,0 +1,51 @@
+{
+    "name": "some_name",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "css-loader": "*",
+        "install": "^0.13.0",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-scripts": "^5.0.1",
+        "react-test-renderer": "*",
+        "style-loader": "*",
+        "styled-components": "^6.1.17"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "lint": "eslint src/**/*.jsx",
+        "wbuild": "webpack"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/preset-env": "^7.4.3",
+        "@babel/preset-react": "^7.0.0",
+        "babel-loader": "^8.0.5",
+        "css-loader": "*",
+        "eslint-webpack-plugin": "^5.0.1",
+        "file-loader": "*",
+        "webpack": "*",
+        "webpack-cli": "*"
+    }
+}
