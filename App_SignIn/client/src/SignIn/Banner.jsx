@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import classes from "./Banner.css"
 import common from "./common.css"
-import img from "../src/icons/search_icon.jpg"
+import img from  "./assets/search_icon.jpg" 
+
+const ORIGIN = "http://127.0.0.1:5000"
 
 class Banner extends Component {
     render() {
@@ -42,7 +44,7 @@ class Search extends Component {
                 <div className={classes.search}>
                     <div className={classes.img_magnify} >
                         <button  onClick={this.handleClick} className={classes.btn} > 
-                            <img src={img} alt="Button Image" className={classes.btn_img} />
+                            <img src={   ORIGIN + '/static/assets/Signin/search_icon.jpg'} alt="Button Image" className={classes.btn_img} />
                         </button>
                     </div>
                     <input type="text" value={this.state.text} onChange={this.handleInput} className={classes.search_inside} placeholder="Enter text here" />

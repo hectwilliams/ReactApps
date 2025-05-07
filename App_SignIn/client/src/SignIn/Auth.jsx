@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
-import common from './common.css'; 
 import classes from './Auth.css'; 
-import img_eye_open from "../src/icons/eye_icon.png"
-import img_eye_closed from "../src/icons/eye_closed.png"
-import stop_sign from "../src/icons/stop_icon.png"
-import check_sign from "../src/icons/check.png"
+import img_eye_open from "./assets/eye_open.png"
+import img_eye_closed from "./assets/eye_closed.png"
+import stop_sign from "./assets/stop_sign.png"
+import check_sign from "./assets/check.png"
+import axios from 'axios';
+
+const ORIGIN = "http://127.0.0.1:5000"
 
 class Auth extends Component {
     
@@ -26,10 +28,29 @@ class Auth extends Component {
     
     handleSignIn (event) {
         let tmp = document.getElementsByClassName( classes.auth_input);
-        let [usernameWarnings, passwordWarnings] = signInRules(tmp[0].value, tmp[1].dataset.customRaw);
+        let u = tmp[0].value
+        let p = tmp[1].dataset.customRaw
+        let [usernameWarnings, passwordWarnings] = signInRules(u, p);
         let mergedUsername =  Array.from(usernameWarnings.values().map((ele, index)=>{return [index, ele] }));
         let mergePassword =  Array.from(passwordWarnings.values().map((ele, index)=>{return [index, ele] }));
         this.setState({warning_id: mergedUsername.length + mergePassword.length, messages: {username: mergedUsername, password: mergePassword} });
+        
+        if ( mergedUsername.length + mergePassword.length == 0) {
+            let req = {
+                method: 'post',
+                url: ORIGIN + '/' + 'signin',
+                data: {u: u, p:p},
+            };
+
+            axios(req)
+            .then(response => {
+                console.log('response from webserver', response.data);
+                window.location.href = ORIGIN + '/' + 'aihumans'  // change the url and reloads page
+            })
+            .catch(err => {
+                console.log(err.response);
+            })
+        }
     }
 
     render () {
@@ -45,7 +66,7 @@ class Auth extends Component {
                     <div  className={classes.child_container_1}> 
                             <div className={classes.stop_sign_col}>
                                 <div>
-                                    <img src={stop_sign} alt="stop sign"/>
+                                    <img src={ORIGIN + '/static/assets/Signin/stop_sign.png'} alt="stop sign"/>
                                 </div>
                             </div>
 
@@ -66,7 +87,7 @@ class Auth extends Component {
                     
                     <div  className={classes.success_container}> 
                         <div> 
-                            <img src={check_sign} alt="check icon"/>
+                            <img src={ORIGIN + '/static/assets/Signin/check.png'} alt="check icon"/>
                         </div>
                     </div>
                 : 
@@ -79,10 +100,10 @@ class Auth extends Component {
                 <div className={classes.auth_container}>
                     
                     <div className={classes.auth_input_container}>
-                        <AuthUsername eye={true} placeholder='Enter Username' />   
+                        <AuthUsername eye={true} placeholder='Enter Username' />    
                         <div  className={classes.eye_container}> 
                             <button  className={`${classes.button_hide} ${classes.eye_child}`}> 
-                                <img src={!this.state.eye ?  img_eye_closed :img_eye_open} alt="Eye Button" className={classes.eye} />
+                                <img src={!this.state.eye ?  ORIGIN + '/static/assets/Signin/eye_closed.png' : ORIGIN + '/static/assets/Signin/eye_open.png'} alt="Eye Button" className={classes.eye} />
                                 
                             </button>
                         </div>
@@ -92,7 +113,7 @@ class Auth extends Component {
                         <AuthPassword eye={this.state.eye} placeholder='Enter Password'/>   
                         <div className={classes.eye_container} >
                             <button  onClick={this.handleEyeClick}   className={classes.eye_child}  > 
-                                <img src={!this.state.eye ?  img_eye_closed :img_eye_open} alt="Eye Button" className={classes.eye} />
+                                <img src={!this.state.eye ?  ORIGIN + '/static/assets/Signin/eye_closed.png' :ORIGIN + '/static/assets/Signin/eye_open.png'} alt="Eye Button" className={classes.eye} />
                             </button>
                         </div>
                             
@@ -104,7 +125,7 @@ class Auth extends Component {
                         </div>
 
                         <button  className={`${classes.button_hide} ${classes.eye_child}`}> 
-                             <img src={!this.state.eye ?  img_eye_closed :img_eye_open} alt="Eye Button" className={classes.eye} />
+                             <img src={!this.state.eye ?  ORIGIN + '/static/assets/Signin/eye_closed.png' : ORIGIN + '/static/assets/Signin/eye_open.png'} alt="Eye Button" className={classes.eye} />
                         </button>
 
                     </div>
@@ -125,20 +146,15 @@ class AuthInput extends Component {
     }
 
     handleInput(event) {
-    /* 
-        Grabs last character and appends to state.rawText. 
-        Drops last character in state.rawText if user deletes a character 
-    */
         let prevString = this.state.rawText;
         let nextString = '' 
-
+        let change_in_size = Math.abs(prevString.length - event.target.value.length)
         if (event.target.value.length > this.state.rawText.length) {
-            nextString = prevString + event.target.value.slice(-1);
+            nextString = prevString + event.target.value.slice(-change_in_size);
         } else {
             let reduce_length =  prevString.length - event.target.value.length;
             nextString = prevString.slice(0, -reduce_length);
         }
-
         this.setState({rawText: nextString})
     }
 
@@ -166,16 +182,24 @@ class AuthPassword extends AuthInput {
 const signInRules=  (username, password) => {
     const uList = [];
     const pList = [];
-    let uniqueSpecialChars = password.match(/[\s!#%'\(\)\*\+,\-\.\/:;<=>?@\[\]\\\^_`\{\|\}]/g);
-    
+
+    const regexAcceptedCharsUsername = /[^a-z0-9]/ig;
+    const regexAcceptedCharsPassword = /[^a-z0-9#\!\-\?\_@\$]/ig;
+    const regexAcceptedCharsPassword_ = /[\!\-\?\_@\$]/g;
+
+    let specialChars = password.match(regexAcceptedCharsPassword_);
+
     if (username.length < 6)
         uList.push('Username must have at least 6 characters');
 
     if (username.length > 40)
         uList.push('Username must be at least 10 characters long');
 
-    if (/[\s!#%'\(\)\*\+,\-\.\/:;<=>?@\[\]\\\^_`\{\|\}]/.test(username))
-        uList.push('Username cannot contain ^! #%()*+,-./:;<=>?@[]\^_`{|}~');
+    if (username.match(regexAcceptedCharsUsername))
+        uList.push('Username accepts only alpha-numeric characters');
+
+    if (password.match(regexAcceptedCharsPassword))
+        pList.push('Password accepts alpha-numeric and special characters in square brackets [#-!?_@$]');
 
     if (password.length < 10)
         pList.push('Password must be at least 10 characters long');
@@ -183,8 +207,8 @@ const signInRules=  (username, password) => {
     if (password.length > 40)
         pList.push('Password length is too large; length <= 40 characters');
     
-    if (uniqueSpecialChars == null  || (uniqueSpecialChars.length  < 3))
-        pList.push('Password requires 3 special characters');
+    if (specialChars == null || specialChars.length  < 3)
+        pList.push('Password requires 3 or more special characters #-!?_@$');
 
     
     return [uList, pList];
