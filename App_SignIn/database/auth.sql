@@ -1,0 +1,20 @@
+-- create database 
+ CREATE DATABASE AuthDB;
+
+ USE AuthDB;
+
+CREATE TABLE Users (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID VARCHAR(50) NOT NULL,
+    HashedPassword VARCHAR(100) NOT NULL,
+    Salt VARCHAR(255) NOT NULL
+);
+-- UserID is unique 
+
+CREATE TABLE LoginEvent(
+    ID INT AUTO_INCREMENT PRIMARY KEY, 
+    UserID INT, 
+    Result BOOLEAN NOT NULL,
+    Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP , 
+    FOREIGN KEY (UserID) REFERENCES Users(ID)
+);
