@@ -1,0 +1,57 @@
+{
+
+    "menuItems": [
+        
+        {
+            "name":  "TV/Movies",
+
+            "pages": [
+                {
+                    "name": "Top TV"
+                },
+
+                {
+                    "name": "Movies", 
+                    
+                    "pages": [
+                        {
+                            "name": "Netflix Movie"
+                        },
+
+                        {
+                            "name": "Predator"
+                        },
+                        {
+                            "name": "Inception"
+                        }
+                    ]
+                }
+            ] 
+        },
+        
+        {
+            "name":  "Job Application",
+
+            "pages": [
+                {
+                    "name": "Example1"
+                },
+                {
+                    "name": "Example2"
+                }
+            ] 
+        },
+
+        {
+            "name":  "Signal Processing",
+
+            "pages": [
+                {
+                    "name": "dsp1"
+                }
+            ] 
+        }
+
+        
+    ]
+}

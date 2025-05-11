@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import classes from "./Banner.css"
 import common from "./common.css"
-import img from  "./assets/search_icon.jpg" 
+import img from  "./search_icon.jpg"
 
 const ORIGIN = "http://127.0.0.1:5000"
 
@@ -10,12 +10,12 @@ class Banner extends Component {
         return (
         <>
         <div className={classes.bannerRow} > 
-            <a href="https://www.example.com" className={ `${classes.bannerLink} ${classes.bannerLinkFirst}`} > Secrets </a>
-            <a href="https://www.example.com" className={classes.bannerCell}  > Time </a>
+            <a href="https://www.example.com" className={ `${classes.bannerLink} ${classes.bannerLinkFirst}`} > TestLink </a>
+            <a href="https://www.example.com" className={classes.bannerCell}  > TestLink </a>
             <div> </div>
             <Search/>
         </div>
-        <hr className={`${common.hline} ${classes.hide}`}></hr>
+        <hr className={`${common.hline} `}></hr>
         </>
         )
     }

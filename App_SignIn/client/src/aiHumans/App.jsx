@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import Auth from './Auth';
+import Banner  from '../Common/Banner';
+import Dashboard from './Dashboard';
 
 class App extends Component {
     
@@ -10,7 +11,8 @@ class App extends Component {
     render() {
         return (
             <>
-                <Auth/>
+                <Banner/>
+                <Dashboard/>
             </>
         );
     }

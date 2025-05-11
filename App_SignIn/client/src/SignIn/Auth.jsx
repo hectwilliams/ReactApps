@@ -47,6 +47,9 @@ class Auth extends Component {
         };
 
         axios(req)
+        .then(response=> {
+            window.location.href =   ORIGIN + '/' + 'aihumans'          
+        })
         .catch(err => {
             let ele = document.getElementsByName('shake_button')[0];
             ele.classList.add(classes.rotate_button);
@@ -54,7 +57,6 @@ class Auth extends Component {
             setTimeout(()=>{
                 ele.classList.remove(classes.rotate_button);
             }, 1000);
-
         });
 
     }
@@ -133,7 +135,6 @@ class Auth extends Component {
                                     <img src={!this.state.eye ?  ORIGIN + '/static/assets/Signin/eye_closed.png' :ORIGIN + '/static/assets/Signin/eye_open.png'} alt="Eye Button" className={classes.eye} />
                                 </button>
                             </div>
-                                
                         </div>
 
                         <div className={classes.auth_input_container}>
@@ -202,7 +203,6 @@ class Auth extends Component {
                     : 
                         
                         ''
-
                 }
 
 
@@ -347,12 +347,7 @@ const signInRules=  (username, password) => {
     if (specialChars == null || specialChars.length  < 3)
         pList.push('Password requires 3 or more special characters #-!?_@$');
 
-    
     return [uList, pList];
-};
-
-const shakeButton = (some_button) => {
-
 };
 
 export default Auth; 
