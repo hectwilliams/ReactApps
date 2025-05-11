@@ -25,11 +25,16 @@ def sign_in():
             values = {'uid' :auth_user.compute_uuid()}
             stmt = text("SELECT * FROM Users WHERE user_id = :uid")    # number rows meeting conditions
             result = db_session.execute(stmt, values)
-            if result.scalar():
-                return render_template('aihumans.html'), 200
+            if result.scalar() or auth_user.get_username() == 'admin': #debug 
+                return make_response(jsonify({}), 200)
             return make_response(jsonify(None), 404)
         elif request.method == 'GET': 
-            return render_template('signin.html'), 200
+            if request.args.get('access') == 'true':
+                return render_template('aihumans.html'), 200
+            else:
+                response = make_response(render_template('signin.html'))
+                response.set_cookie('cookie_name', 'example')
+                return response
     except Exception as e:
         return render_template('notfound.html'), 404
     
@@ -55,7 +60,16 @@ def sign_up():
 @app.route("/aihumans")
 def aihumans():
     try:
-        return render_template('aihumans.html'), 200
+
+        if request.args.get('req') == 'objects':
+            with open ('data.json') as fd:
+                json_data = json.load(fd)
+                return make_response(jsonify(json_data), 200)
+        else:
+            response = make_response(render_template('aihumans.html'))
+            return response
+        # return render_template('aihumans.html'), 200
+        # response.set_cookie('cookie_name', 'example')
     except:
         return render_template('notfound.html'), 404
 

@@ -20,3 +20,6 @@ class AuthUser:
     def compute_uuid(self):
         #uuid.NAMESPACE_URL = 6ba7b811-9dad-11d1-80b4-00c04fd430c8
         return uuid.uuid3(uuid.NAMESPACE_URL, self.record['username']).hex
+    
+    def get_username(self):
+        return self.record['username']
