@@ -76,7 +76,6 @@
 }
 
 .suboptions  p {
-    cursor:auto;
     overflow: hidden;
     text-overflow: ellipsis;
     width: inherit;
