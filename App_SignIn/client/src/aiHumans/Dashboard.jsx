@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import dashboardClass from './Dashboard.css'
 import Fortune from './Fortune'
 import axios from 'axios';
+
 class Dashboard extends Component {
     constructor(props) {
         super(props);
@@ -27,7 +28,7 @@ class Dashboard extends Component {
                         {
                             this.state.pageRef == null?
                             '':
-                            this.state.pageRef.map( (obj) => { return<MenuItem name={obj.name} pages={ obj.pages }/> })
+                            this.state.pageRef.map( (obj, index) => { return<MenuItem key={index} name={obj.name} pages={ obj.pages }/> })
                         } 
                         
                     </div>
@@ -59,7 +60,7 @@ class MenuItem extends Component {
     render() {
         return (
 
-            <div className={dashboardClass.menu_item_container}>
+            <div key = {this.props.key} className={dashboardClass.menu_item_container}>
                 
                 <div className={dashboardClass.menu_items}>
 
@@ -79,12 +80,14 @@ class MenuItem extends Component {
                     <div className={dashboardClass.menu_name} > <p > {this.props.name}  </p></div>
 
                 </div>
+
+                <div>
+
                 
-                <>
                     {
-                        this.state.buttonState? '' : <Suboptions depth={0} pages={this.props.pages} /> 
+                        this.state.buttonState? '' : <Suboptions key={0} depth={0} pages={this.props.pages} /> 
                     }
-                </>
+                </div>
 
             </div>
         )
@@ -96,19 +99,24 @@ class Suboptions extends Component {
     constructor(props) {
         super(props);
         this.state = {}
+        this.click = this.click.bind(this);
     }
 
+    click() {
+        // Load subpage to page(s) section (right side)
+    }
     render() {
         
+
         return (
 
-            <div className={dashboardClass.suboptions}>
+            <div key={this.props.key} className={dashboardClass.suboptions}>
                 {
 
                     this.props.name? 
                         <div className={dashboardClass.suboptions_div}>
                             <div depth={this.props.depth}  className={dashboardClass.suboptions_div_ident}> • </div>
-                            <p className={dashboardClass.suboptions_div_value}>  {this.props.name} </p>
+                            <p onClick={this.click}className={dashboardClass.suboptions_div_value}>  {this.props.name} </p>
                         </div>
 
                     : ''
@@ -118,7 +126,7 @@ class Suboptions extends Component {
 
                 {
                     this.props.pages? 
-                        this.props.pages.map((obj)=> <Suboptions depth={this.props.depth + 1 } name={obj.name} pages={obj.pages}/>)
+                        this.props.pages.map((obj, index)=> <Suboptions key={index} depth={this.props.depth + 1 } name={obj.name} pages={obj.pages}/>)
                     :
                         ''
                 }
