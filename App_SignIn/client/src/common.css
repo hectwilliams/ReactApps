@@ -1,8 +1,0 @@
-.hline {
-    display: block;
-    /* border: 1px solid red; width style color */
-    border: 0;
-    border-top: 2px solid navy;
-    height: 1px; 
-    margin: 10px 0 1em 0; /* top right bottom | left  */
-}

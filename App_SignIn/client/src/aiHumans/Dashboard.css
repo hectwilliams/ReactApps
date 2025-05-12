@@ -1,0 +1,132 @@
+.main_grid {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+    height: 15cm;
+    margin-top: 0;
+}
+
+.bucket {
+    /* border-right: 2px solid navy; */
+    flex-grow: 0.3;
+}
+
+.menu_item_container {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+
+}
+
+.menu_items {
+    background: linear-gradient(to bottom, #B35CC1, #0065C1); 
+    height: 40px;
+    border-radius: 2px;
+    display: flex;
+    border: 2px solid #0065C1;
+    width: inherit
+}
+
+.menu_cicle {
+    flex-grow: 0.5;
+    /* border: 1px solid orange; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2em
+}
+
+.open_outer {
+    border: 4px solid black;
+    border-radius: 50%;
+}
+
+.open_inner {
+    border: 4px solid #00F0C1;
+    border-radius: 50%;
+}
+
+.open_inner_hide {
+    opacity: 0;
+}
+
+.open_inner_show {
+    opacity: 1;
+}
+
+.menu_name {
+    flex-grow: 5;
+    display: flex;
+    /* border: 1px solid purple; */
+    justify-content: flex-start;
+    align-items: center;
+    width: 50px;
+}
+
+.menu_name p {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    overflow: hidden; /* or 'scroll' to add scrollbars */
+    font-size: small;
+}
+
+.suboptions {
+    background-color: #00F0C1;
+    height: 100%;
+}
+
+.suboptions  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: inherit;
+    margin: 0;
+    padding: 0;
+    text-decoration: underline;
+
+}
+.suboptions  p:hover {
+    font-weight: lighter;
+    opacity: 0.3;
+}
+
+.suboptions_div {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    background-color: aliceblue;
+}
+
+.suboptions_div_ident {
+    color: #B35CC1;
+    flex-grow: 0;
+}
+
+.suboptions_div_ident[depth="1"]  {
+    color: #B35CC1;
+    padding-left: 0em;
+}
+
+.suboptions_div_ident[depth="2"]  {
+    padding-left: 1em;
+}
+
+.suboptions_div_ident[depth="3"]  {
+    padding-left: 1em;
+}
+
+
+
+.suboptions_div_value {
+    flex-grow: 10;
+    font-size: small;
+    /* pointer-events: visible; */
+}
+
+.page {
+    flex-grow: 100;
+    /* border: 2px dotted #0065C1; */
+    border-bottom: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

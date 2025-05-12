@@ -1,0 +1,291 @@
+
+/* SignIn Page */
+
+.container1_ {
+    display: flex;
+    column-gap: 10px;
+    /* border: 1px dotted yellow; */
+    height: 600px;
+    z-index: -1;
+    grid-template-columns:  auto ;
+}
+
+.container1 {
+    display: flex;
+    column-gap: 10px;
+    /* border: 1px dotted yellow; */
+    height: 600px;
+    z-index: -1;
+    grid-template-columns: 60px auto ;
+
+}
+
+.child_container_2 {
+    display: flex;
+    /* border: 1px dotted lightpink; */
+    flex-grow: 58;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
+}
+
+.container2 {
+    display: flex;
+    height: 600px;
+    z-index: 1;
+}
+
+.auth_container {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 50%;
+    gap: 60px;
+    align-items: center;  /*  effect aligns horizontal */
+    justify-content: center; /*  effect aligns vertical */
+    align-content: space-around;
+    /* border: 1px dotted purple; */
+}
+
+.auth_input {
+    border-radius: 25px;
+    width:200px;
+    height:30px;
+    padding-left: 10px;
+    flex-grow: 3;
+    /* border: 1px dotted purple; */
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.sign_input {
+    border-radius: 10px;
+    width:200px;
+    height:20px;
+    padding-left: 10px;
+    font-size: 0.8em;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    color:white;
+    background-color: darkcyan;
+    font-weight: bold;
+}
+
+.sign_input:hover { 
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+
+.auth_input_container {
+    display: flex;
+    flex-direction: row;
+    grid-template-columns: 85% 15%;
+    padding: 0;
+    margin: 0;
+    /* border: 1px dotted orange; */
+}
+
+.eye_container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    /* border: 1px dotted green; */
+}
+
+.eye_child {
+    width: 30px;
+    height: 20px;
+}
+
+.eye {
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.button_hide {
+    opacity: 0;
+}
+
+.child_container_1 {
+    border: 1px dotted pink;
+    flex-grow: 1;
+    display: flex; 
+    grid-template-columns: 120px auto ;
+    gap: 20px;
+
+}
+
+.stop_sign_col {
+    display: flex;
+    flex-direction: column;
+    border: 1px dotted pink;
+}
+
+.stop_sign_msg {
+    display: flex;
+    flex-direction: column;
+    border: 1px dotted pink;
+}
+
+.msg_username {
+    border: 2px solid orangered;
+    font-family: Cambria, Cochin, Georgia, Time;
+    font-size: small;
+    background-color: lightgray;
+}
+
+.msg_password {
+    border: 2px solid orange;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: small;
+    background-color: lightgray;
+}
+
+.success_container {
+    /* border: 1px dotted pink; */
+    flex-grow: 1;
+    display: flex; 
+    width: 275px;
+    align-items: center;  /*  effect aligns horizontal */
+    justify-content: center; 
+}
+
+
+
+/* Sign Up Page */
+
+.container {
+    display: flex;
+    column-gap: 10px;
+    border: 10px dotted black;
+    height: 600px;
+    z-index: -1;
+    grid-template-columns: 60px auto ;
+    justify-content: center;
+    align-items: center;
+}
+
+.inputs_container {
+    display: flex;
+    width : 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.metadata_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around ;
+    align-items: center; 
+    /* height: 50px; */
+    /* width: 100%; */
+    width : 50%;
+    height: 50%;
+
+}
+
+.apply_container {
+    border: 2px solid reen;
+    display: flex;
+    gap: 20px;
+}
+
+.apply_container div button {
+    height: 30px;
+    width: 60px;
+    display: flex;
+    justify-content: space-around ;
+    align-items: center; 
+}
+
+
+@keyframes shakeButton {
+    0% {
+        transform: rotate(0deg) ;
+      }
+    10% {
+        transform: rotate(5deg) ;
+    }
+    20% {
+        transform: rotate(0deg) ;
+    }
+    30% {
+        transform: rotate(5deg) ;
+    }
+    40% {
+        transform: rotate(0deg) ;
+    }
+    50% {
+        transform: rotate(5deg) ;
+    }
+    60% {
+        transform: rotate(0deg) ;
+    }
+    70% {
+        transform: rotate(5deg) ;
+    }
+    80% {
+        transform: rotate(0deg) ;
+    }
+    90% {
+        transform: rotate(5deg) ;
+    }
+    100% {
+        transform: rotate(0deg) ;
+    }
+
+}
+.rotate_button {
+    animation: shakeButton 0.5s forwards;
+    pointer-events: none;
+}
+
+.disclaimer {
+    display: flex;
+    flex-direction: row;
+    width: 550px;
+    height: 40px;
+    justify-items: center;
+    align-items: center;
+    gap: 0.3em;
+}
+.disclaimer_item1  {
+    flex-grow: 1.2;
+    width:  0.5%;
+    height: 30%;
+    display: flex;
+    align-items: space-between;
+    justify-content: flex-end;
+    margin: 0;
+    border: 0;
+    /* border: 1px dotted green; */
+
+}
+
+.disclaimer_item2  {
+    flex-grow: 4;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width:  10%;
+    height: 30%;
+    font-size: small;
+    font-family: 'Didact Gothic'; 
+    /* #Verdana ; */
+    /* system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
+    margin: 0;
+    border: 0;
+    font-weight: lighter;
+    /* border: 1px dotted pink; */
+
+}
+.disclaimer_item2  p {
+    opacity: 0.5;
+}

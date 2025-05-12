@@ -1,11 +1,14 @@
-const { watch } = require('fs');
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.jsx',
+
+    entry: {
+        signin: './src/SignIn/index.jsx',
+        aihumans: './src/aiHumans/index.jsx'
+    },
 
     output: {
-        filename: 'bundle.js',
+        filename: '[name].bundle.js', // name = entry key 
         path: path.resolve(__dirname, 'public') // make sure public exists 
     },
 
@@ -39,7 +42,23 @@ module.exports = {
                 test: /\.(jpe?g|png|gif|svg)$/i, 
                 loader: 'file-loader',
                 options: {
-                    name: '/src/icons/[name].[ext]'
+                    name: '/src/assets/[name].[ext]',
+                    // outputPath: 'images'
+                    outputPath: (url, resourcePath, context) => {
+                        console.log(url)
+                        console.log(resourcePath)
+                        console.log(context)
+                        retSignIn = (resourcePath).match(/\/SignIn.+/);
+                        retAiHumans = (resourcePath).match(/\/aiHumans.+/);
+
+                        if(retSignIn) 
+                            return `assets/SignIn/${path.basename(retSignIn[0])}`
+
+                        if (retAiHumans)
+                            return `assets/AiHumans/${path.basename(retAiHumans[0])}`
+
+                    }
+
                 }
             }
     
