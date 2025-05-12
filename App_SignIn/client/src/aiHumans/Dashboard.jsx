@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import dashboardClass from './Dashboard.css'
+import Fortune from './Fortune'
 import axios from 'axios';
-
 class Dashboard extends Component {
     constructor(props) {
         super(props);
@@ -14,7 +14,6 @@ class Dashboard extends Component {
         axios({method:'get', url: window.origin + '/' + 'aihumans' + '?req=objects' })
         .then((response)=>{
             this.setState({pageRef: response.data.menuItems})
-            this.render()
         })
     }
     
@@ -33,7 +32,11 @@ class Dashboard extends Component {
                         
                     </div>
                     
-                    <div className={dashboardClass.page}> s </div>
+                    <div className={dashboardClass.page}> 
+
+                        <Fortune/> 
+
+                    </div>
 
                 </div>
         )

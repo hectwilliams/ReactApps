@@ -9,3 +9,8 @@ root.render(
       <App />
     // </React.StrictMode>
   );
+
+// window.addEventListener('resize', (event)=>{
+//     console.log(event)
+// });
+

@@ -3,14 +3,13 @@
     width: 100%;
     height: 100%;
     flex-direction: row;
-    height: 35cm;
+    height: 15cm;
     margin-top: 0;
 }
 
 .bucket {
     /* border-right: 2px solid navy; */
     flex-grow: 0.3;
-    background-color: aliceblue;
 }
 
 .menu_item_container {
@@ -65,13 +64,14 @@
     /* border: 1px solid purple; */
     justify-content: flex-start;
     align-items: center;
-   width: 50px;
+    width: 50px;
 }
 
 .menu_name p {
     font-family: 'Helvetica', 'Arial', sans-serif;
     overflow: hidden; /* or 'scroll' to add scrollbars */
     font-size: small;
+    
 }
 
 .entries {
@@ -97,6 +97,8 @@ background-color: black;}
     display: flex;
     flex-direction: row;
     gap: 5px;
+    background-color: aliceblue;
+
 }
 
 .suboptions_div_ident {
@@ -116,11 +118,13 @@ background-color: black;}
 .suboptions_div_value {
     flex-grow: 10;
     font-size: small;
-
 }
 
 .page {
     flex-grow: 100;
-    border: 2px solid #0065C1;
+    /* border: 2px dotted #0065C1; */
     border-bottom: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
