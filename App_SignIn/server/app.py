@@ -6,10 +6,18 @@ import server.myauth
 import database.db
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select , text
+from sqlalchemy import create_engine , inspect
 
 MODULE_NAME = 'app'
 
-db_session = database.db.prepare()
+db_session,  current_engine = database.db.prepare()
+inspector_gadget = inspect(current_engine)
+
+#  delete table
+#  database.db.Fortune500.__table__.drop(current_engine)
+
+# load data to table 
+# database.db.load_csv_data_fortune(current_engine, os.path.join(os.getcwd(), '../', 'database', 'bigdata', 'fortune.csv'))
 
 app = Flask(__name__) # name of application's package
 
@@ -73,6 +81,16 @@ def aihumans():
     except:
         return render_template('notfound.html'), 404
 
+@app.route("/fortune", methods=['GET'])
+def fortune():
+    try:
+        year = request.args.get('year') 
+        stmt = text(f"SELECT * FROM Fortune500 WHERE year = {year} LIMIT 100")    # number rows meeting conditions
+        result = db_session.execute(stmt)
+        data = [list(ele) for ele in result.fetchall()]
+        return make_response(jsonify( data), 200) 
+    except:
+        return render_template('notfound.html'), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
