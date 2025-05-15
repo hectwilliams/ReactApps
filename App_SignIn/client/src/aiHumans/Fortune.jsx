@@ -14,8 +14,6 @@ class App extends Component {
             header : ["name","rank","year","industry","sector","headquarters_state","headquarters_city"],
             records: []
         };
-
-     
        
     };
     

@@ -1,41 +1,62 @@
 import React, {Component} from 'react';
 import dashboardClass from './Dashboard.css'
 import Fortune from './Fortune'
+import Movies from './Movies'
 import axios from 'axios';
 
 class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pageRef: null
+            pageRef: null,
+            menuID: 0,
+            pages: [<Fortune/>, <Movies/>]
         }
+        this.modifyPage = this.modifyPage.bind(this);
     }
 
     componentDidMount() {
-        axios({method:'get', url: window.origin + '/' + 'aihumans' + '?req=objects' })
+        axios({method:'get', url: window.origin + '/' + 'aihumans' + '?req=startup' })
         .then((response)=>{
-            this.setState({pageRef: response.data.menuItems})
-        })
+            let data = JSON.parse(response.data)            
+            this.setState({pageRef: data.menuItems})
+        });
+
+
+        resizeStartup();
+
     }
     
+    modifyPage (value) {
+        let index = {
+            "Top TV" : 0,
+            "Movies" : 1
+        }[value.trim()];
+
+        if (index) {
+            this.setState({menuID: index});
+        }
+    }
+
     render() {
         return  (
                 
-                <div className={dashboardClass.main_grid}>
+                <div data-height='100%' className={dashboardClass.main_grid}>
                 
                     <div className={dashboardClass.bucket}>   
 
                         {
                             this.state.pageRef == null?
                             '':
-                            this.state.pageRef.map( (obj, index) => { return<MenuItem key={index} name={obj.name} pages={ obj.pages }/> })
+                            this.state.pageRef.map( (obj, index) => { return<MenuItem func_dashboard_modify_pg={this.modifyPage} key={index} name={obj.name} pages={ obj.pages }/> })
                         } 
                         
                     </div>
                     
                     <div className={dashboardClass.page}> 
-
-                        <Fortune/> 
+                        {
+                            this.state.pages[this.state.menuID]
+                        }
 
                     </div>
 
@@ -60,7 +81,7 @@ class MenuItem extends Component {
     render() {
         return (
 
-            <div key = {this.props.key} className={dashboardClass.menu_item_container}>
+            <div  className={dashboardClass.menu_item_container}>
                 
                 <div className={dashboardClass.menu_items}>
 
@@ -83,9 +104,8 @@ class MenuItem extends Component {
 
                 <div>
 
-                
                     {
-                        this.state.buttonState? '' : <Suboptions key={0} depth={0} pages={this.props.pages} /> 
+                        this.state.buttonState? '' : <Suboptions func_dashboard_modify_pg={this.props.func_dashboard_modify_pg}  key={0} depth={0} pages={this.props.pages} /> 
                     }
                 </div>
 
@@ -98,15 +118,15 @@ class MenuItem extends Component {
 class Suboptions extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
         this.click = this.click.bind(this);
     }
 
-    click() {
-        // Load subpage to page(s) section (right side)
+    click(event) {
+        this.props.func_dashboard_modify_pg(event.currentTarget.innerHTML);
     }
+
     render() {
-        
 
         return (
 
@@ -126,7 +146,7 @@ class Suboptions extends Component {
 
                 {
                     this.props.pages? 
-                        this.props.pages.map((obj, index)=> <Suboptions key={index} depth={this.props.depth + 1 } name={obj.name} pages={obj.pages}/>)
+                        this.props.pages.map((obj, index)=> <Suboptions func_dashboard_modify_pg={this.props.func_dashboard_modify_pg}  key={index} depth={this.props.depth + 1 } name={obj.name} pages={obj.pages}/>)
                     :
                         ''
                 }
@@ -137,5 +157,25 @@ class Suboptions extends Component {
     }
 }
 
+const resizeStartup = () => {
+
+const windowChange = (event)=>{
+    let ele = document.getElementsByClassName(dashboardClass.main_grid)[0] ;
+    var obj = {}
+    if (  (event instanceof Event) == false) {
+      obj = event;
+    } else {
+      obj = event.currentTarget;
+    }
+    if (obj.screen.height > 600 &&  obj.screen.height < 1000) {
+      ele.dataset.height = 700;
+    } else if(obj.screen.height > 1300 &&  obj.screen.height < 1800) {
+        ele.dataset.height = 1260;
+    }
+  }
+  
+  window.addEventListener('resize', windowChange);
+  windowChange(window);
+}
 
 export default Dashboard;

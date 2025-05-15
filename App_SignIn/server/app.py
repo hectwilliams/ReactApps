@@ -7,6 +7,10 @@ import database.db
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select , text
 from sqlalchemy import create_engine , inspect
+import os 
+import sys 
+
+import server.db_helper
 
 MODULE_NAME = 'app'
 
@@ -15,9 +19,13 @@ inspector_gadget = inspect(current_engine)
 
 #  delete table
 #  database.db.Fortune500.__table__.drop(current_engine)
+# database.db.Artifacts.__table__.drop(current_engine)
 
 # load data to table 
-# database.db.load_csv_data_fortune(current_engine, os.path.join(os.getcwd(), '../', 'database', 'bigdata', 'fortune.csv'))
+# database.db.load_csv_data_fortune(current_engine, os.path.join(os.getcwd(),'bigdata', 'fortune.csv'))
+
+# load startup json to table
+# server.db_helper.load_startup_json(db_session, os.path.join(os.getcwd(), 'bigdata','startpage.json' ))
 
 app = Flask(__name__) # name of application's package
 
@@ -68,11 +76,11 @@ def sign_up():
 @app.route("/aihumans")
 def aihumans():
     try:
-
-        if request.args.get('req') == 'objects':
-            with open ('data.json') as fd:
-                json_data = json.load(fd)
-                return make_response(jsonify(json_data), 200)
+        if request.args.get('req') == 'startup':
+            stmt = text(f"SELECT data FROM Artifacts WHERE name =\"startup\"")    # number rows meeting conditions
+            result = db_session.execute(stmt)
+            data_json = result.fetchone()[0]
+            return make_response(jsonify(data_json ), 200)
         else:
             response = make_response(render_template('aihumans.html'))
             return response
@@ -85,8 +93,9 @@ def aihumans():
 def fortune():
     try:
         year = request.args.get('year') 
-        stmt = text(f"SELECT * FROM Fortune500 WHERE year = {year} LIMIT 100")    # number rows meeting conditions
-        result = db_session.execute(stmt)
+        values = {'year': year}
+        stmt = text(f"SELECT * FROM Fortune500 WHERE year = :year LIMIT 100")    # number rows meeting conditions
+        result = db_session.execute(stmt, values)
         data = [list(ele) for ele in result.fetchall()]
         return make_response(jsonify( data), 200) 
     except:

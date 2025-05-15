@@ -1,0 +1,17 @@
+{
+    "name": "movies list",
+    "movies": [
+        {
+            "name": "Jeepers Creepers",
+            "genre": "horror",
+            "imdb-rating": 0.62,
+            "tomatometer": 0.46,
+            "poster": "https://resizing.flixster.com/y9UXYzTereQspspK6MKU1tJdMLA=/206x305/v2/https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p28278_p_v12_aj.jpg",
+            "members": {
+                "Director": ["Victor Salva"],
+                "Writer": ["Victor Salva"],
+                "Stars": ["Gina Philips, Justin Long, Jonathan Breck"]
+            }
+        }
+    ]
+}

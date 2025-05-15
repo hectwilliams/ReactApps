@@ -1,6 +1,6 @@
 from sqlalchemy import Column, types, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
-from sqlalchemy import create_engine , inspect
+from sqlalchemy import create_engine , inspect, insert
 import os 
 import pandas as pd 
 import time 
@@ -35,7 +35,13 @@ class Fortune500(Base):
     sector = Column(types.String(),default='na')
     headquarters_state = Column(types.String(32),default='na')
     headquarters_city = Column(types.String(32),default='na')
-    
+
+class Artifacts(Base):
+    __tablename__ = "artifacts"
+    id = Column(types.Integer, primary_key=True)
+    name = Column(types.String(length=100), unique=True )
+    data = Column(types.JSON)
+
 def prepare():
     engine = create_engine("sqlite:///:memory", echo=True, future=True)
     inspector_gadget = inspect(engine)
@@ -61,19 +67,3 @@ Result:
 
 """
 
-def load_csv_data_fortune(engine, csv_file):
-    """
-        .csv file location:  https://www.kaggle.com/datasets/rm1000/fortune-500-companies
-    """
-    # csv to dataframe
-    df = pd.read_csv(csv_file)
-
-    # filter dataframe 
-    df = df[["name","rank","year","industry","sector","headquarters_state","headquarters_city"]]
-    print(df)
-    # # write csv to database 
-    try:
-        df.to_sql(Fortune500.__tablename__, con=engine, if_exists='replace', index=False)
-    except ValueError as err:
-        print(err.args)
-        print('BOOOOOM')
