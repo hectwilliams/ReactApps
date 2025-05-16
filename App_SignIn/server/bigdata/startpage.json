@@ -1,6 +1,18 @@
 {
 
     "menuItems": [
+
+           {
+            "name":  "Start",
+
+            "pages": [
+                 {
+                    "name": "Fortune"
+                }
+            ] 
+        },
+
+
         
         {
             "name":  "TV/Movies",

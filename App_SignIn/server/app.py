@@ -5,17 +5,18 @@ import json
 import server.myauth
 import database.db
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import select , text
-from sqlalchemy import create_engine , inspect
+from sqlalchemy import select , text, create_engine , inspect
 import os 
 import sys 
-
+import numpy as np 
 import server.db_helper
 
 MODULE_NAME = 'app'
 
-db_session,  current_engine = database.db.prepare()
-inspector_gadget = inspect(current_engine)
+engine = server.db_helper.prepare()
+Session = sessionmaker(engine)
+inspector_gadget = inspect(engine)
+db_session = Session()
 
 #  delete table
 #  database.db.Fortune500.__table__.drop(current_engine)
@@ -24,8 +25,16 @@ inspector_gadget = inspect(current_engine)
 # load data to table 
 # database.db.load_csv_data_fortune(current_engine, os.path.join(os.getcwd(),'bigdata', 'fortune.csv'))
 
+# load pages json to table
+# server.db_helper.delete_table(db_session, name='Artifacts')
+
 # load startup json to table
 # server.db_helper.load_startup_json(db_session, os.path.join(os.getcwd(), 'bigdata','startpage.json' ))
+
+# load movies json to table
+server.db_helper.load_movies_json(db_session, os.path.join(os.getcwd(), 'bigdata','movies.json' ))
+
+
 
 app = Flask(__name__) # name of application's package
 
@@ -81,6 +90,12 @@ def aihumans():
             result = db_session.execute(stmt)
             data_json = result.fetchone()[0]
             return make_response(jsonify(data_json ), 200)
+        elif request.args.get('req') == 'movies':
+            batch_size = 4
+            stmt = text(f"SELECT data FROM Artifacts WHERE name =\"movies\"")    # number rows meeting conditions
+            result = db_session.execute(stmt)
+            data = [ list(ele) for ele in result.fetchall()]
+            return make_response(jsonify(data), 200)
         else:
             response = make_response(render_template('aihumans.html'))
             return response
@@ -96,10 +111,11 @@ def fortune():
         values = {'year': year}
         stmt = text(f"SELECT * FROM Fortune500 WHERE year = :year LIMIT 100")    # number rows meeting conditions
         result = db_session.execute(stmt, values)
-        data = [list(ele) for ele in result.fetchall()]
-        return make_response(jsonify( data), 200) 
+        data = np.array([list(ele) for ele in result.fetchall()])
+        return make_response(jsonify( data.tolist()), 200) 
     except:
         return render_template('notfound.html'), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)

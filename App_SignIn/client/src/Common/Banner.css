@@ -19,6 +19,8 @@
 /* remove underline */
 a {
     text-decoration: none;
+        color: black
+
 }
 
 /* prevent text change after click */

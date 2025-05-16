@@ -4,14 +4,69 @@
         {
             "name": "Jeepers Creepers",
             "genre": "horror",
-            "imdb-rating": 0.62,
-            "tomatometer": 0.46,
+            "imdb-rating": 62,
+            "tomatometer": 46,
             "poster": "https://resizing.flixster.com/y9UXYzTereQspspK6MKU1tJdMLA=/206x305/v2/https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p28278_p_v12_aj.jpg",
             "members": {
                 "Director": ["Victor Salva"],
                 "Writer": ["Victor Salva"],
-                "Stars": ["Gina Philips, Justin Long, Jonathan Breck"]
+                "Stars": ["Gina Philips", "Justin Long", "Jonathan Breck"]
+            }
+        },
+
+          {
+            "name": "The Godfather",
+            "genre": "Drama",
+            "imdb-rating": 92,
+            "tomatometer": 100,
+            "poster": "https://i.pinimg.com/originals/e0/0c/65/e00c65ab6a7dacccd276c2fd434de8f5.jpg",
+            "members": {
+                "Director": ["Francis Ford Coppola"],
+                "Writer": ["Mario Puzo", "Francis Ford Coppola"],
+                "Stars": ["Marlon Brando", "Al Pacino", "James Caan"]
+            }
+        },
+
+          {
+            "name": "The Dark Knight",
+            "genre": "Superhero",
+            "imdb-rating": 90,
+            "tomatometer": 100,
+            "poster": "https://cdn.shopify.com/s/files/1/1416/8662/products/dark_knight_english_original_film_art_spo_2000x.jpg?v=1543419185",
+            "members": {
+                "Director": ["Christopher Nolan"],
+                "Writer": ["Johnathan Nolan", "Christopher Nolan", "David S. Goyer"],
+                "Stars": ["Christian Bale", "Heath Ledger", "Aaron Eckhart"]
+            }
+        },
+
+            {
+            "name": "Pulp Fiction",
+            "genre": "Crime",
+            "imdb-rating": 89,
+            "tomatometer": 100,
+            "poster": "https://filmartgallery.com/cdn/shop/products/Pulp-Fiction-Vintage-Movie-Poster-Original-1-Sheet-27x41-6.jpg?v=1669266071",
+            "members": {
+                "Director": ["Quentin Tarantino"],
+                "Writer": ["Quentin Tarantino", "Roger Avary"],
+                "Stars": ["John Travolta", "Uma Thurman", "Samuel L. Jackson"]
+            }
+        },
+
+              {
+            "name": "Forrest Gump",
+            "genre": "Drama",
+            "imdb-rating": 88,
+            "tomatometer": 100,
+            "poster": "https://c8.alamy.com/comp/PXNB1J/forrest-gump-original-movie-poster-PXNB1J.jpg",
+            "members": {
+                "Director": ["Robert Zemeckis"],
+                "Writer": ["Winston Groom", "Eric Roth"],
+                "Stars": ["Tom Hanks", "Robin Wright", "Gary Sinise"]
             }
         }
+
+
+
     ]
 }

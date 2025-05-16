@@ -1,9 +1,6 @@
 from sqlalchemy import Column, types, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
-from sqlalchemy import create_engine , inspect, insert
-import os 
 import pandas as pd 
-import time 
 
 Base = declarative_base()
 
@@ -41,29 +38,4 @@ class Artifacts(Base):
     id = Column(types.Integer, primary_key=True)
     name = Column(types.String(length=100), unique=True )
     data = Column(types.JSON)
-
-def prepare():
-    engine = create_engine("sqlite:///:memory", echo=True, future=True)
-    inspector_gadget = inspect(engine)
-    Base.metadata.create_all(engine) # generates schema or tables in our target db
-    Session = sessionmaker(engine)
-
-    return Session(), engine
-"""
-Command :
-    print(inspector_gadget.get_table_names())
-Result:
-    ['loginevent', 'users']
-
-Command
-    print(inspector_gadget.get_columns('loginevent'))
-Result:
-    [{'name': 'id', 'type': INTEGER(), 'nullable': False, 'default': None, 'primary_key': 1}, {'name': 'user_id', 'type': INTEGER(), 'nullable': True, 'default': None, 'primary_key': 0}, {'name': 'result', 'type': BOOLEAN(), 'nullable': True, 'default': None, 'primary_key': 0}, {'name': 'time', 'type': TIMESTAMP(), 'nullable': True, 'default': None, 'primary_key': 0}]
-
-Command
-    print(inspector_gadget.get_columns('users'))
-Result:
-    [{'name': 'id', 'type': INTEGER(), 'nullable': False, 'default': None, 'primary_key': 1}, {'name': 'user_id', 'type': VARCHAR(length=32), 'nullable': True, 'default': None, 'primary_key': 0}, {'name': 'user', 'type': VARCHAR(length=80), 'nullable': True, 'default': None, 'primary_key': 0}, {'name': 'hash', 'type': VARCHAR(length=32), 'nullable': True, 'default': None, 'primary_key': 0}, {'name': 'salt', 'type': VARCHAR(length=80), 'nullable': True, 'default': None, 'primary_key': 0}, {'name': 'firstname', 'type': VARCHAR(length=100), 'nullable': True, 'default': None, 'primary_key': 0}, {'name': 'lastname', 'type': VARCHAR(length=100), 'nullable': True, 'default': None, 'primary_key': 0}]
-
-"""
 

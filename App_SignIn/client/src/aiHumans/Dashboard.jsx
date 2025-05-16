@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import dashboardClass from './Dashboard.css'
-import Fortune from './Fortune'
-import Movies from './Movies'
+import dashboardClass from './Dashboard.css';
+import Fortune from './Fortune';
+import Movies from './Movies';
+import Waitx from "./Waitx";
 import axios from 'axios';
 
 class Dashboard extends Component {
@@ -9,8 +10,8 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             pageRef: null,
-            menuID: 0,
-            pages: [<Fortune/>, <Movies/>]
+            pageKey: 'fortune',
+            pages: {fortune: <Fortune/>, movies:<Movies/> }  
         }
         this.modifyPage = this.modifyPage.bind(this);
     }
@@ -21,21 +22,12 @@ class Dashboard extends Component {
             let data = JSON.parse(response.data)            
             this.setState({pageRef: data.menuItems})
         });
-
-
-        resizeStartup();
-
     }
     
     modifyPage (value) {
-        let index = {
-            "Top TV" : 0,
-            "Movies" : 1
-        }[value.trim()];
-
-        if (index) {
-            this.setState({menuID: index});
-        }
+        console.log(this.state.pageKey);
+        console.log(value.toLowerCase());
+        this.setState({pageKey: value.toLowerCase().trim()});
     }
 
     render() {
@@ -55,9 +47,8 @@ class Dashboard extends Component {
                     
                     <div className={dashboardClass.page}> 
                         {
-                            this.state.pages[this.state.menuID]
+                            this.state.pages.hasOwnProperty(this.state.pageKey) ? this.state.pages[this.state.pageKey] : <Waitx/>
                         }
-
                     </div>
 
                 </div>
@@ -157,25 +148,6 @@ class Suboptions extends Component {
     }
 }
 
-const resizeStartup = () => {
 
-const windowChange = (event)=>{
-    let ele = document.getElementsByClassName(dashboardClass.main_grid)[0] ;
-    var obj = {}
-    if (  (event instanceof Event) == false) {
-      obj = event;
-    } else {
-      obj = event.currentTarget;
-    }
-    if (obj.screen.height > 600 &&  obj.screen.height < 1000) {
-      ele.dataset.height = 700;
-    } else if(obj.screen.height > 1300 &&  obj.screen.height < 1800) {
-        ele.dataset.height = 1260;
-    }
-  }
-  
-  window.addEventListener('resize', windowChange);
-  windowChange(window);
-}
 
 export default Dashboard;

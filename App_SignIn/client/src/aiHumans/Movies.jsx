@@ -16,138 +16,32 @@ class Movies extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            s : "https://resizing.flixster.com/y9UXYzTereQspspK6MKU1tJdMLA=/206x305/v2/https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p28278_p_v12_aj.jpg",
-            modalState: false
+            info :{movieCount:0, rowArrayCount: []}
         }
-        this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick (event) {
-        console.log('hello world');
-        this.setState({modalState: !this.state.modalState});
+    componentDidMount() {
+        axios({method:'get', url: window.origin + '/' + 'aihumans' + '?req=movies' })
+        .then((response)=>{
+            let data = JSON.parse(response.data); 
+            let num_rows = Math.ceil(data.movies.length/4);
+            let num_movies = data.movies.length;
+            let row_array_count = [...Array(num_rows).keys()]
+            this.setState({pageRef: data.menuItems, info: {movieCount: num_movies, rowArrayCount: row_array_count, movies: data.movies}})
+        });
     }
+
 
     render() {
         return (
             <> 
-                {
-                    this.state.modalState? 
-                    <>
-                        <div className={cl.cover_screen }></div>
-                        <MoviesModal exitModel={this.handleClick}/> 
-                    </>
-                    : ''
-                }
 
             <div className={cl.row_container}>
 
                 <div className={cl.container}>
-
-                <div className={cl.movie_entry_container}>
-                {
-
-                    Array(4).fill(0).map(()=>{
-                        
-                        return (
-
-                                <div onClick={this.handleClick} className={cl.movie_container}>
-                                    
-                                    <div className={cl.hover2}> </div> 
-
-                                    <div className={cl.movie_entry_genre}> 
-                                        <p>  Horror  </p>
-                                    </div>  
-
-                                    <div className={cl.movie_entry_pic}> 
-                                        <img src={this.state.s} />
-                                    </div>
-                                    <div className={cl.hover}> 
-                                        <p>  Jeepers Creepers </p>
-                                    </div> 
-
-                                    <div className={cl.placeholder}> 
-                                    </div>
-
-                                </div>
-                            
-                        )
-                    })}
-                </div>
-
-
-       <div className={cl.movie_entry_container}>
-                {
-
-                    Array(4).fill(0).map(()=>{
-                        
-                        return (
-
-
-                                <div className={cl.movie_container}>
-                                    
-                                <div className={cl.hover2}> 
-                                    </div> 
-
-                                    
-                                    {/* <div className={cl.movie_entry_star}> 
-                                        {/* <img src={star} /> */}
-                                    {/* </div>  */}
-
-                                    <div className={cl.movie_entry_genre}> 
-                                        <p>  Horror  </p>
-                                    </div>  
-
-                                    <div className={cl.movie_entry_pic}> 
-                                        <img src={this.state.s} />
-                                    </div>
-                                    <div className={cl.hover}> 
-                                        <p>  Jeepers Creepers </p>
-                                    </div> 
-
-                                    <div className={cl.placeholder}> 
-                                    </div>
-
-                                </div>
-                            
-                        )
-                    })}
-                </div>
-
-
-
-
-
-       <div className={cl.movie_entry_container}>
-                {
-
-                    Array(4).fill(0).map(()=>{
-                        
-                        return (
-
-                                <div className={cl.movie_container}>
-                                    
-                                <div className={cl.hover2}> </div> 
-                                    
-                                    <div className={cl.movie_entry_genre}> 
-                                        <p>  Horror  </p>
-                                    </div>  
-
-                                    <div className={cl.movie_entry_pic}> 
-                                        <img src={this.state.s} />
-                                    </div>
-
-                                    <div className={cl.hover}> 
-                                        <p>  Jeepers Creepers </p>
-                                    </div> 
-
-                                    <div className={cl.placeholder}> </div>
-
-                                </div>
-                            
-                        )
-                    })}
-                </div>
-
+                    {
+                        this.state.info.rowArrayCount.map( (index) => { return (<MovieBlockEntry index={index} movies={this.state.info.movies} currentRow={index} numMovies={this.state.info.movieCount}   lastRow= {index == this.state.info.rowArrayCount.length-1 }   />)})
+                    }
                 </div>
             </div>
             
@@ -165,14 +59,15 @@ class MoviesModal extends Component {
     }
 
     render() {
-
         return (
 
+            <>
+
+            <p onClick={this.props.closeModal} className={cl.closeit}></p>
             <div className={cl.modal_container}>
 
                 <div className={cl.modal_left}>
-                    <div onClick={this.props.exitModel} className={cl.closeit}> x </div>
-                    <img src={jeep}/>
+                    <img src= { JSON.parse(this.props.record).poster } />
                 </div>
 
 
@@ -180,12 +75,10 @@ class MoviesModal extends Component {
                         
                     <div className={cl.modal_genre}>
                         <img src={projector}/>
-
                         <div >
-                            <p>Horror</p>
+                            <p> {JSON.parse(this.props.record).genre}  </p>
                         </div>
                     </div>
-
 
                     <div className={cl.modal_rating}>
 
@@ -194,26 +87,25 @@ class MoviesModal extends Component {
                         <div >
 
                             <div>
-                                <div className={cl.rating_img_container}>
-                                    <img src={rotten}/>
+                                <div name="rotten_score" className= {cl.rating_img_container}   >
+                                    
+                                    <img  className={cl.rating_img} src={rotten}/>
                                 </div>
 
                                 <div>
-                                    <p> 4.6/10</p> 
+                                    <p>  {JSON.parse(this.props.record).tomatometer}    </p> 
                                 </div>
                             </div>
-
 
                             <div>
-                                <div className={cl.rating_img_container}>
-                                    <img src={imdb}/>
+                                <div name="imdb_score" className={cl.rating_img_container}>
+                                    <img  className={cl.rating_img} src={imdb}/>
                                 </div>
 
                                 <div>
-                                    <p> 9/10</p> 
+                                    <p> {JSON.parse(this.props.record)["imdb-rating"] }   </p> 
                                 </div>
                             </div>
-                            
                      
                         </div>
 
@@ -221,19 +113,73 @@ class MoviesModal extends Component {
 
                     <div className={cl.modal_team}>
 
-                        <div>
+                        <div className={cl.teamIcon}>
                             <img src={people}/>
                         </div>
 
                         <div className={cl.teamlist}>
-                            <div>
-                                < div> <img src={director}/> </div>
-                                <div><p>Static Shock</p></div>
-                            </div>
+                            <div className={cl.teamlist_sub}>
 
-                            <div>
-                                < div> <img src={ink}/> </div>
-                                <div><p>Storm</p></div>
+
+                                            {
+                                <>
+
+                                        {   
+                                            JSON.parse(this.props.record).members.Director.map((name) => { 
+                                                return (
+                                                    <div className={cl.ele_container}>
+                                                        < div> <img src={director}/> </div>
+                                                         <div className={cl.name_container1}>
+                                                            <div className={cl.name_container2}>
+                                                                <p> 
+                                                                    {name}
+                                                                </p>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                         {   
+                                            JSON.parse(this.props.record).members.Writer.map((name) => { 
+                                               return  (
+                                                    <div className={cl.ele_container} >
+                                                        < div> <img src={ink}/> </div>
+                                                         <div className={cl.name_container1}>
+                                                            <div className={cl.name_container2}>
+                                                                <p> 
+                                                                    {name}
+                                                                </p>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                        {   
+                                            JSON.parse(this.props.record).members.Stars.concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).map((name) => { 
+                                            // Array.from(Array(20).keys()).map((name) => { 
+
+                                               return  (
+                                                    <div className={cl.ele_container} >
+                                                        < div> <img src={starz}/> </div>
+                                                        <div  className={cl.name_container1}>
+                                                         
+                                                            <div name_gt={ (name.length > 36 ).toString() } className={cl.name_container2}>
+                                                                   
+                                                                <p name={name} >{name} </p>
+                                                                
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        } 
+
+
+                                </>
+                            } 
                             </div>
 
                             
@@ -245,9 +191,116 @@ class MoviesModal extends Component {
 
             </div>
 
+            </>
+
         )
     }
 }
 
 
+class MovieBlockEntry extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+
+            <>
+
+                <div className={cl.movie_entry_container}>
+                    {
+                        this.props.movies.slice(4 * this.props.currentRow, 4 * (this.props.currentRow+1)).map( (movieRecord) => {return (
+                            <>
+                                <Movie record= {JSON.stringify(movieRecord) } />
+                                {
+                                    /* fills open slots with placeholder */
+                                    this.props.lastRow==true ? 
+                                        [ ...Array( 4 - (this.props.numMovies % 4) ).keys() ].map( () => {  return (  <Movie record={JSON.stringify({})} />  ) } ) 
+                                    : 
+                                        ''
+                                }             
+                            </>
+                        )})
+
+                    }
+                        
+                </div>
+            </>
+        )
+    }
+
+}
+
+
+class Movie extends Component {
+    constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.state = {
+            modalState: false
+        }
+    }
+
+    handleClick (event) {
+        this.setState({modalState: !this.state.modalState});
+    }
+
+    closeModal(event) {
+        this.setState({modalState: false});
+    }
+
+    render() {
+        return (
+            <>
+
+                {
+                    this.state.modalState? 
+                        <>
+                            <div onClick={this.closeModal} className={cl.cover_screen }></div>
+                            <MoviesModal record={ (this.props.record)   } closeModal={this.closeModal}  exitModel={this.handleClick}/> 
+                        </>
+                        : ''
+                }
+                
+                <div onClick={this.handleClick} className={cl.movie_container} data-keys={Object.keys( JSON.parse(this.props.record)).length}>
+
+                    <div className={cl.hover2}> </div> 
+
+                    <div className={cl.movie_entry_genre}> 
+                        {
+                            JSON.parse(this.props.record).hasOwnProperty("genre") ?  ( <p>  {JSON.parse(this.props.record).genre} </p>  )   : ''
+                        }
+                    </div>  
+
+                    <div className={cl.movie_entry_pic}> 
+                        {
+
+                            JSON.parse(this.props.record).hasOwnProperty("poster") ? <img src= {JSON.parse(this.props.record).poster} /> : ''
+                        }
+                        
+                    </div>
+
+                    <div className={cl.hover}> 
+                        {
+                            JSON.parse(this.props.record).hasOwnProperty("name") ?  <p> {JSON.parse(this.props.record).name}  </p> : ''
+                        }    
+
+                    </div> 
+
+                    <div className={cl.placeholder}> </div>
+
+                </div>
+            </>
+        )
+    }
+
+}
+
 export default Movies;
+
+
+
+
+

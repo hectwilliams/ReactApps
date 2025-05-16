@@ -22,15 +22,19 @@
     justify-content: space-evenly;
     /* overflow-y: auto; */
     align-items: center;
+
 }
 
 .movie_entry_container {
     /* border: 0.5px solid red; */
     width: 90%;
     height: 40%;
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
     display: flex;
     flex-direction: row;
+    /* border: 1px solid purple; */
+    gap:10px;
+    align-items: flex-start;
 }
 
 .movie_container {
@@ -45,6 +49,11 @@
     flex-direction: column;
     border-radius: 5px;
     align-content:space-around;
+}
+
+.movie_container[data-keys="0"] {
+    /* hides placeholder cells when number of movies is not multiple of 4 */
+    opacity: 0;
 }
 
 .hover {
@@ -145,6 +154,8 @@
     height: 90%;
 }
 
+
+
 .placeholder{
     flex-grow: 3;
     padding-bottom: 20px;
@@ -157,43 +168,43 @@
     flex-direction: row;
     position: absolute;
     width:60%;
-    height: 80%;
+    height: 100%;
     max-height: 700px ;
     min-width: 700px ;
     max-width: 800px ;
-    /* border: 1px solid red;  */
+    border: 1px solid silver; 
+    border-radius: 6px;
     display: grid;
     grid-template-columns: 70% auto;
-    top:2em;
-    z-index: 2;
-}
+    grid-template-rows: 100%;
 
+    top:5px;
+    z-index: 2;
+    object-fit: fill;
+}
 
 .modal_left {
     /* border: 2px solid blue;  */
     flex-grow: 3;
-    width:100%;
-    height: inherit;
+    width: 100%;
+    height: 100%;
     font-size: larger;
-    margin-left: 4em;
+    object-fit: fill;
 }
 
-.modal_left > .closeit {
-    height: 0;
-    color: white;
-    font-size: medium;
-    position:relative;
-}
+
 .modal_left:hover {
     color: pink;
 }
 
 
-.modal_left img {
+.modal_left > img {
     height: 100%;
     width: 100%;
-    object-fit: contain;
+    object-fit:fill;
 }
+
+
 
 .modal_right {
     flex-grow: 1;
@@ -210,7 +221,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    border-bottom: 1px solid white;
+    border-bottom: 0.1px solid white;
 }
 
 
@@ -283,6 +294,12 @@
     justify-content: center;
 }
 
+.rating_img {
+  align-self: center;
+    width: 85%;
+    height: 85%;
+}
+
 .modal_rating > div > div > div ~ div  {
     /* border: 2px dotted black; */
     height: 100%;
@@ -294,35 +311,35 @@
     display: flex;
 }
 
-.modal_rating > div > div > div > img {
-   align-self: center;
-    width: 70%;
-    height: 70%;
-}
-
-.modal_rating > div > div > div ~ div  > img {
-    align-self: center;
-    width: 80%;
-    height: 80%;
-}
 
 .modal_rating p {
     margin: 0;
     padding: 0;
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 
 .modal_team {
     width: 100%;
     height: 100%;
-    border-top: 1px solid white;
+    border-top: 0.1px solid white;
     display: flex;
     flex-direction: column;
+
 } 
 
 
-.modal_team > img {
+.teamIcon  {
     align-self: flex-start;
+    width : 100%;
+    height: fit-content;
+}
+
+.teamIcon > img  {
+    align-self: flex-start;
+    width : 18px;
+    height : 18px;
 }
 
 
@@ -334,52 +351,161 @@
     display: flex;
 }
 
+
+
 .teamlist {
+
+    /* overflow-y: hidden; */
+    display: flex;
+    width: 100%;
+    height: 100%;
+    /* border: 0.5px solid pink; */
+    border-radius: 4px;
+    overflow-x:hidden;
+}
+
+.teamlist_sub{
     display: flex;
     flex-direction: column;
     width: 100%;
+    border: 0.5px solid pink;
+    height: 100%;
+    max-height: 400px;
+    overflow-y: auto;
 
 }
 
+
 /*  container */
-.teamlist > div {
+.teamlist_sub > div {
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 7%;
+    height: inherit;
+    max-height: 50px;
+    min-height: 40px;
+
+    /* border: 2px solid red; */
 }
 
 /* container pic element */
-.teamlist > div > div  {
+.teamlist_sub > div > div  {
     flex-grow: 1;
     display: flex;
     justify-content: center;
 }
 
-.teamlist > div > div >img {
+.teamlist_sub > div > div >img {
     height: 70%;
     width: 70%;
+    max-width: 340px;
+    max-height: 55px;
+    min-height: 35px;
+
+
 }
 
 /* container msg element */
-.teamlist > div > div  ~ div{
+/* .teamlist > div > div  ~ div, */
+.ele_container > div ~ div{
     flex-grow: 9;
-    /* border: 1px solid green; */
-    height: 40%;
+    height: 90%;
+    max-height:60px;
     width: 100%;
     display: flex;
     justify-content: left;
+    max-width: 150px;
+    /* border: 2px solid black; */
 }
-.teamlist > div > div  ~ div > p{
-    margin: 0 0 2em 0;
+
+.ele_container {
+    /* border: 0.5px solid black; */
+    display: flex;
+    align-items: center;
+    width: 50px;
+}
+
+.name_container1 {
+    margin: 0 0 0 0;
+    padding: 0;
+    display: flex;
+    align-items:left;
+}
+
+.name_container2 {
+    color: pink;
+    /* border: 1px solid red; */
+    text-align: left;
+    line-height: 12px;
+    max-height: 200px;
+}
+
+.name_container2 > p {
+    margin: 0 0 0 0;
     padding: 0;
     color: pink;
-    font-size: small;
+    font-size: 12px;
+    width: 140px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.name_container2[name_gt="true"] > p::before {
+    margin: 0 0 0 0;
+    padding: 0;
+    color: whitesmoke;
+    font-size: 16px;
+    white-space: nowrap;
+    content: attr(name);
+    opacity:0;
+    position: absolute;
+    z-index: 6;
+    border: 2px solid salmon;
+    background-color: darkgray;
+}
+
+.name_container2[name_gt="false"] > p:hover::before{
+    opacity: 1;
+    visibility: visible;
 }
 
 .cover_screen {
-    position: absolute;
+    position:absolute;
     width: 100%;
     height: 100%;
     z-index: 1;
+    left: 0;
+    top: 0;
+    background-color: black;
 }
+
+.closeit::before{
+    /* height: 0;
+    font-size: medium;
+    position:absolute;
+    */
+    left: 0.5em; 
+    top: 0.5em;
+    color: white;
+    font-size: 30x;
+    content: "X" ;
+    z-index: 6;
+    position: absolute;
+    border-radius: 50%;
+} 
+
+@keyframes bloop {
+    from {    
+        border: 1px solid black;
+    }
+    to {    
+        border: 1px solid white ;
+    }
+}
+.closeit:hover::before {
+    animation-name: bloop;
+    animation-duration: 2s;
+}
+
+

@@ -24,8 +24,6 @@ class App extends Component {
         })
     }
     onChange(event) {
-        console.log(event.currentTarget.value)
-        
         axios({method:'get', url: window.origin + '/' + 'fortune' + `?year=${event.currentTarget.value}`})
         .then((response)=>{
             this.setState({records: response.data })
