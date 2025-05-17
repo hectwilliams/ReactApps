@@ -58,6 +58,7 @@
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+.sign_up,
 .sign_input {
     border-radius: 10px;
     width:200px;
@@ -71,11 +72,22 @@
     background-color: darkcyan;
     font-weight: bold;
 }
+.signupButton {
 
+}
+
+.sign_up:hover,
 .sign_input:hover { 
     background-color: lightgray;
     cursor: pointer;
 }
+
+.sign_up:focus,
+.sign_input:focus{
+    border: 3px solid yellow
+}
+
+
 
 
 .auth_input_container {
@@ -242,6 +254,7 @@
     }
 
 }
+
 .rotate_button {
     animation: shakeButton 0.5s forwards;
     pointer-events: none;

@@ -8,49 +8,31 @@
             "pages": [
                  {
                     "name": "Fortune"
+                },
+                
+                {
+                    "name": "NotRealHumans"
                 }
             ] 
         },
 
 
-        
         {
             "name":  "TV/Movies",
 
             "pages": [
                  {
                     "name": "Movies"
-                },
-                    
-                {
-                    "name": "Netflix Recommendation"
-                },
-
-                {
-                    "name": "Predator"
                 }
             ] 
         },
         
         {
-            "name":  "Job Application",
-
-            "pages": [
-                {
-                    "name": "Example1"
-                },
-                {
-                    "name": "Example2"
-                }
-            ] 
-        },
-
-        {
             "name":  "Signal Processing",
 
             "pages": [
                 {
-                    "name": "DSP1"
+                    "name": "Generator"
                 }
             ] 
         }

@@ -29,7 +29,43 @@ class Auth extends Component {
             data: {firstname:'', lastname:'', username:'', password:''},
             debug: true
         } 
+        
     }
+
+    componentDidMount() {
+
+        document.addEventListener("keydown", (event)=>{
+            if (event.key == "Enter") {
+                event.preventDefault();
+                if (  ['authpassword', 'authusername'].includes(event.target.name) || event.target.parentNode.classList.contains(classes.shakeButton) ) {
+                    this.handleSignIn();
+                } else if (event.target.parentNode.classList.contains(classes.signupButton) ) {
+                    this.handleSignUp();
+                }
+            }
+        });
+
+            document.addEventListener("keydown", (event)=>{
+            if (event.key == "Tab") {
+                event.preventDefault();
+                let node = event.target;
+                let parentNode = node.parentNode;
+                if( parentNode.children.length != 0) {
+                    if ( node.classList.contains(classes.sign_up) ) {
+                        document.getElementsByName('authusername')[0].focus();
+                        } else if ( node.classList.contains(classes.sign_input) ) {
+                        parentNode.nextSibling.nextSibling.firstChild.focus();
+                    }else if (parentNode.firstChild.name == "authpassword") {
+                        document.getElementsByClassName(classes.shakeButton)[0].firstChild.focus();
+                    }else if (parentNode.firstChild.name == "authusername") {
+                        document.getElementsByName('authpassword')[0].focus();
+                    }
+                }
+            }   
+        });
+
+    }
+
 
     handleEyeClick(event) {
         this.setState({eye: !this.state.eye})
@@ -119,7 +155,7 @@ class Auth extends Component {
                     <div className={classes.auth_container}>
                         
                         <div className={classes.auth_input_container}>
-                            <AuthUsername eye={true} placeholder='Enter Username' />    
+                            <AuthUsername name="authusername" eye={true} placeholder='Enter Username' />    
                             <div  className={classes.eye_container}> 
                                 <button  className={`${classes.button_hide} ${classes.eye_child}`}> 
                                     <img src={!this.state.eye ?  ORIGIN + '/static/assets/Signin/eye_closed.png' : ORIGIN + '/static/assets/Signin/eye_open.png'} alt="Eye Button" className={classes.eye} />
@@ -129,7 +165,7 @@ class Auth extends Component {
                         </div>
 
                         <div className={classes.auth_input_container}>
-                            <AuthPassword eye={this.state.eye} placeholder='Enter Password'/>   
+                            <AuthPassword name="authpassword" eye={this.state.eye} placeholder='Enter Password'/>   
                             <div className={classes.eye_container} >
                                 <button  onClick={this.handleEyeClick}   className={`${classes.eye_child}`}  > 
                                     <img src={!this.state.eye ?  ORIGIN + '/static/assets/Signin/eye_closed.png' :ORIGIN + '/static/assets/Signin/eye_open.png'} alt="Eye Button" className={classes.eye} />
@@ -139,7 +175,7 @@ class Auth extends Component {
 
                         <div className={classes.auth_input_container}>
                             
-                            <div name='shake_button' >
+                            <div className={classes.shakeButton} name='shake_button' >
                                 <button onClick= {this.handleSignIn} className={`${classes.sign_input}`}> Sign In</button>
                             </div>
 
@@ -147,8 +183,8 @@ class Auth extends Component {
                                 <img src={!this.state.eye ?  ORIGIN + '/static/assets/Signin/eye_closed.png' : ORIGIN + '/static/assets/Signin/eye_open.png'} alt="Eye Button" className={classes.eye} />
                             </button>
                             
-                            <div>
-                                <button onClick= {this.handleSignUp} className={`${classes.sign_input} ${classes.sign_up}`}> Sign Up</button>
+                            <div name='signup_button' className={classes.signupButton}>
+                                <button onClick= {this.handleSignUp} className={`${classes.sign_up} `}> Sign Up</button>
                             </div>
 
                             <button  className={`${classes.button_hide} ${classes.eye_child}`}> 
@@ -174,21 +210,23 @@ class Auth extends Component {
                     this.state.warning_id > 0 ?
                         
                         <div  className={classes.child_container_1}> 
-                                <div className={classes.stop_sign_col}>
-                                    <div>
-                                        <img src={ORIGIN + '/static/assets/Signin/stop_sign.png'} alt="stop sign"/>
-                                    </div>
-                                </div>
 
-                                <div className={classes.stop_sign_msg}>
-                                    <>
-                                        {this.state.messages.username.map( (record)=>{ return (<p key={record[0]} className={classes.msg_username}> {record[1]} </p>); } ) }
-                                    </>
-
-                                    <>
-                                        {this.state.messages.password.map( (record)=>{ return (<p key={record[0]} className={classes.msg_password}> {record[1]} </p>); } ) }
-                                    </>
+                            <div className={classes.stop_sign_col}>
+                                <div>
+                                    <img src={ORIGIN + '/static/assets/Signin/stop_sign.png'} alt="stop sign"/>
                                 </div>
+                            </div>
+
+                            <div className={classes.stop_sign_msg}>
+                                <>
+                                    {this.state.messages.username.map( (record)=>{ return (<p key={record[0]} className={classes.msg_username}> {record[1]} </p>); } ) }
+                                </>
+
+                                <>
+                                    {this.state.messages.password.map( (record)=>{ return (<p key={record[0]} className={classes.msg_password}> {record[1]} </p>); } ) }
+                                </>
+                            </div>
+
                         </div>
                     
                     :
@@ -297,7 +335,8 @@ class AuthInput extends Component {
 
     render() {
         return (
-            <input type="text" data-custom-cow={1} data-custom-raw = {this.state.rawText} value={this.props.eye? this.state.rawText:  '*'.repeat(this.state.rawText.length)     } onChange={this.handleInput} className={classes.auth_input} placeholder={this.props.placeholder} />
+
+            <input name={this.props.name} type="text" data-custom-cow={1} data-custom-raw = {this.state.rawText} value={this.props.eye? this.state.rawText:  '*'.repeat(this.state.rawText.length)     } onChange={this.handleInput} className={classes.auth_input} placeholder={this.props.placeholder}  ></input>
         )
     }
 }

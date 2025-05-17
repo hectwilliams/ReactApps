@@ -2,8 +2,9 @@ import os
 import database.db
 import pandas as pd 
 import json 
-from sqlalchemy import create_engine , inspect, insert, text
+from sqlalchemy import create_engine , inspect, insert, text, Table
 from sqlalchemy.orm import declarative_base, sessionmaker
+import sqlalchemy.exc 
 
 def load_csv_data_fortune(engine, csv_file):
     """
@@ -16,48 +17,38 @@ def load_csv_data_fortune(engine, csv_file):
     df = df[["name","rank","year","industry","sector","headquarters_state","headquarters_city"]]
     print(df)
 
-    # # write csv to database 
+    # write csv to database 
     try:
         df.to_sql(database.db.Fortune500.__tablename__, con=engine, if_exists='replace', index=False)
     except ValueError as err:
         print(err.args)
 
-def load_startup_json(session, json_file):
+def load_json(session, name, json_file):
     with open(json_file, 'r') as file:
         data = json.load(file)
-        values = {'data_json' : json.dumps(data), 'name': 'startup'}
-        stmt = text("INSERT INTO Artifacts (name, data) VALUES (:name, :data_json)")
-        session.execute(stmt, values)
-        session.commit()
+        artifact_entry = database.db.Artifacts(name= name, data= data   )
+        session.add(artifact_entry)
 
+def delete_table(engine, tablename):
+    tablename = tablename.lower()
+    if tablename == 'artifacts':
+        database.db.Artifacts.__table__.drop(engine)
+    elif tablename == 'fortune500':
+        database.db.Fortune500.__table__.drop(engine)
+    elif tablename == 'loginevent':
+        database.db.LoginEvent.__table__.drop(engine)
+    elif tablename == 'users':
+        database.db.Users.__table__.drop(engine)
 
-def load_movies_json(session, json_file):
-    with open(json_file,'r') as file:
-        data = json.load(file)
-        values = {'data_json' : json.dumps(data), 'name': 'movies'}
-        stmt = text("INSERT INTO Artifacts (name, data) VALUES (:name, :data_json)")
-        session.execute(stmt, values)
-        session.commit()
-
-def load_pages_json(session, json_file):
-    with open(json_file,'r') as file:
-        data = json.load(file)
-        values = {'data_json' : json.dumps(data), 'name': 'movies'}
-        stmt = text("INSERT INTO Artifacts (name, data) VALUES (:name, :data_json)")
-        session.execute(stmt, values)
-        session.commit()
-
-def delete_table(session, name):
-    prefix= ""
-    values = {'tablename': name} 
-    stmt = text("DROP TABLE :tablename")
-    session.execute(stmt, values)
-    session.commit()
+def get_db_names(engine):
+    inspector = inspect(engine)
+    databases = inspector.get_schema_names()
+    print(databases)
 
 def prepare():
     engine = create_engine("sqlite:///:memory", echo=True, future=True)
-    declarative_base().metadata.create_all(engine) # generates schema or tables in our target db
-    return engine 
+    metadata = database.db.Base.metadata.create_all(engine) # generates schema or tables in our target db
+    return engine , metadata
 
 """
 Command :

@@ -1,40 +1,32 @@
 from flask import Flask  
 from flask import redirect, url_for, render_template_string,render_template, request,jsonify, make_response, abort, g
-from flask_sqlalchemy import SQLAlchemy
-import json 
 import server.myauth
 import database.db
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select , text, create_engine , inspect
-import os 
-import sys 
 import numpy as np 
 import server.db_helper
+import os 
 
 MODULE_NAME = 'app'
-
-engine = server.db_helper.prepare()
+CONFIG_DATABASE = True
+DB_NAME='main'
+engine, metadata = server.db_helper.prepare()
 Session = sessionmaker(engine)
-inspector_gadget = inspect(engine)
 db_session = Session()
+inspector_gadget = inspect(engine)
 
-#  delete table
-#  database.db.Fortune500.__table__.drop(current_engine)
-# database.db.Artifacts.__table__.drop(current_engine)
+# database name(s)
+# server.db_helper.get_db_names(engine)
 
-# load data to table 
-# database.db.load_csv_data_fortune(current_engine, os.path.join(os.getcwd(),'bigdata', 'fortune.csv'))
+# delete a table 
+server.db_helper.delete_table(engine, tablename='Artifacts')
+metadata = database.db.Base.metadata.create_all(engine) # generates schema or tables in our target db
 
-# load pages json to table
-# server.db_helper.delete_table(db_session, name='Artifacts')
-
-# load startup json to table
-# server.db_helper.load_startup_json(db_session, os.path.join(os.getcwd(), 'bigdata','startpage.json' ))
-
-# load movies json to table
-server.db_helper.load_movies_json(db_session, os.path.join(os.getcwd(), 'bigdata','movies.json' ))
-
-
+# load Artifacts to table
+server.db_helper.load_json(db_session, 'startup', os.path.join(os.getcwd(), 'bigdata','startpage.json' )) 
+server.db_helper.load_json(db_session, 'movies' ,os.path.join(os.getcwd(), 'bigdata','movies.json' ))
+db_session.commit()  
 
 app = Flask(__name__) # name of application's package
 

@@ -11,7 +11,6 @@ import ink from './ink.png';
 import starz from './star.png';
 import director from './director.png';
 
-
 class Movies extends Component {
     constructor(props) {
         super(props);
@@ -31,11 +30,8 @@ class Movies extends Component {
         });
     }
 
-
     render() {
         return (
-            <> 
-
             <div className={cl.row_container}>
 
                 <div className={cl.container}>
@@ -44,9 +40,6 @@ class Movies extends Component {
                     }
                 </div>
             </div>
-            
-            </>
-
         )
     }
 }
@@ -54,8 +47,6 @@ class Movies extends Component {
 class MoviesModal extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        }
     }
 
     render() {
@@ -120,7 +111,6 @@ class MoviesModal extends Component {
                         <div className={cl.teamlist}>
                             <div className={cl.teamlist_sub}>
 
-
                                             {
                                 <>
 
@@ -158,9 +148,7 @@ class MoviesModal extends Component {
                                         }
 
                                         {   
-                                            JSON.parse(this.props.record).members.Stars.concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).concat(JSON.parse(this.props.record).members.Stars).map((name) => { 
-                                            // Array.from(Array(20).keys()).map((name) => { 
-
+                                            JSON.parse(this.props.record).members.Stars.map((name) => { 
                                                return  (
                                                     <div className={cl.ele_container} >
                                                         < div> <img src={starz}/> </div>
