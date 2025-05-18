@@ -1,5 +1,6 @@
 from flask import Flask  
-from flask import redirect, url_for, render_template_string,render_template, request,jsonify, make_response, abort, g
+from flask import redirect, url_for, render_template_string,render_template, request,jsonify, make_response, abort, g, send_file, Response
+from flask_cors import CORS
 import server.myauth
 import database.db
 from sqlalchemy.orm import sessionmaker
@@ -7,6 +8,10 @@ from sqlalchemy import select , text, create_engine , inspect
 import numpy as np 
 import server.db_helper
 import os 
+import requests
+import shutil
+import tempfile
+import array
 
 MODULE_NAME = 'app'
 CONFIG_DATABASE = True
@@ -20,15 +25,16 @@ inspector_gadget = inspect(engine)
 # server.db_helper.get_db_names(engine)
 
 # delete a table 
-server.db_helper.delete_table(engine, tablename='Artifacts')
-metadata = database.db.Base.metadata.create_all(engine) # generates schema or tables in our target db
+# server.db_helper.delete_table(engine, tablename='Artifacts')
+# metadata = database.db.Base.metadata.create_all(engine) # generates schema or tables in our target db
 
 # load Artifacts to table
-server.db_helper.load_json(db_session, 'startup', os.path.join(os.getcwd(), 'bigdata','startpage.json' )) 
-server.db_helper.load_json(db_session, 'movies' ,os.path.join(os.getcwd(), 'bigdata','movies.json' ))
-db_session.commit()  
+# server.db_helper.load_json(db_session, 'startup', os.path.join(os.getcwd(), 'bigdata','startpage.json' )) 
+# server.db_helper.load_json(db_session, 'movies' ,os.path.join(os.getcwd(), 'bigdata','movies.json' ))
+# db_session.commit()  
 
 app = Flask(__name__) # name of application's package
+CORS(app) # make request to domain different from this server 
 
 @app.route("/")
 def home():
@@ -88,6 +94,25 @@ def aihumans():
             result = db_session.execute(stmt)
             data = [ list(ele) for ele in result.fetchall()]
             return make_response(jsonify(data), 200)
+        elif request.args.get('req') == 'personsnotexist':
+            
+            img_resp = requests.get(
+                url="https://thispersondoesnotexist.com",
+                stream=True
+            )
+
+            print(img_resp.status_code)
+            print(img_resp.request.body)
+            print(img_resp.request.headers)
+            print(img_resp.request.url)
+            print(img_resp.encoding)
+            print(img_resp.headers)
+
+            data = array.array('B', img_resp.raw.read() )
+ 
+
+            return make_response(jsonify( data.tolist() ), 200)
+                
         else:
             response = make_response(render_template('aihumans.html'))
             return response
@@ -107,7 +132,6 @@ def fortune():
         return make_response(jsonify( data.tolist()), 200) 
     except:
         return render_template('notfound.html'), 404
-
 
 if __name__ == '__main__':
     app.run(debug=True)

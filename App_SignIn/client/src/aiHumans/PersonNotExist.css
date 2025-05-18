@@ -1,0 +1,236 @@
+.container {
+    width: 70%;
+    height: 70%;
+    max-width: 1200px;
+    max-height: 1200px;
+}
+
+.container > img{
+    width: 100%;
+    height: 100%;
+}
+
+.warning {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    color: pink;
+    display: flex;
+    justify-content: center;
+}
+
+.warning > p {
+    color: greenyellow;
+    font-weight: bold;
+}
+
+.menu {
+    border: 2px solid green;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.menu_items {
+    width: 80%;
+    height: 80%;
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.menu_items_container {
+   
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    gap:6px;
+}
+
+.item_block {
+    /* border: 1px solid green; */
+    display: grid;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.item_block_disabled {
+    pointer-events:none;
+    opacity: 0.3;
+}
+
+.menu_items_container > div > p{
+    margin: 0;
+    padding:0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    flex-grow: 1;
+    font-size: 11px;
+    font-weight: lighter;
+}
+
+.item_block > div >  img{
+    margin: 0;
+    padding:0;
+    width: 20px;
+    height: 20px;
+    flex-grow: 10;
+     border-radius: 50%;
+    border: 3px solid white;
+}
+
+.item_block >  div > img:hover {
+    animation-name: bloop;
+    animation-duration: 1s;
+}
+
+.item_block >  div:active {
+    transform: scale(0.50); /* Slightly shrinks the button */
+}
+
+.item_block > p:has(+ div[name="research"]:hover ),
+.item_block > p:has(+ div[name="youtube"]:hover ) ,
+.item_block > p:has(+ div[name="next"]:hover ) 
+
+{
+    opacity: 1;
+    animation-name: bloop_name;
+    animation-duration: 2s;
+}
+
+.item_block > p:has(+ div[name="research"] ),
+.item_block > p:has(+ div[name="youtube"] ) ,
+.item_block > p:has(+ div[name="next"] ) 
+
+{
+    opacity: 0;
+}
+
+@keyframes bloop {
+    from {    
+        border: 3px solid black ;
+    }
+    to {    
+        border: 3px solid white ;
+    }
+}
+
+@keyframes bloop_name {
+    from {    
+        color: black;
+    }
+    to {    
+        color: white;
+    }
+}
+
+
+
+/* loading */
+
+.lp_container {
+    display: flex;
+    flex-direction: column;
+    /* background-color: white; */
+    width: 100%;
+    height: 100%;
+
+}
+
+.lp_container_top {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    width: 100%;
+    height: 20%;
+    display: flex;
+    justify-content: center;
+    flex-direction: 2;
+    align-items: center;
+    font-size: larger;
+}
+
+.lp_container_bottom{
+    display: flex;
+    gap: 10px;
+     width: 100%;
+    height: 100%; 
+    flex-direction: 6;
+    justify-content: center;
+    align-items: center;
+}
+
+.lp_container > div ~ div > div{
+    border: 1px solid black; 
+    background: black;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    animation: 1s infinite  load_animation;
+}
+
+.ball_1 {
+    --shade1: 0.2;
+    --shade2: 0.3;
+    --shade3: 0.4;
+    --shade4: 0.5;
+    --shade5: 0.6;
+}
+
+.ball_2 {
+    --shade1: 0.3;
+    --shade2: 0.4;
+    --shade3: 0.5;
+    --shade4: 0.6;
+    --shade5: 0.7;
+}
+
+.ball_3 {
+    --shade1: 0.4;
+    --shade2: 0.5;
+    --shade3: 0.6;
+    --shade4: 0.7;
+    --shade5: 0.8;
+}
+
+.ball_4 {
+    --shade1: 0.5;
+    --shade2: 0.6;
+    --shade3: 0.7;
+    --shade4: 0.8;
+    --shade5: 0.9;
+}
+
+.ball_5 {
+    --shade1: 0.6;
+    --shade2: 0.7;
+    --shade3: 0.8;
+    --shade4: 0.9;
+    --shade5: 1.0;
+}
+
+
+
+
+
+@keyframes load_animation {
+  0% {
+    opacity: var(--shade)
+  }
+  50% {
+    opacity: var(--shade2)
+  }
+  70% {
+    opacity: var(--shade3)
+  }
+  90% {
+    opacity: var(--shade4)
+  }
+  100% {
+    opacity: var(--shade5)
+  }
+}

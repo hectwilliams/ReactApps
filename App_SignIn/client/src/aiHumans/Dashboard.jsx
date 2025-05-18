@@ -3,6 +3,7 @@ import dashboardClass from './Dashboard.css';
 import Fortune from './Fortune';
 import Movies from './Movies';
 import Waitx from "./Waitx";
+import PersonNotExist from "./PersonNotExist";
 import axios from 'axios';
 
 class Dashboard extends Component {
@@ -11,7 +12,7 @@ class Dashboard extends Component {
         this.state = {
             pageRef: null,
             pageKey: 'fortune',
-            pages: {fortune: <Fortune/>, movies:<Movies/> }  
+            pages: {fortune: <Fortune/>, movies:<Movies/> ,  personsnotexist: <PersonNotExist/>}  
         }
         this.modifyPage = this.modifyPage.bind(this);
     }
@@ -26,7 +27,7 @@ class Dashboard extends Component {
     
     modifyPage (value) {
         console.log(this.state.pageKey);
-        console.log(value.toLowerCase());
+        console.log(value.toLowerCase().trim());
         this.setState({pageKey: value.toLowerCase().trim()});
     }
 
