@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import cl from './Movies.css';
 import star from './star_icon.png';
-import jeep from './jeep.jpeg';
 import projector from './projector.png';
 import rotten from './rotten.png';
 import imdb from './imdb.png';
@@ -11,11 +10,14 @@ import ink from './ink.png';
 import starz from './star.png';
 import director from './director.png';
 
+const ORIGIN = "http://127.0.0.1:5000"
+
+
 class Movies extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            info :{movieCount:0, rowArrayCount: []}
+            info : {movieCount:0, rowArrayCount: []}
         }
     }
 
@@ -65,7 +67,7 @@ class MoviesModal extends Component {
                 <div className={cl.modal_right}>
                         
                     <div className={cl.modal_genre}>
-                        <img src={projector}/>
+                        <img src={ ORIGIN + '/static/assets/AiHumans/projector.png' }/>
                         <div >
                             <p> {JSON.parse(this.props.record).genre}  </p>
                         </div>
@@ -73,14 +75,13 @@ class MoviesModal extends Component {
 
                     <div className={cl.modal_rating}>
 
-                        <img src={star}/>
+                        <img src={ ORIGIN + '/static/assets/AiHumans/star.png'}/>
 
                         <div >
 
                             <div>
                                 <div name="rotten_score" className= {cl.rating_img_container}   >
-                                    
-                                    <img  className={cl.rating_img} src={rotten}/>
+                                    <img  className={cl.rating_img} src={ORIGIN + '/static/assets/AiHumans/rotten.png' }/>
                                 </div>
 
                                 <div>
@@ -90,7 +91,7 @@ class MoviesModal extends Component {
 
                             <div>
                                 <div name="imdb_score" className={cl.rating_img_container}>
-                                    <img  className={cl.rating_img} src={imdb}/>
+                                    <img  className={cl.rating_img} src={  ORIGIN + '/static/assets/AiHumans/imdb.png'  }/>
                                 </div>
 
                                 <div>
@@ -105,7 +106,7 @@ class MoviesModal extends Component {
                     <div className={cl.modal_team}>
 
                         <div className={cl.teamIcon}>
-                            <img src={people}/>
+                            <img src={ORIGIN + '/static/assets/AiHumans/people.png'  }/>
                         </div>
 
                         <div className={cl.teamlist}>
@@ -118,7 +119,7 @@ class MoviesModal extends Component {
                                             JSON.parse(this.props.record).members.Director.map((name) => { 
                                                 return (
                                                     <div className={cl.ele_container}>
-                                                        < div> <img src={director}/> </div>
+                                                        < div> <img src={  ORIGIN + '/static/assets/AiHumans/director.png'    }/> </div>
                                                          <div className={cl.name_container1}>
                                                             <div className={cl.name_container2}>
                                                                 <p> 
@@ -134,7 +135,7 @@ class MoviesModal extends Component {
                                             JSON.parse(this.props.record).members.Writer.map((name) => { 
                                                return  (
                                                     <div className={cl.ele_container} >
-                                                        < div> <img src={ink}/> </div>
+                                                        < div> <img src={ ORIGIN + '/static/assets/AiHumans/ink.png'  }/> </div>
                                                          <div className={cl.name_container1}>
                                                             <div className={cl.name_container2}>
                                                                 <p> 
@@ -151,7 +152,7 @@ class MoviesModal extends Component {
                                             JSON.parse(this.props.record).members.Stars.map((name) => { 
                                                return  (
                                                     <div className={cl.ele_container} >
-                                                        < div> <img src={starz}/> </div>
+                                                        < div> <img src={  ORIGIN + '/static/assets/AiHumans/starz.png'     }/> </div>
                                                         <div  className={cl.name_container1}>
                                                          
                                                             <div name_gt={ (name.length > 36 ).toString() } className={cl.name_container2}>

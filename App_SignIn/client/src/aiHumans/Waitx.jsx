@@ -12,7 +12,7 @@ class Waitx extends Component {
     render() {
         return (
             <div className={clx.wait_container}>
-                <img src={error} />
+                <img src={ ORIGIN + '/static/assets/AiHumans/error.jpg' } />
             </div>
         )
     }

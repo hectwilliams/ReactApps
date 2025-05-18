@@ -150,3 +150,7 @@
     justify-content: center;
     align-items: center;
 }
+
+.suboptions_div_value:active {
+    transform: scale(0.50); /* Slightly shrinks the button */
+}

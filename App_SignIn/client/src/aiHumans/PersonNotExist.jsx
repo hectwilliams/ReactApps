@@ -1,26 +1,27 @@
 import React, {Component} from "react";
 import cl from './PersonNotExist.css';
-import axios from 'axios';
 import dog from './dog.jpg';
 import youtube from './youtube.png';
 import casestudy from './casestudy.png';
 import next from './next.png';
+import axios from 'axios';
+
+const ORIGIN = "http://127.0.0.1:5000";
 
 class PersonNotExist extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            imageURL: dog,
+            imageURL: ORIGIN + '/static/assets/AiHumans/error.jpg',
             err: false,
-            image: dog,
             loading: false
         }
         this.handleClick = this.handleClick.bind(this);
     }
 
     componentDidMount() {
-        personsReq(this)
+        personsReq(this);
     }
     
     handleClick(event) {
@@ -32,7 +33,7 @@ class PersonNotExist extends Component {
         else if ('youtube' == name)
             window.location.href = "https://youtu.be/G06dEcZ-QTg?si=MWY2LprXlSZguSq3";
         else 
-            personsReq(this)
+            personsReq(this);
     }
 
     render() {
@@ -51,28 +52,28 @@ class PersonNotExist extends Component {
                                 <div className={`${cl.item_block}`}>
                                     <p >{'Next'} </p>
                                     <div name={'next'} >
-                                        <img  onClick={this.handleClick}  className={cl.menu_items} src={next}/>
+                                        <img  onClick={this.handleClick}  className={cl.menu_items} src={ORIGIN + '/static/assets/AiHumans/next.png'}/>
                                     </div>
                                 </div>
 
                                 <div className={cl.item_block }>
                                     <p >{'Youtube'} </p>
                                     <div name={'youtube'} >
-                                        <img  onClick={this.handleClick}   className={cl.menu_items} src={youtube}/>
+                                        <img  onClick={this.handleClick}   className={cl.menu_items} src={ORIGIN + '/static/assets/AiHumans/youtube.png'}/>
                                     </div>
                                 </div>
 
                                 <div className={cl.item_block }>
                                     <p > {'Research'}  </p>
                                     <div name={'research'} >
-                                        <img  onClick={this.handleClick} className={cl.menu_items} src={casestudy}/>
+                                        <img  onClick={this.handleClick} className={cl.menu_items} src={ORIGIN + '/static/assets/AiHumans/casestudy.png'}/>
                                     </div>
                                 </div>
 
                             </div>
                         </div> 
 
-                        <img src={this.state.image}/>
+                        <img src={this.state.imageURL}/>
                     </div>
             }
             </>
@@ -81,11 +82,9 @@ class PersonNotExist extends Component {
 
 }
 
-export default PersonNotExist;
 
 const personsReq = (this_)=>{
-    this_.setState({loading: true}) 
-    document.getElementsByClassName(cl.item_block)[0].classList.add(cl.item_block_disabled)
+    this_.setState({loading: true}) ;
      axios({method:'get', url: window.origin + '/' + 'aihumans' + '?req=personsnotexist' })
         .then((response)=> {
             const byteArray = new Uint8Array(response.data);
@@ -93,21 +92,14 @@ const personsReq = (this_)=>{
             const blob = new Blob([byteArray], { type: 'image/jpeg' }); // Adjust MIME type as needed
             
             const imageUrl = URL.createObjectURL(blob);
-
             // const img = document.createElement('img');
 
-            this_.setState({image: imageUrl , loading: false});
-            document.getElementsByClassName(cl.item_block)[0].classList.remove(cl.item_block_disabled)
-
+            this_.setState({imageURL: imageUrl , loading: false});
         })
          .catch((response)=>{
-            this_.setState({err: true, loading: false})
-            document.getElementsByClassName(cl.item_block)[0].classList.remove(cl.item_block_disabled)
-
+            this_.setState({err: true, loading: false});
         });
-
 } 
-
 
 class LoadingPage extends Component {
 
@@ -115,6 +107,7 @@ class LoadingPage extends Component {
         super(props);
         this.state = {}
     }
+
     render() {
         return (
             <div className={cl.lp_container}>
@@ -136,3 +129,6 @@ class LoadingPage extends Component {
         )
     }
 }
+
+export default PersonNotExist;
+
