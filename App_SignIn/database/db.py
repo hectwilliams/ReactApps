@@ -6,7 +6,6 @@ Base = declarative_base()
 
 class Users(Base):
     __tablename__ = "users"
-
     id = Column(types.Integer,primary_key=True) 
     user_id = Column(types.String(length=32), unique=True)
     user = Column(types.String(length=80))
