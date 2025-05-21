@@ -140,6 +140,7 @@
     flex-grow: 10;
     font-size: small;
     /* pointer-events: visible; */
+    width: fit-content;
 }
 
 .page {
@@ -152,5 +153,11 @@
 }
 
 .suboptions_div_value:active {
-    transform: scale(0.50); /* Slightly shrinks the button */
+    transform: scale(0.80); /* Slightly shrinks the button */
+    position: absolute;
+}
+
+.name_container {
+    width: fit-content;
+    height: fit-content;
 }
