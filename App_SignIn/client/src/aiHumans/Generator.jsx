@@ -1,5 +1,16 @@
 import React, {Component} from 'react';
 import cl from './Generator.css';
+import gen1 from "./tones/wave2.csv";
+import gen2 from "./tones/wave4.csv";
+import gen3 from "./tones/wave6.csv";
+import gen4 from "./tones/wave8.csv";
+import gen5 from "./tones/wave10.csv";
+import gen6 from "./tones/wave12.csv";
+import gen7 from "./tones/wave14.csv";
+import gen8 from "./tones/wave16.csv";
+import gen9 from "./tones/wave18.csv";
+import gen10 from "./tones/wave20.csv";
+
 
 class Generator extends Component {
     constructor(props) {
@@ -15,7 +26,12 @@ class Generator extends Component {
             pointer: [ '\u{1F513}' ,  '\u{1F512}' ],
             captured: false, 
             svg: null,
-
+            dsp: null, 
+            intervalID: null,
+            index: 0,
+            csvs: [gen1, gen2, gen3, gen4, gen5, gen6, gen7, gen8, gen9, gen10] ,     // [f`./tones/wave${}.csv` for i in  np.arange(0, 11, 2)  ]
+            x: null,
+            y: null,
         }
         this.panelClick = this.panelClick.bind(this);
         this.dspClick = this.dspClick.bind(this);
@@ -42,73 +58,161 @@ class Generator extends Component {
     }
 
     dspClick(event) {
-
-        let ele = document.getElementsByClassName(cl.screenGraphContainer)[0];
-
-        var rect = ele.getBoundingClientRect(); 
-
-        const margin = {
-            left: 15,
-            right: 15, 
-            top: 10, 
-            bottom:30
-        }
-        
-        if  (this.state.svg)
-            // this.state.svg.remove() 
-            d3.selectAll('svg').remove()
-
-
-        var svg = d3.select("#my_dataviz")
-        .append("svg")
-        .attr("width", rect.width - (margin.left + margin.right))
-        .attr("height", rect.height + (margin.top) )
-        .append("g")
-        .attr("transform", "translate(" + (margin.left + margin.right) * 2 + ',' + margin.top/2 + ")")
-
-        d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
-
-
-             // When reading the csv, I must format variables:
-                function(d){
-                    return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
-                },
-
-                // Now I can use this dataset:
-                function(data) {
-
-                    // Add X axis --> it is a date format
-                    var x = d3.scaleTime()
-                    .domain(d3.extent(data, function(d) { return d.date; }))
-                    .range([ 0, rect.width - 30 ]);
-                    svg.append("g")
-                    .attr("transform", "translate(0," + (rect.height-margin.bottom)  + ")")
-                    .call(d3.axisBottom(x));
-
-                    // Add Y axis
-                    var y = d3.scaleLinear()
-                    .domain([0, d3.max(data, function(d) { return +d.value; })])
-                    .range([ rect.height - 30, 0 ]);
-                    svg.append("g")
-                    .call(d3.axisLeft(y));
-
-                    // Add the area
-                    svg.append("path")
-                    .datum(data)
-                    .attr("fill", "#cce5df")
-                    .attr("stroke", "#69b3a2")
-                    .attr("stroke-width", 1.5)
-                    .attr("d", d3.area()
-                        .x(function(d) { return x(d.date) })
-                        .y0(y(0))
-                        .y1(function(d) { return y(d.value) })
-                        )
-                }
-            )
             
-            this.setState({captured: true, svg: svg})
-    }
+        if (this.state.dsp == null) {
+            
+            const this_ = this;
 
+            const intervalID = setInterval( ()=> {
+                
+                let ele = document.getElementsByClassName(cl.screenGraphContainer)[0];
+
+                let rect = ele.getBoundingClientRect(); 
+
+                const margin = {
+                    left: 15,
+                    right: 15, 
+                    top: 10, 
+                    bottom:30
+                }
+
+                // clean up
+                if  (this.state.svg){ 
+
+                    // this.state.svg.remove() {
+                    // d3.selectAll('svg').remove()
+                    let someElement = d3.select('path');
+                    let pathElement = someElement._groups[0][0];
+                    let paths = document.getElementsByTagName('path')
+                    
+                    while  (paths.length > 2) {
+                        paths[2].remove();
+                    }
+
+                    d3.csv(this.state.csvs[this.state.index],
+
+                        function(d){
+                            return { data : d.data, value : d.value }
+                        },
+
+                        function(data) {
+                            var x = this_.state.x;
+                            var y = this_.state.y;
+                            
+                            // Add the area
+                            this_.state.svg.append("path")
+                            .datum(data)
+                            .attr("fill", "#cce5df")
+                            .attr("stroke", "#69b3a2")
+                            .attr("stroke-width", 1.5)
+                            .attr("d", d3.area()
+                                .x(function(d) { return x(d.data) })
+                                .y0(y(0))
+                                .y1(function(d) { return y(d.value) })
+                            )
+                            this_.setState({x: x, y: y, prevCommand: 'del'})
+                        }
+                    )
+                    this.setState({index: (this.state.index + 1) % (this.state.csvs.length) }    )
+
+
+                } else {
+                    
+                    var svg = d3.select("#my_dataviz")
+                    .append("svg")
+                    .attr("width", rect.width - (5))
+                    .attr("height", rect.height - (100) )
+                    .append("g")
+                    .attr("transform", "translate(" + (margin.left + margin.right) * 2 + ',' + (margin.top + 40 ) + ")")  // margin left abd nargin bottom
+                
+                    d3.csv(this.state.csvs[this.state.index],
+
+                        function(d){
+                            return { data : d.data, value : d.value }
+                        },
+
+                        function(data) {
+                            
+                            var x = d3.scaleLinear()
+                            .domain(d3.extent(data, function(d) { return d.data; }))
+                            .range([ 0, rect.width - 30 ]);
+                            svg.append("g")
+                            .attr("transform", "translate(0," + (rect.height-210)  + ")")
+                            .call(d3.axisBottom(x));
+
+                            // Add Y axis
+                            var y = d3.scaleLinear()
+                            .domain([0, d3.max(data, function(d) { return d.value; })])
+                            .range([ rect.height - 220, 0 ]);
+                            svg.append("g")
+                            .attr("transform", "translate(0," + 0 + ")")
+                            .text('Y Axis Label')
+                            .call(d3.axisLeft(y));
+
+                            // Add the area
+                            svg.append("path")
+                            .datum(data)
+                            .attr("fill", "#cce5df")
+                            .attr("stroke", "#69b3a2")
+                            .attr("stroke-width", 1.5)
+                            .attr("d", d3.area()
+                                .x(function(d) { return x(d.data) })
+                                .y0(y(0))
+                                .y1(function(d) { return y(d.value) })
+                            )
+
+                            //ylabel 
+                            svg.append('text')
+                                .attr("class", "y label")
+                                .attr("text-anchor", "end")
+                                .attr("y", -35)
+                                .attr("x", -185)
+                                .attr("dy", "0.0em")
+                                .attr("transform", "rotate(-90)")
+                                .style("font-size", "12px")
+                                .text("Magnitude")
+
+                            svg.append("text")
+                                .attr("class", "x label")
+                                .attr("text-anchor", "end")
+                                .attr("x", rect.width/2)
+                                .attr("y", rect.height-215)
+                                .attr("transform", "translate(0," + 30 + ")")
+                                .style("font-size", "12px")
+                                .text("Frequency");
+
+
+                            let someElement = d3.select('path');
+                            let pathElement = someElement._groups[0][0];
+                            this_.setState({x: x, y: y})
+                        }
+                    )
+                    
+                    this.setState({captured: true, svg: svg, index: (this.state.index + 1) % (this.state.csvs.length), intervalID: intervalID, rect: rect }    )
+                }
+                    
+                }, 1000)
+                
+                
+            event.currentTarget.classList.add(cl.dspOn);
+            
+            this.setState({  dsp: true  })
+
+
+        } else {
+            
+            clearInterval(this.state.intervalID);
+            event.currentTarget.classList.remove(cl.dspOn);
+
+            if  (this.state.svg)
+                // this.state.svg.remove() 
+                d3.selectAll('svg').remove()
+
+            this.setState({dsp: null, intervalID: null, svg: null});
+            
+        }
+
+    }
 
     render() {
         return (
@@ -192,3 +296,4 @@ const addScript = (src) => {
     some_script_ele.setAttribute('src', src );
     document.head.appendChild(some_script_ele);
 };
+
