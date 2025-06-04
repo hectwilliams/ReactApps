@@ -36,10 +36,10 @@ class Generator extends Component {
             x: null,
             y: null,
             channels_svg: [ 
-                {enabled: false, svg: null, svgbuffer: null, svghtml: null}, 
-                {enabled: false, svg: null,  svgbuffer: null, svghtml: null}, 
-                {enabled: false, svg: null,  svgbuffer: null, svghtml: null}, 
-                {enabled: false, svg: null,  svgbuffer: null, svghtml: null} 
+                {enabled: false, svg: null, svgbuffer: null, divwrapsvg: null, xaxis: null, yaxis: null , xy:{}  }, 
+                {enabled: false, svg: null,  svgbuffer: null, divwrapsvg: null, xaxis: null, yaxis: null , xy:{} }, 
+                {enabled: false, svg: null,  svgbuffer: null, divwrapsvg: null, xaxis: null, yaxis: null , xy:{} }, 
+                {enabled: false, svg: null,  svgbuffer: null, divwrapsvg: null, xaxis: null, yaxis: null , xy:{} } 
             ],
             
             numChannels: 0,
@@ -55,20 +55,30 @@ class Generator extends Component {
             cc2: [],
             dataSplit: '100',
             dataSplit2: '0',
-
-            guiDiv : null
+            guiDiv : null,
+            width: 0,
+            height: 0, 
+            
+            width_0: 0, 
+            width_1: 0 ,
+            width_2: 0, 
+            
+            height_0: 0,
+            height_1: 0, 
+            height_2: 0, 
 
         }
         this.panelClick = this.panelClick.bind(this);
         this.dspClick = this.dspClick.bind(this);
         this.channelButtonHandle = this.channelButtonHandle.bind(this);
-        this.wrapperDivMouseDown = this.wrapperDivMouseDown.bind(this);
-        this.wrapperDivMouseUp = this.wrapperDivMouseUp.bind(this);
         this.channelFormat = this.channelFormat.bind(this);
         this.channelFormatOff = this.channelFormatOff.bind(this);
         this.swapped = this.swapped.bind(this);
+        this.resizeGrid = this.resizeGrid.bind(this);
+        this.getSvg = this.getSvg.bind(this);
+        this.plotCsv = this.plotCsv.bind(this);
 
-        
+
     }
     
     componentDidMount() {
@@ -76,6 +86,9 @@ class Generator extends Component {
     }
 
     panelClick(event) {
+
+        /* Open/Locks hidden section */
+
         const lastChildRect = event.currentTarget.getBoundingClientRect(); 
             let index = this.state.childPercentageIndex ^ 1; 
             let p = this.state.childPercentage[ index  ];
@@ -89,111 +102,195 @@ class Generator extends Component {
             event.currentTarget.parentNode.classList.remove(cl.dynamic_container_right);
             event.currentTarget.parentNode.classList.add(cl.dynamic_container_left);
         }
+
+        new Promise( (resolve, reject)=> {
+            resolve(  document.getElementById('my_dataviz').getBoundingClientRect().width != this.state.width ) 
+        })
+        .then( () => {this.resizeGrid()}   )
+
+    }
+
+    getSvg = (index, count) => {
+
+        const margin = {
+            left: 15,
+            right: 15, 
+            top: 10, 
+            bottom:30
+        }
+
+        let ele = document.getElementsByClassName(cl.screenGraphContainer)[0];
+
+        let rect = ele.getBoundingClientRect(); 
+        
+        var  this_ = this;
+
+        var svg =  d3.select("#my_dataviz")
+                    .append("svg")
+                    // .attr("width", `${rect.width-50}px`)
+                    // .attr("height", `${rect.height-50}px` )
+                    .attr("style", "outline: thin solid red;")   
+                    .attr("data-name", index)
+                    .attr("data-channel", 'CH' + index)
+                    .attr("data-count", count )
+                    // .attr("class", cl.channelName)
+                    .append("g")
+                    .attr("transform", "translate(" + (margin.left + margin.right) * 2 + ',' + (margin.top + 40 ) + ")")  ;
+                    // margin left abd nargin bottom
+
+        d3.csv(this.state.csvs[this.state.index],
+
+            function(d){
+                return { data : d.data, value : d.value }
+            },
+
+            function(data) {
+                
+                var x = d3.scaleLinear()
+                    .domain(d3.extent(data, function(d) { return d.data; }))
+                    .range([ 0, rect.width - 30 ]);
+                    svg.append("g")
+                    .attr("transform", "translate(0," + (rect.height-210)  + ")")
+                    .attr("data-xaxis", 'x')
+
+                    .call(d3.axisBottom(x))
+
+                var y = d3.scaleLinear()
+                    .domain([0, d3.max(data, function(d) { return d.value; })])
+                    .range([ rect.height - 220, 0 ]);
+                    svg.append("g")
+                    .attr("transform", "translate(0," + 0 + ")")
+                    // .text('Y Axis Label')
+                    .attr("data-yaxis", 'y')
+                    .call(d3.axisLeft(y))
+                
+
+                // Add the area
+                svg.append("path")
+                .datum(data)
+                .attr("fill", "#cce5df")
+                .attr("stroke", "#69b3a2")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.area()
+                    .x(function(d) { return x(d.data) })
+                    .y0(y(0))
+                    .y1(function(d) { return y(d.value) })
+                )
+
+                //ylabel 
+                svg.append('text')
+                    .attr("class", "y label")
+                    .attr("text-anchor", "end")
+                    .attr("y", -35)
+                    .attr("x", -185)
+                    .attr("dy", "0.0em")
+                    .attr("transform", "rotate(-90)")
+                    .style("font-size", "12px")
+                    .text("Magnitude")
+
+                svg.append("text")
+                    .attr("class", "x label")
+                    .attr("text-anchor", "end")
+                    .attr("x", rect.width/2)
+                    .attr("y", rect.height-215)
+                    .attr("transform", "translate(0," + 30 + ")")
+                    .style("font-size", "12px")
+                    .text("Frequency");
+
+                
+                this_.state.channels_svg[index].xaxis = x;
+                
+                this_.state.channels_svg[index].yaxis = y;
+
+                this_.state.channels_svg[index].svg = svg;
+
+            }
+        )
+        
+        this_.setState({channels_svg: this.state.channels_svg});
+        
     }
 
     channelButtonHandle(event){
 
         let name = event.currentTarget.getAttribute('name');
-        
         let index = Number(name);
-        this.state.channels_svg[index].enabled = !this.state.channels_svg[index].enabled;
+  
+        if ( this.state.channels_svg[index].enabled == false) {
+            this.state.channels_svg[index].enabled = true 
+        }
+        
+        else if (  this.state.channels_svg[index].enabled == true) {
+            this.state.channels_svg[index].enabled = false
+        }
 
-        // number of buttons enabled after change
-        let count = +this.state.channels_svg[0].enabled + +this.state.channels_svg[1].enabled + +this.state.channels_svg[2].enabled + +this.state.channels_svg[3].enabled ;
-
+        let newCount = (+this.state.channels_svg[0].enabled) + (+this.state.channels_svg[1].enabled) + (+this.state.channels_svg[2].enabled) + (+this.state.channels_svg[3].enabled) ;
         let container = document.getElementById('my_dataviz');
         let new_node  = null; 
-        let c;
+        let clist;
         let parentSwapContainer = Array.from(document.getElementsByClassName(cl.para));
-        let arr;
         let indexNextTo = null;
+        let clickedChannelName = 'CH' + index;
 
-        // decrease in number of channels disabled
-        if (count < this.state.numChannels) {
+        if (newCount > this.state.numChannels) { 
 
-            // save previous svg
-            this.state.channels_svg[index].svghtml = container.children[index];
+            if (this.state.channels_svg[index].divwrapsvg) { 
+                
+                clist = Array.from(container.children);
+                
+                new_node = this.state.channels_svg[index].divwrapsvg;
+                
+                clist.push(new_node);
 
-            // htmlcollection to array (remove child on interest)
-            c = Array.from(container.children);
-            
-            // search for index (using array to shrink html collection)
-            for(let i =0; i < c.length; i++) {
+                clist.sort( (a, b) => a.getAttribute('data-name').localeCompare( b.getAttribute('data-name') ) );
 
-                if ( parseInt(c[i].getAttribute('data-name') )  == index) {
-                    c = c.slice(0, i).concat(c.slice(i + 1));
-                    container.innerHTML = "";
-                    c.forEach((e)=>{
-                        container.appendChild(e);
-                    });
-                    console.log('container - lowered', container)
-                    break;
-                }
-            }
-            
-            // remove style from 'Swap Mode' cells
-            if (parentSwapContainer.length) { 
-                parentSwapContainer = parentSwapContainer[0].parentNode;
-                c = Array.from(parentSwapContainer.children)
-                c.forEach(element => { 
-                    element.removeAttribute('style')
+                container.innHTML = ""; 
+                
+                clist.forEach(element => {
+                    container.appendChild(element);
                 });
                 
-            }
-
-        }   
-        
-        // increase in number of channels enabled
-        
-        else {
-            
-
-            // pluck svg block stored in memory 
-            if (this.state.channels_svg[index].svghtml) {
-                 
-                c = Array.from(container.children);
-
-                new_node = this.state.channels_svg[index].svghtml;
-
-                for (let i = 0; i < c.length; i++ ) {
-                    if (parseInt(c[i].getAttribute('data-name')) > index) {
-                        indexNextTo = i;
-                        break;
-                    }
-                }
-
-                if (arr = indexNextTo != null ) {
-                    arr = c.slice(0, indexNextTo).concat([new_node]).concat(c.slice(indexNextTo)) 
-                    console.log(arr)
-                }
-                else  {
-                    arr = c.slice(0, c.length).concat([new_node]);
-                } 
-
-                container.innerHTML =  "";
-                arr.forEach((e) => {container.appendChild(e);});
-
-            }
-
-            // new svg block
+            } 
+                
             else {
-                
-                this.state.channels_svg[index].svg = getSvg(this, index, count);
-                
-                let sgv_ele = container.children[container.children.length-1];
-
+            
+                this.getSvg(index,newCount)
+                clist = Array.from(container.children);
+                let svg = clist.pop(); 
                 new_node = getWrapperDiv();
-                new_node.appendChild(sgv_ele);
-                this.state.channels_svg[index].svghtml = new_node;
-                document.getElementById('my_dataviz').appendChild(new_node);
-
+                new_node.appendChild(svg);
+                
+                clist.push(new_node);
+                
+                container.innerHTML = "";
+                clist.forEach(element => {
+                    container.appendChild(element);
+                });
+                
+                this.state.channels_svg[index].divwrapsvg = new_node;
             }
 
         }
 
-        
-        this.setState({numChannels: count, channels_svg: this.state.channels_svg, guiDiv: container});
+        else if (newCount < this.state.numChannels) {
 
+            clist = Array.from(container.children);
+
+            let indexToRemove = clist.findIndex( x => {  return x.getAttribute('data-channel')  === clickedChannelName } );
+
+            if (indexToRemove != -1) {
+                clist =  clist.slice(0, indexToRemove).concat( clist.slice(indexToRemove + 1)) ;
+                container.innerHTML = "";
+                clist.forEach(element => {
+                    container.appendChild(element);
+                });
+            }
+
+        }
+        
+        this.setState({numChannels: newCount, channels_svg: this.state.channels_svg, guiDiv: container});
+        
+        this.resizeGrid();
 
     }
 
@@ -209,6 +306,7 @@ class Generator extends Component {
 
     dspClick(event) {
         
+
         const this_ = this;
         var powerOnCommand = '';
         let container = document.getElementById('my_dataviz');
@@ -230,20 +328,21 @@ class Generator extends Component {
 
             // if (this.state.channels_svg[0].svg == null ) {} // standby mode or memory TBD
             
-            // load svg
-            this.state.channels_svg[0].svg = getSvg(this, 0,1 );
+            this.getSvg(0, 1)
             
             let movevableSVGElement = container.children[0];
             let div = getWrapperDiv();
             div.appendChild(movevableSVGElement); // moves svg into div
             container.appendChild(div); // append div to container 
-            
-            
+             
+            this.state.channels_svg[0].divwrapsvg = div
+
             // render loop 
             const test_interval_ID = setInterval( ()=> {});
             
             //  add updated states to event queue 
             this.setState({ numChannels: 1 ,channels_svg: this.state.channels_svg, dsp: 'startup', intervalID: test_interval_ID});
+
 
         } else {
             
@@ -257,7 +356,7 @@ class Generator extends Component {
                     console.log(svgRecord.svg , 'svg')
                     svgRecord.svg.remove();
                     svgRecord.svg = null;
-                    svgRecord.svghtml = null;
+                    svgRecord.divwrapsvg = null;
                     svgRecord.buffer = null;
 
                 }
@@ -274,25 +373,11 @@ class Generator extends Component {
             this.setState({channels_svg: svgs, dsp: null, numChannels: 0});
             
         }
+        
+        this.resizeGrid() 
 
     }
 
-
-    wrapperDivMouseDown () {
-        // timeout
-        var intervalID=setInterval( ()=>{
-            console.log('hello world');
-        }, 5000)
-        this.setState({timeoutID: intervalID});
-        console.log('hello');
-    }
-
-    wrapperDivMouseUp () {
-        console.log(this.timeoutID)
-        clearInterval(this.timeoutID);
-        console.log('released');
-        // this.setState({timeoutID: intervalID});
-    }
 
     swapped() {
     
@@ -302,7 +387,9 @@ class Generator extends Component {
 
         let ele = document.getElementById('my_dataviz');
         let c = Array.from(ele.children);
-        this.setState({cc2: c.map( (x) => x.getAttribute('data-channel') )   })
+        this.setState({cc2: c.map( (x) => x.getAttribute('data-channel') )   });
+        
+        console.log('finsiehd swapping', c)
     }
 
     channelFormat(event) { 
@@ -322,22 +409,18 @@ class Generator extends Component {
             if (c.length == 1 ) {
                 element.setAttribute('data-split', "100");
                 this.state.dataSplit = "100";
-
             }
 
             else if (c.length == 2) {
                 // equal split
                 element.setAttribute('data-split', "50_50");
-                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') ) }   ); 
+                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') ), numChannelsAlpha: ''  }   ); 
             }
 
             else if (c.length == 3) {
 
-
-                // 
                 // if ( c[0].getBoundingClientRect().height * c[0].getBoundingClientRect().width > c[2].getBoundingClientRect().height * c[2].getBoundingClientRect().width) {
                 if (element.getAttribute('data-split2') == '1')   {
-
                     this.state.dataSplit = "50_25_25"; 
                     this.state.numChannelsAlpha = 'b'
                 }
@@ -345,7 +428,6 @@ class Generator extends Component {
                 else if (element.getAttribute('data-split2') == '0')   {
                     this.state.dataSplit = "25_25_50";
                     this.state.numChannelsAlpha = ''
-
                 }
                 
                 this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') )  ,  dataSplit: this.state.dataSplit , numChannelsAlpha: this.state.numChannelsAlpha }   );  
@@ -353,41 +435,322 @@ class Generator extends Component {
             }
 
             else if(c.length == 4)  {
-                element.setAttribute('data-split', "25_25_25_25");
-                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') )  ,  dataSplit: this.state.dataSplit}   ); 
 
-                // this.setState({channelModalSetup: true, channelNames: [ c[0].getAttribute('data-channel'),c[1].getAttribute('data-channel'), c[2].getAttribute('data-channel'), c[3].getAttribute('data-channel')] });
+                this.state.dataSplit = "25_25_25_25";
+                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') )  ,  dataSplit: this.state.dataSplit , numChannelsAlpha: '' }   );  
 
             }
-
-
-         
-            
         }
     }
 
     channelFormatOff(event) { 
+        // exits/closes "swap mode "
 
-        let ele = document.getElementById('my_dataviz');
-        let c = Array.from(ele.children);
         this.setState({channelModalSetup: null});
-        
-        // if (this.state.swapblockLevel1) 
-        {
-            // console.log(this.state.swapblock);
-            // this.state.swapblock.data.func(this.state.swapblock.data.event);
-            if (this.state.swapblockLevel1.interface) {
-                if (this.state.swapblockLevel1.interface.funckill) {
-                    this.state.swapblockLevel1.interface.funckill(null);
-                }
-
+        if (this.state.swapblockLevel1.interface) {
+            if (this.state.swapblockLevel1.interface.funckill) {
+                this.state.swapblockLevel1.interface.funckill(null); // level 1 calls level 2 command  ( exits swap mode)
             }
         }
 
         console.log('closing system');
+    }
+
+    plotCsv(id) {
+
+        let someElement = d3.select('path');
+        let pathElement = someElement._groups[0][0];
+        let paths = Array.from(document.getElementsByTagName('path'))
+        const this_= this;
+        
+        Promise.resolve()
+        .then( () => {
+            while (paths.length > 2) {
+                let currentPath = paths.pop();
+                currentPath.remove(); 
+            }
+        })
+
+        .finally( () => {
+
+            d3.csv(this.state.csvs[this.state.index],
+
+                function(d){
+                    return { data : d.data, value : d.value }
+                },
+
+                function(data) {
+                    
+                    // Add the area
+                    // Promise.resolve( this_.state.channels_svg[id].enabled) 
+                    // .then( () => {
+
+                        // this_.state.channels_svg[id].svg.remove();
+
+                        var x = this_.state.channels_svg[0].xaxis; 
+                        var y = this_.state.channels_svg[0].yaxis; 
+                        var svg = this_.state.channels_svg[id].svg;
+                        svg.append("path")
+                        .datum(data)
+                        .attr("fill", "#cce5df")
+                        .attr("stroke", "#69b3a2")
+                        .attr("stroke-width", 1.5)
+                        .attr("d", d3.area()
+                                    .x(function(d) { return x(d.data) })
+                                    .y0(y(0))
+                                    .y1(function(d) { return y(d.value) }))
+                    // });
+                }
+            )
+
+        })
+
 
     }
-    // event.target.classList.remove(cl.channel_reorg); 
+
+    resizeGrid(id = 0) {
+        /* 
+            update channel id display 
+        */
+       
+            let parentContainer = document.getElementById('my_dataviz');
+ 
+        
+        //    if (  (this.state.channels_svg.reduce( (acc, x) => +x.enabled + acc, 0 ) == 1 ) ) {
+
+        if (parentContainer.children.length == 1) {
+
+            let svgNodeParent, svgNode ;
+            let clist;
+            let node; 
+
+            svgNodeParent = parentContainer.children[id];
+
+            svgNode = svgNodeParent.firstElementChild;
+            
+            svgNode.remove();
+
+            this.getSvg(id);
+
+            clist  = Array.from(parentContainer.children) ;
+            
+            svgNode = clist.pop(); // remove first element 
+            
+            svgNodeParent = clist[0];
+
+            parentContainer.innerHTML = "";
+
+            parentContainer.appendChild(svgNodeParent);
+
+            svgNodeParent.appendChild(svgNode);
+            
+            this.state.width_0 =  "100%";
+            this.state.height_0 =  "100%";
+
+            svgNodeParent.style.width = `${this.state.width_0}`;
+            svgNodeParent.style.height = `${this.state.height_0}`;
+
+            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 }) ;
+                
+        }
+        
+
+        else if (parentContainer.children.length == 2) {
+
+            let svgNodeParent, svgNode ;
+            let clist;
+            let node; 
+            let svgNodes = [null, null];
+            let ids = [-1, -1]; 
+            
+            // clear and add svg componenet ( i.e. fresh display)
+
+            svgNodes = svgNodes.map ( (_, index) =>   parentContainer.children[index].firstElementChild  ) 
+
+            ids = ids.map( (_, index) => parseInt(svgNodes[index].getAttribute('data-name') )); 
+            
+            svgNodes.forEach(deadNode => {deadNode.remove(); });
+            
+            ids.forEach( (removedID, index) => { this.getSvg(removedID, 2)}) // regenerate the following channels (i.e. IDs)
+            
+            clist = Array.from(parentContainer.children);
+
+            parentContainer.innerHTML = ""; 
+
+            for ( let i= 1; i > -1; i--) {
+                let consumerNode = clist[i]
+                consumerNode.appendChild(clist.pop()) 
+                parentContainer.appendChild(   consumerNode  )
+            }
+
+            // set dimensions 
+            
+            node = parentContainer.children[0];
+            this.state.width_0 =  "100%";
+            this.state.height_0 =  "100%";
+            node.style.width = `${this.state.width_0}`;
+            node.style.height = `${this.state.height_0}`;
+
+            node = parentContainer.children[1];
+            this.state.width_1 =  "100%";
+            this.state.height_1 =  "100%";
+            node.style.width = `${this.state.width_1}`;
+            node.style.height = `${this.state.height_1}`;
+                
+
+            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1}) ;
+
+        }
+
+
+        else if (parentContainer.children.length == 3) {
+
+            let svgNodeParent, svgNode ;
+            let clist;
+            let node; 
+            let svgNodes = [null, null, null];
+            let ids = [-1, -1, -1]; 
+            
+            // clear and add svg componenet ( i.e. fresh display)
+
+            svgNodes = svgNodes.map ( (_, index) =>   parentContainer.children[index].firstElementChild  ) 
+
+            ids = ids.map( (_, index) => parseInt(svgNodes[index].getAttribute('data-name') )); 
+            
+            svgNodes.forEach(deadNode => {deadNode.remove(); });
+            
+            ids.forEach( (removedID, index) => { this.getSvg(removedID, 3)}) // regenerate the following channels (i.e. IDs)
+            
+            clist = Array.from(parentContainer.children);
+
+            parentContainer.innerHTML = ""; 
+
+            for ( let i= 2; i > -1; i--) {
+                let consumerNode = clist[i]
+                let svgNode = clist.pop()
+                consumerNode.appendChild(svgNode);
+                parentContainer.appendChild( consumerNode  );
+            }
+
+
+            clist = Array.from(parentContainer.children);
+            
+            console.log('data split', this.state.dataSplit )
+
+            // if ( this.state.dataSplit == "50_25_25" ) {
+            if (this.state.numChannelsAlpha == 'b' ) {
+
+                node = clist[0];
+                this.state.width_0 =  "100%";
+                this.state.height_0 =  "100%";
+                node.style.width = `${this.state.width_0}`;
+                node.style.height = `${this.state.height_0}`;
+                console.log('node', node)
+
+                node = clist[1];
+                this.state.width_1 =  "100%";
+                this.state.height_1 =  "100%";
+                node.style.width = `${this.state.width_1}`;
+                node.style.height = `${this.state.height_1}`;
+
+                node = clist[2];
+                this.state.width_2 =  "100%";
+                this.state.height_2 =  "100%";
+                node.style.width = `${this.state.width_2}`;
+                node.style.height = `${this.state.height_2}`;
+                
+            }
+            
+            else if (this.state.numChannelsAlpha == '' ) {
+            
+            // else if ( this.state.dataSplit == "25_25_50") {
+
+                node = clist[0];
+                this.state.width_0 =  "100%";
+                this.state.height_0 =  "100%";
+                node.style.width = `${this.state.width_0}`;
+                node.style.height = `${this.state.height_0}`;
+
+                node = clist[1];
+                this.state.width_1 =  "100%";
+                this.state.height_1 =  "100%";
+                node.style.width = `${this.state.width_1}`;
+                node.style.height = `${this.state.height_1}`;
+
+                node = clist[2];
+                this.state.width_2 =  "100%";
+                this.state.height_2 =  "100%";
+                node.style.width = `${this.state.width_2}`;
+                node.style.height = `${this.state.height_2}`;
+
+            }
+            
+            console.log('node----it', node)
+
+            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1, width_2:  this.state.width_2 , height_2:  this.state.height_2}) ;
+            
+        } 
+
+        else if (parentContainer.children.length == 4) {
+
+
+            let svgNodeParent, svgNode ;
+            let clist;
+            let node; 
+            let svgNodes = [null, null, null, null];
+            let ids = [-1, -1, -1, -1]; 
+            
+            // clear and add svg componenet ( i.e. fresh display)
+
+            svgNodes = svgNodes.map ( (_, index) =>   parentContainer.children[index].firstElementChild  ) ;
+
+            ids = ids.map( (_, index) => parseInt(svgNodes[index].getAttribute('data-name') )); 
+            
+            svgNodes.forEach(deadNode => {deadNode.remove(); });
+            
+            ids.forEach( (removedID, index) => { this.getSvg(removedID, 3)}) // regenerate the following channels (i.e. IDs)
+            
+            clist = Array.from(parentContainer.children);
+
+            parentContainer.innerHTML = ""; 
+
+            for ( let i= 3; i > -1; i--) {
+                let consumerNode = clist[i]
+                let svgNode = clist.pop()
+                consumerNode.appendChild(svgNode);
+                parentContainer.appendChild( consumerNode  );
+            }
+
+            node = parentContainer.children[0];
+            this.state.width_0 =  "100%";
+            this.state.height_0 =  "100%";
+            node.style.width = `${this.state.width_0}`;
+            node.style.height = `${this.state.height_0}`;
+
+            node = parentContainer.children[1];
+            this.state.width_1 =  "100%";
+            this.state.height_1 =  "100%";
+            node.style.width = `${this.state.width_1}`;
+            node.style.height = `${this.state.height_1}`;
+
+            node = parentContainer.children[2];
+            this.state.width_2 =  "100%";
+            this.state.height_2 =  "100%";
+            node.style.width = `${this.state.width_2}`;
+            node.style.height = `${this.state.height_2}`;
+
+            node = parentContainer.children[3];
+            this.state.width_3 =  "100%";
+            this.state.height_3 =  "100%";
+            node.style.width = `${this.state.width_3}`;
+            node.style.height = `${this.state.height_3}`;
+
+            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1, width_2:  this.state.width_2 , height_2:  this.state.height_2, width_3:  this.state.width_3 , height_3:  this.state.height_3}) ;
+
+        }
+
+
+    }
 
     render() {
         return (
@@ -413,7 +776,7 @@ class Generator extends Component {
                     {/* screen  */}
 
                     <div  className={cl.screenGraphContainer}>
-                        <div id={"my_dataviz"} data-power={this.state.dsp + ''} data-count={this.state.numChannels + this.state.numChannelsAlpha + ''} className={` ${cl.vizContainer}  ${cl.powerOff}   `}></div>
+                        <div id={"my_dataviz"}  data-width_0={this.state.width_0} data-width_1={this.state.width_1}  data-height_0={this.state.height_0} data-height_1={this.state.height} data-power={this.state.dsp + ''} data-count={this.state.numChannels + this.state.numChannelsAlpha + ''} className={` ${cl.vizContainer}  ${cl.powerOff}   `}></div>
                     </div>
 
                       {/* screen  */}
@@ -517,6 +880,8 @@ class SandBox extends Component {
     }
 
     outerClicked(event) {
+        console.log('inner')
+
         let elelayer3 = document.getElementsByClassName(cl.channelFormatSandbox)[0];
         let boxlayer3 = (elelayer3.getBoundingClientRect());
         
@@ -532,7 +897,7 @@ class SandBox extends Component {
             this.props.channelFormatOff(); 
 
             if (this.state.swapblockLevel2.activeElement){
-                this.state.swapblockLevel2.func(this.state.swapblockLevel2.event);
+                this.state.swapblockLevel2.func(this.state.swapblockLevel2.event);   
             }
 
         }
@@ -607,23 +972,18 @@ class SwapBlock extends Component {
             fromIndex: '', 
             toIndex: '',
             listOfChannel: ['','','',''],
-            indexOrder : []
+            indexOrder : [], 
+            dataSplit2: null 
             // indices: []
         }
         this.clicked = this.clicked.bind(this);
         this.moved = this.moved.bind(this);
         this.resetCell = this.resetCell.bind(this);
         this.fkill = this.fkill.bind(this);
-        this.resizeCells = this.resizeCells.bind(this);
     }
 
-    componentDidMount() {
-        
-    }
+    componentDidMount() {}
 
-    resizeCells () {    
-        console.log('hello world')
-    }
 
     resetCell (event) {
         const box = event.target.getBoundingClientRect();
@@ -631,143 +991,72 @@ class SwapBlock extends Component {
         Array.from(event.target.parentNode.children).forEach( (p) => {
             p.classList.remove(cl.err);
         });
-        this.setState({draggable: false, session: false});
-        event.target.parentNode.style.width = this.state.parentWidth;
-        event.target.parentNode.style.height = this.state.parentHeight;
-        event.target.style.width =   this.state.box.width + 'px';
-        event.target.style.height =  this.state.box.height+ 'px'  ;
-        event.target.style.border =  this.state.border ;
-        event.target.style.margin =  this.state.margin + 'px' ;  
-        event.target.style.top =     this.state.top + 'px';        //  this.state.width ;
-        event.target.style.left =    this.state.left + 'px';       // this.state.left ;
-        event.target.style.right =   this.state.right + 'px';      //  this.state.right;
-        event.target.style.bottom =  this.state.bottom + 'px';     // this.state.bottom;
-        event.target.style.padding = 0;
-        event.target.style.margin = 0;
+        this.setState({draggable: false});
     }
 
     fkill (event) {
-        let paras = document.getElementsByClassName(cl.para);
-        let parentNode; 
-        this.setState({draggable: false, session: false});
-        if (paras.length) {
-            // paras = Array.from(paras);
-            // parentNode = paras[0].parentNode;
-            // Array.from(paras) .forEach( (p, index)=> {
-            //     p.style.width = `${this.state.width}px`;
-            //     p.style.height = `${this.state.height}px`;
-            //     console.log('para, p', p)
-            // });
-        }
+        this.setState({draggable: false});
     }
 
-    
     clicked (event) {
+
+        // During "swap mode" process clicking a cell releases the cell making it movable on gui plane 
         
         let parent = document.getElementsByClassName(cl.para)[0] .parentNode
         
         if (!this.state.draggable) {
-            //  Detach  cell 
+            /* Detach  cell */
             
-            // console.log('clicked');
             const box = event.target.getBoundingClientRect();
-            const parentbox = event.target.parentNode.getBoundingClientRect();
-            const children = Array.from(event.target.parentNode.children);
 
-            console.log(children);
+            event.target.classList.add(cl.moveme);
 
-            if ( !this.state.session ) {
+            event.target.style.top = `${box.top}px` ;
+            event.target.style.left = `${box.left}px` ;
+            event.target.style.right = `${box.right}px`;
+            event.target.style.bottom = `${box.bottom}px`;
+            event.target.style.width =  `${box.width}px`;
+            event.target.style.height =`${box.height}px`;
+            event.target.style.y =`${box.y}px`;
+            event.target.style.offsetLeft =`${0}px`;
+            event.target.style.padding = 0;
+            event.target.style.margin = 0;
                 
-                event.target.classList.add(cl.moveme);
+            this.setState({
 
+                session: true, 
                 
-                event.target.style.top = `${box.top}px` ;
-                event.target.style.left = `${box.left}px` ;
-                event.target.style.right = `${box.right}px`;
-                event.target.style.bottom = `${box.bottom}px`;
-                event.target.style.width =  `${box.width}px`;
-                event.target.style.height =`${box.height}px`;
-                event.target.style.y =`${box.y}px`;
-                event.target.style.offsetLeft =`${0}px`;
-                event.target.style.padding = 0;
-                event.target.style.margin = 0;
-                    
-                if (children.length == 2) {
+                draggable: true, 
+
+                offsetLeft_ :  event.clientX - event.target.offsetLeft, 
+
+                offsetTop_:  event.clientY - event.target.offsetTop,
+
+                width: box.width, 
+
+                height: box.height, 
+
+                right: box.right, 
+
+                left: box.left,
+
+                top:  box.top, 
                 
-                }
+                bottom: box.bottom, 
 
-                // console.log(this.props.dataSplit)
-                    
-                //     event.target.style.top = `${box.top}px` ;
-                //     event.target.style.left = `${box.left}px` ;
-                //     event.target.style.right = `${box.right}px`;
-                //     event.target.style.bottom = `${box.bottom}px`;
-                //     event.target.style.width =  `${box.width}px`;
-                //     event.target.style.height =`${box.height}px`;
-                //     event.target.style.y =`${box.y}px`;
-                //     event.target.style.offsetLeft =`${0}px`;
-                //     event.target.style.padding = 0;
-                //     event.target.style.margin = 0;
-                    
-                    // else if (children.length == 3) {
-                    // }
+                margin: 0, 
 
-                // console.log(box)
-                // console.log('offsetleft', event.target.offsetLeft)
-                // console.log('offsettop', event.target.offsetTop)
-                // console.log(event.clientX, event.clientY)
-            
-                this.setState({
+                padding: 0, 
 
-                    session: true, 
-                    
-                    draggable: true, 
+                confirmSwap: 0,
+                
+                parent: parent
 
-                    offsetLeft_ :  event.clientX - event.target.offsetLeft, 
+            });
 
-                    offsetTop_:  event.clientY - event.target.offsetTop,
-
-                    width: box.width, 
-
-                    height: box.height, 
-
-                    right: box.right, 
-
-                    left: box.left,
-
-                    top:  box.top, 
-                    
-                    bottom: box.bottom, 
-
-                    margin: 0, 
-
-                    padding: 0, 
-
-                    confirmSwap: 0,
-                    
-                    parent: parent
-
-                });
-
-                Array.from(event.target.parentNode.children).forEach((x, i)=> {
-                    x.setAttribute('data-effIndex', i);
-                })
-
-            } else {
-
-                // event.target.style.width =   this.state.width + 'px';
-                // event.target.style.height =  this.state.height + 'px' ;
-                // event.target.style.border =  this.state.border ;
-                // event.target.style.margin =  this.state.margin + 'px' ;  
-                // event.target.style.top =     this.state.top + 'px';        //  this.state.width ;
-                // event.target.style.left =    this.state.left + 'px';       // this.state.left ;
-                // event.target.style.right =   this.state.right + 'px';      //  this.state.right;
-                // event.target.style.bottom =  this.state.bottom + 'px';     // this.state.bottom;
-                // event.target.style.padding = 0;
-                // event.target.style.margin = 0;
-                // event.target.parentNode.style.width = this.state.parentWidth;
-                // event.target.parentNode.style.height = this.state.parentHeight;
-            }
+            Array.from(event.target.parentNode.children).forEach((x, i)=> {
+                x.setAttribute('data-effIndex', i);
+            })
                 
             if (event.target == event.target.parentNode.children[0] ) {
                 this.props.swapblockLevel2.activeIndex = 0;
@@ -775,14 +1064,11 @@ class SwapBlock extends Component {
                 this.props.swapblockLevel2.activeIndex = 1;
             }
 
-            // note: this.props.swapblockLevel2 equals this.props.swapblockLevel1.interface 
+            /* note: this.props.swapblockLevel2 equals this.props.swapblockLevel1.interface */
             this.props.swapblockLevel2.activeElement = event.target;
             this.props.swapblockLevel2.event = event;
             this.props.swapblockLevel2.func = this.resetCell;
             this.props.swapblockLevel2.funckill = this.fkill;
-            this.props.swapblockLevel2.resizeCells = this.resizeCells;
-
-
         }
 
         else {
@@ -794,10 +1080,14 @@ class SwapBlock extends Component {
                 let parent = document.getElementsByClassName(cl.before_channelFormatSandbox)[0];
                 let children = Array.from(parent.children);
                 let parentgui = document.getElementById('my_dataviz');
-
+                
+                if (this.state.dataSplit2) {
+                    this.state.dataSplit2.element.setAttribute('data-split2', this.state.dataSplit2.id)
+                }
 
                 if (this.state.fromIndex == -1 && this.state.toIndex == -1 ) {
                     let childrenofgui = Array.from(parentgui.children);
+                    console.log( 'ORDER', this.state.indexOrder)
                     let divsReordered = this.state.indexOrder.map( idx => childrenofgui[idx])  ;
                     
                     // reorder  gui modify
@@ -807,8 +1097,6 @@ class SwapBlock extends Component {
                     });   
                     this.props.channelFormat(); 
                     
-                    // gui modify
-                    console.log(parentgui)
                 }
                 
                 else {
@@ -826,29 +1114,23 @@ class SwapBlock extends Component {
 
                 }
                 
-
                 event.target.classList.remove(cl.moveme);
-                
+
                 children.forEach((p, index)=> {
                     p.removeAttribute('data-swap');
                     p.removeAttribute('style');
                 });
+
                 this.resetCell(event);
+
                 this.props.swapped();
-                this.setState({confirmSwap: 0 });
 
-            } else {
-                console.log('nothing ')
-            }
-            // this.resetCell(event); 
+                this.setState({confirmSwap: 0, dataSplit2: null });
+
+            } 
+            
         }
 
-        let box = event.target.getBoundingClientRect();
-        const parentbox = event.target.parentNode.getBoundingClientRect();
-
-        if (box.right > parentbox.right + 100    ||  box.left  < parentbox.left - 100 ||  box.top  < parentbox.top - 100  ||  box.bottom  > parentbox.bottom + 100  ) {
-            event.target.classList.add(cl.err);
-        }
     }
 
     moved(event) {
@@ -880,7 +1162,6 @@ class SwapBlock extends Component {
                 }
 
                 if (deltaToTop < box.height/2) {
-                    // console.log('basic');
                     let topRow = deltaToTop;
                     let secondToTopRow = (box.height/2) - topRow;
                     event.target.style.top = `${(event.clientY  - ( topRow +  secondToTopRow) ) }px`;
@@ -892,7 +1173,6 @@ class SwapBlock extends Component {
                     event.target.style.top = `${(event.clientY  - ( bottomRow +  secondBottomRow) ) }px`;
                 }
 
-                
                 const parentbox = event.target.parentNode.getBoundingClientRect();
                 
                 if (box.right > parentbox.right + 100    ||  box.left  < parentbox.left - 100 ||  box.top  < parentbox.top - 100  ||  box.bottom  > parentbox.bottom + 100  ) {
@@ -901,8 +1181,6 @@ class SwapBlock extends Component {
                 else {
                     event.target.classList.remove(cl.err);
                 }
-
-
                 
                 if (paras.length == 2) {
 
@@ -911,8 +1189,6 @@ class SwapBlock extends Component {
                     if (event.target == paras[0] ) {
                         
                         if (event.target.getBoundingClientRect().bottom  > paras[1].getBoundingClientRect().top  + (paras[1].getBoundingClientRect().height/2) ) {
-                            // console.log('swap to bottom')
-                            // event.target.classList.add(cl.swappable)
                             paras[1].setAttribute('data-swap', 'yes')
                             this.setState({confirmSwap: 1, fromIndex: 0, toIndex: 1})
                         } 
@@ -927,9 +1203,7 @@ class SwapBlock extends Component {
 
                     else if (event.target == paras[1]) {
                         if ( event.target.getBoundingClientRect().top < (paras[0].getBoundingClientRect().bottom -  paras[0].getBoundingClientRect().height/2) ) {
-                            // console.log('swap to top')
                             paras[0].setAttribute('data-swap', 'yes')
-                            // console.log(event.target.parentNode)
                             this.setState({confirmSwap: 1, fromIndex: 1, toIndex: 0})
                         }
                         
@@ -985,13 +1259,12 @@ class SwapBlock extends Component {
                                 paras[2].setAttribute('data-swap', 'no');
                             }
                         
-
                         }
 
 
                         else if (event.target == paras[2]) {
 
-                            if ( (event.target.getBoundingClientRect().top < paras[0].getBoundingClientRect().bottom - paras[0].getBoundingClientRect().height/2  ) && ( event.target.getBoundingClientRect().right < paras[0].getBoundingClientRect().right -paras[0].getBoundingClientRect().width/2  )) {
+                            if ( (event.target.getBoundingClientRect().top < paras[0].getBoundingClientRect().bottom - paras[0].getBoundingClientRect().height/10  ) && ( event.target.getBoundingClientRect().right < paras[0].getBoundingClientRect().right -paras[0].getBoundingClientRect().width/10  )) {
                                 paras[0].setAttribute('data-swap', 'yes');
                                 this.setState({confirmSwap: 1, fromIndex: 2, toIndex: 0});
                             }
@@ -1005,15 +1278,14 @@ class SwapBlock extends Component {
                                 let element = document.getElementsByClassName(cl.before_channelFormatSandbox)[0];
                                 paras[0].setAttribute('data-swap', 'yes');
                                 paras[1].setAttribute('data-swap', 'yes');
-                                element.setAttribute('data-split2', '1')
-                                this.setState({confirmSwap: 1, fromIndex: -1, toIndex: -1 , indexOrder: [ 2, 0, 1]   } );
+                                this.setState({confirmSwap: 1, fromIndex: -1, toIndex: -1 , indexOrder: [ 2, 0, 1] , dataSplit2: {id:1, element: element}  } );
                             }
 
                             else {
                                 paras[0].setAttribute('data-swap', 'no');
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
-
+                                this.setState({confirmSwap: 0, dataSplit2: null } );
 
                             }
                             
@@ -1023,12 +1295,222 @@ class SwapBlock extends Component {
 
                     else if (this.props.dataSplit == "50_25_25" ) { 
 
+                        if (event.target == paras[0]) {
+
+                            if ( (event.target.getBoundingClientRect().left > paras[2].getBoundingClientRect().left +  paras[2].getBoundingClientRect().width/50)  &&  (event.target.getBoundingClientRect().top > paras[2].getBoundingClientRect().top + paras[2].getBoundingClientRect().height/50) ) {
+                                paras[2].setAttribute('data-swap', 'yes');
+
+                                this.setState({confirmSwap: 1, fromIndex: 0, toIndex: 2});
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().right < paras[1].getBoundingClientRect().right -  paras[1].getBoundingClientRect().width/50)  &&  (event.target.getBoundingClientRect().bottom > paras[1].getBoundingClientRect().top + paras[2].getBoundingClientRect().height/50) ) {
+                                paras[1].setAttribute('data-swap', 'yes');
+                                paras[2].setAttribute('data-swap', 'no');
+                                paras[0].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 1, fromIndex: 0, toIndex: 1});
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().bottom  > paras[1].getBoundingClientRect().bottom - paras[1].getBoundingClientRect().height/2  )   && (event.target.getBoundingClientRect().left >= paras[1].getBoundingClientRect().left - 10)  && (event.target.getBoundingClientRect().right <= paras[2].getBoundingClientRect().right + 10) ) {
+                                let element = document.getElementsByClassName(cl.before_channelFormatSandbox)[0];
+                                paras[1].setAttribute('data-swap', 'yes');
+                                paras[2].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: -1, toIndex: -1 , indexOrder: [ 1, 2, 0] , dataSplit2: {id:0, element: element} } );
+                            }
+                            
+                            else {
+
+                                paras[2].setAttribute('data-swap', 'no');
+                                paras[1].setAttribute('data-swap', 'no');
+                                paras[0].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 0, dataSplit2: null } );
+
+                            }
+                        }
+
+                        else if (event.target == paras[1]) {
+
+                            if ( (event.target.getBoundingClientRect().right > paras[2].getBoundingClientRect().left +  paras[2].getBoundingClientRect().width/2   ) &&  (event.target.getBoundingClientRect().bottom > paras[2].getBoundingClientRect().bottom - paras[2].getBoundingClientRect().height/3)  ) {
+                                paras[2].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 1, toIndex: 2});
+
+                            }
+
+                            else if (event.target.getBoundingClientRect().top < paras[0].getBoundingClientRect().bottom - paras[0].getBoundingClientRect().height/2   ) {
+                                paras[0].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 1, toIndex: 0});
+                            }
+
+                            else {
+                                paras[0].setAttribute('data-swap', 'no');
+                                paras[1].setAttribute('data-swap', 'no');
+                                paras[2].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 0, dataSplit2: null } );
+
+                            }
+
+                        }
+
+                        else if (event.target == paras[2]) {
+
+                            if (event.target.getBoundingClientRect().top < paras[0].getBoundingClientRect().bottom - paras[0].getBoundingClientRect().height/2) {
+                                paras[0].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 2, toIndex: 0});
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().left < paras[1].getBoundingClientRect().right - paras[1].getBoundingClientRect().width/2)  && (event.target.getBoundingClientRect().bottom > paras[1].getBoundingClientRect().bottom - paras[1].getBoundingClientRect().height/3) ) {
+                                paras[1].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 2, toIndex: 1});
+                            }
+
+                            else {
+                                
+                                paras[0].setAttribute('data-swap', 'no');
+                                paras[1].setAttribute('data-swap', 'no');
+                                paras[2].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 0, dataSplit2: null } );
+
+                            }
+
+
+
+                        }
 
                     }
 
+                }
 
+                else if (paras.length == 4) {
+                    
+                    /* handle possible swap */
+                    if (this.props.dataSplit == "25_25_25_25" ) { 
+
+                        if (event.target == paras[0]) {
+                            
+                            if ( (event.target.getBoundingClientRect().right > paras[1].getBoundingClientRect().left + paras[1].getBoundingClientRect().width/20 ) &&  (event.target.getBoundingClientRect().bottom < paras[1].getBoundingClientRect().bottom - paras[1].getBoundingClientRect().height/20 ) ) {
+                                paras[1].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 0, toIndex: 1});
+
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().bottom > paras[2].getBoundingClientRect().bottom + paras[2].getBoundingClientRect().height/20 )  && (event.target.getBoundingClientRect().right <  paras[2].getBoundingClientRect().right - paras[2].getBoundingClientRect().width/20   )  ) {
+                                paras[2].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 0, toIndex: 2});
+
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().bottom > paras[3].getBoundingClientRect().bottom + paras[3].getBoundingClientRect().height/20 )  && (event.target.getBoundingClientRect().right >  paras[3].getBoundingClientRect().left + paras[3].getBoundingClientRect().width/20   )  ) {
+                                paras[3].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 0, toIndex: 3});
+                            }
+
+                            else {
+
+                                paras[0].setAttribute('data-swap', 'no');
+                                paras[1].setAttribute('data-swap', 'no');
+                                paras[2].setAttribute('data-swap', 'no');
+                                paras[3].setAttribute('data-swap', 'no');
+                            }
+                        }
+
+                        else if (event.target == paras[1]) {
+                            
+                            if ( (event.target.getBoundingClientRect().left < paras[0].getBoundingClientRect().right -  paras[0].getBoundingClientRect().width/10) && (event.target.getBoundingClientRect().bottom < paras[0].getBoundingClientRect().bottom  - paras[0].getBoundingClientRect().height/50  ) ) {
+                                paras[0].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 1, toIndex: 0});
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().right < paras[2].getBoundingClientRect().right -  paras[2].getBoundingClientRect().width/10) && (event.target.getBoundingClientRect().top > paras[2].getBoundingClientRect().top  + paras[2].getBoundingClientRect().height/50  ) ) {
+                                paras[2].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 1, toIndex: 2});
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().left > paras[3].getBoundingClientRect().left +  paras[3].getBoundingClientRect().width/10) && (event.target.getBoundingClientRect().top > paras[3].getBoundingClientRect().top  - paras[3].getBoundingClientRect().height/50  ) ) {
+                                paras[3].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 1, toIndex: 3});
+                            }
+                            
+                            else {
+
+                                paras[0].setAttribute('data-swap', 'no');
+                                paras[1].setAttribute('data-swap', 'no');
+                                paras[2].setAttribute('data-swap', 'no');
+                                paras[3].setAttribute('data-swap', 'no');
+                            }
+
+                        }
+
+                        else if (event.target == paras[2]) {
+
+                            if ( (event.target.getBoundingClientRect().right < paras[0].getBoundingClientRect().right -  paras[0].getBoundingClientRect().width/30   ) &&  (event.target.getBoundingClientRect().bottom < paras[0].getBoundingClientRect().bottom  - paras[0].getBoundingClientRect().height/30  )  ) {
+                                
+                                paras[0].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 2, toIndex: 0});
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().right > paras[1].getBoundingClientRect().left +  paras[1].getBoundingClientRect().width/30   ) &&  (event.target.getBoundingClientRect().bottom < paras[1].getBoundingClientRect().bottom  - paras[1].getBoundingClientRect().height/30  )  ) {
+                                
+                                paras[1].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 2, toIndex: 1});
+                                
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().left > paras[3].getBoundingClientRect().left +  paras[3].getBoundingClientRect().width/30   ) &&  (event.target.getBoundingClientRect().top > paras[3].getBoundingClientRect().top  +  paras[3].getBoundingClientRect().height/30  )  ) {
+                                
+                                paras[3].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 2, toIndex: 3});
+                                
+                            }
+
+                            else {
+
+                                paras[0].setAttribute('data-swap', 'no');
+                                paras[1].setAttribute('data-swap', 'no');
+                                paras[2].setAttribute('data-swap', 'no');
+                                paras[3].setAttribute('data-swap', 'no');
+                            }
+
+
+                        }
+
+                        else if (event.target == paras[3]) {
+
+                            
+                            if ( (event.target.getBoundingClientRect().right < paras[0].getBoundingClientRect().right -  paras[0].getBoundingClientRect().width/30   ) &&  (event.target.getBoundingClientRect().bottom < paras[0].getBoundingClientRect().bottom  - paras[0].getBoundingClientRect().height/30  )  ) {
+                                
+                                paras[0].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 3, toIndex: 0});
+                                
+                            }
+                            
+                            else if ( (event.target.getBoundingClientRect().left > paras[1].getBoundingClientRect().left +  paras[1].getBoundingClientRect().width/30   ) &&  (event.target.getBoundingClientRect().bottom < paras[1].getBoundingClientRect().bottom  - paras[1].getBoundingClientRect().height/30  )  ) {
+                                
+                                paras[1].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 3, toIndex: 1});
+                                
+                            }
+
+                            else if ( (event.target.getBoundingClientRect().right < paras[2].getBoundingClientRect().right -  paras[2].getBoundingClientRect().width/30   ) &&  (event.target.getBoundingClientRect().top > paras[2].getBoundingClientRect().top + paras[2].getBoundingClientRect().height/30  )  ) {
+                                
+                                paras[2].setAttribute('data-swap', 'yes');
+                                this.setState({confirmSwap: 1, fromIndex: 3, toIndex: 2});
+                                
+                            }
+
+                            else {
+
+                                paras[0].setAttribute('data-swap', 'no');
+                                paras[1].setAttribute('data-swap', 'no');
+                                paras[2].setAttribute('data-swap', 'no');
+                                paras[3].setAttribute('data-swap', 'no');
+
+                            }
+
+                        }
+
+                    }
 
                 }
+
         }
     }
 
@@ -1047,95 +1529,6 @@ const addScript = (src) => {
     document.head.appendChild(some_script_ele);
 };
 
-const getSvg = (this_, index, count)=> {
-
-    const margin = {
-        left: 15,
-        right: 15, 
-        top: 10, 
-        bottom:30
-    }
-
-    let ele = document.getElementsByClassName(cl.screenGraphContainer)[0];
-
-    let rect = ele.getBoundingClientRect(); 
-
-    var svg =  d3.select("#my_dataviz")
-                    .append("svg")
-                    .attr("width", '100%')
-                    .attr("height", '100%' )
-                    .attr("style", "outline: thin solid red;")   
-                    .attr("data-name", index)
-                    .attr("data-channel", 'CH' + index)
-                    .attr("data-count", count )
-                    // .attr("class", cl.channelName)
-                    .append("g")
-                    .attr("transform", "translate(" + (margin.left + margin.right) * 2 + ',' + (margin.top + 40 ) + ")")  // margin left abd nargin bottom
-
-    d3.csv(this_.state.csvs[this_.state.index],
-
-        function(d){
-            return { data : d.data, value : d.value }
-        },
-
-        function(data) {
-            
-            var x = d3.scaleLinear()
-            .domain(d3.extent(data, function(d) { return d.data; }))
-            .range([ 0, rect.width - 30 ]);
-            svg.append("g")
-            .attr("transform", "translate(0," + (rect.height-210)  + ")")
-            .call(d3.axisBottom(x));
-
-            // Add Y axis
-            var y = d3.scaleLinear()
-            .domain([0, d3.max(data, function(d) { return d.value; })])
-            .range([ rect.height - 220, 0 ]);
-            svg.append("g")
-            .attr("transform", "translate(0," + 0 + ")")
-            .text('Y Axis Label')
-            .call(d3.axisLeft(y));
-
-            // Add the area
-            svg.append("path")
-            .datum(data)
-            .attr("fill", "#cce5df")
-            .attr("stroke", "#69b3a2")
-            .attr("stroke-width", 1.5)
-            .attr("d", d3.area()
-                .x(function(d) { return x(d.data) })
-                .y0(y(0))
-                .y1(function(d) { return y(d.value) })
-            )
-
-            //ylabel 
-            svg.append('text')
-                .attr("class", "y label")
-                .attr("text-anchor", "end")
-                .attr("y", -35)
-                .attr("x", -185)
-                .attr("dy", "0.0em")
-                .attr("transform", "rotate(-90)")
-                .style("font-size", "12px")
-                .text("Magnitude")
-
-            svg.append("text")
-                .attr("class", "x label")
-                .attr("text-anchor", "end")
-                .attr("x", rect.width/2)
-                .attr("y", rect.height-215)
-                .attr("transform", "translate(0," + 30 + ")")
-                .style("font-size", "12px")
-                .text("Frequency");
-
-            // let someElement = d3.select('path');
-            // let pathElement = someElement._groups[0][0];
-            // this_.setState({x: x, y: y})
-        }
-    )
-
-    return svg;
-};
 
 
 const getWrapperDiv = () => {
@@ -1148,382 +1541,3 @@ const getWrapperDiv = () => {
     return div;
 };
 
-const updateGrid = (count) => {
-
-    /* resize swap mode cells if nedded  */
-    // let divs = document.getElementsByClassName(cl.svg_wrapper);
-    
-  
-    // Array.from(divs).forEach( (currentDiv) => {
-    //     console.log(currentDiv);
-    // });
-}
-
-
-
-// var intervalID;
-// var div;
-// var offsetX, offsetY;
-// var status = {bool: false};
-// var box; 
-// var prev;
-// const MouseMove = (event) => {
-//   event.preventDefault()
-
-//     // if ( (event.clientX < box.left+5 || event.clientX > box.right -8 )  ||  (  event.clientY > (box.bottom - 5)  ||  event.clientY < (box.top +  8)   )  ) {
-//     //     event.target.classList.remove(cl.moveme);
-//     //     let c = document.getElementsByTagName("canvas");
-//     //     if (Array.from(c).length) {
-//     //         let canvas = c[0];
-//     //         let parent = canvas.parentNode;
-
-//     //         // remove event listener 
-            
-//     //     }
-//     //     clearInterval(intervalID);
-
-//     // }
-
-
-//         if (status.bool) {
-// // 
-//             // console.log(event.target.parentNode);
-
-//             // console.log(event.target.parentNode.getBoundingClientRect())
-//             // console.log('parent',parentBox,'parent')
-//             // console.log(e[0].getBoundingClientRect())
-//             // console.log(e[1].getBoundingClientRect())
-//             // console.log('end')
-            
-//             let childBox = event.target.getBoundingClientRect();
-//             console.log(childBox.top, childBox1.bottom)
-//             // console.log('pare', parentBox)
-//             // console.log('child', childBox)
-
-//             event.target.style.top = `${event.clientY - offsetY }px`;
-//             event.target.style.left =  `${event.clientX - offsetX }px` ;
-
-//             // if (event.target.style.left == prev[0] && event.target.style.left == prev[1]  ) {
-//             //     prev = [event.target.style.top, event.target.style.left  ]
-//             // }
-
-//             if (childNodes.length == 2) {
-                
-//                 if (active == 0) {
-//                     console.log('1')
-//                     if (childBox.top  <  parentBox.left) {
-                        
-//                         // console.log('error')
-//                     }
-//                 }
-
-                   
-//                 else if (active == 1) {
-//                     if (childBox.top  <  childBox1.bottom  - 10) {
-                            
-//                         console.log('swap me')
-
-//                         console.log(parent)
-//                         parent.insertBefore( childNodes[0], childNodes[1] );
-//                         console.log(parent)
-                        
-                        
-//                         // console.log('error')
-//                     }
-//                 }
-
-//             }
-//         // }
-            
-//         //     event.target.classList.add(cl.errorBarrier);
-
-
-//         //     // console.log(event.target.parentNode, event.clientX, event.clientY );
-//         //     // console.log(event.target.parentNode.getBoundingClientRect());
-//         //     // console.log(event.target.getBoundingClientRect());
-            
-//         // } else {
-//         //     event.target.classList.remove(cl.errorBarrier);
-//         // }
-
-
-
-
-//         }
-
-
-
-
-//         // if (childNodes.length == 2) {
-            
-
-//         //     if (childNodes[0] == event.target) {
-                
-//         //     } else if (childNodes[1] == event.target) {
-//         //         console.log('hello')
-//         //     }
-
-
-//         //     if (event.target) {
-
-                
-
-
-//         //     }
-            
-//         // }
-
-//         // setTimeout( ()=> {
-//         // }, 100)
-//     //     // console.log('Moving x,y', event.clientX ,event.clientY, offsetX, offsetY);        
-   
-        
-//     //     // console.log(event.target);
-//     //     // console.log(event.target.getBoundingClientRect(), stateY)
-//     //     // console.log(event.clientY, event.target.getBoundingClientRect());
-
-//     //     // if ( event.clientY > stateY ) {
-//     //     //     // swap
-//     //     //     console.log('swap')
-//     //     // }
-//     //     console.log(typeof  box.right)
-//     //     console.log(typeof  event.clientX )
-
-//     //         // console.log(box.left , box.right, event.clientX);
-            
-//     //         // if (event.clientX <= box.left || event.clientX >= box.right) {
-//     //         //         console.log('rigged')
-//     //         //         console.log('released', intervalID);
-                
-//     //         //         offsetX = 0;
-//     //         //         offsetY = 0;
-//     //         //         status.bool = false;
-                    
-//     //         //         let c = document.getElementsByTagName("canvas");
-//     //         //         if (Array.from(c).length) {
-//     //         //             let canvas = c[0];
-                        
-//     //         //             let parent = canvas.parentNode;
-//     //         //             parent.removeChild(canvas);
-//     //         //         }
-//     //         //         clearInterval(intervalID);
-//     //         //             // event.target.classList.remove(cl.svg_wrapper_shake);
-//     //         //         event.target.classList.remove(cl.moveme);
-
-//     //         // }
-
-
-//     //     // offsetY = event.clientY + offsetY;
-
-//     //     // console.log('x', hor_factor * event.clientX);
-//     //     // event.target.style.left = `${hor_factor * event.clientX}px`;
-        
-//     //     // event.target.style.top = `${vert_factor* event.clientY}px`;
-//     //     // console.log( 'y', vert_factor* event.clientY);
-        
-//     //     // div.style.left  = `${event.clientX - offsetX}px` ;
-//     //     // div.style.top  = `${event.clientY - offsetY}px` ;
-//     //     // div.clientX = event.clientX;
-
-//     //     // hor_factor 
-        
-//     //     // vert_factor
-//     // }
-
-// };
-
-// var hor_factor;
-// var vert_factor;
-// var state = null; 
-// var stateX, stateY;
-// var count; 
-// var box; 
-
-// const MouseDown =  (event) => {
-//   event.preventDefault()
-
-
-//   if (status.bool) {
-//     // clearInterval(intervalID);
-//     console.log('released', intervalID);
-//     // event.target.classList.remove(cl.svg_wrapper_shake);
-//         // event.target.classList.remove(cl.moveme);
-//     offsetX = 0;
-//     offsetY = 0;
-//     status.bool = false;
-
-//     let c = document.getElementsByTagName("canvas");
-    
-//     if (Array.from(c).length) {
-//         let canvas = c[0];
-
-//         let parent = canvas.parentNode;
-//         parent.removeChild(canvas);
-//     }
-     
-//     c = document.getElementsByClassName(cl.moveme);
-//     if (c.length) {
-//         c[0].classList.remove(cl.moveme);
-//     }
-
-
-//     for (let i =0 ; i < childNodes.length; i++) {
-//         if (active == i)
-//             childNodes[i].setAttribute('data-prompt', 'yes')
-
-//     }
-
-//     return 
-
-//   }
-
-//     // intervalID = setTimeout( (event)=>{
-        
-//         // shake div 
-//         // event.target.classList.add(cl.svg_wrapper_shake);
-//         // console.log('Clicked x,y', event.clientX ,event.clientY);
-//         // console.log ("offset left", event.target.offsetLeft);
-//         // console.log ("offset top", event.target.offsetTop);
-
-//         const canvas =  document.createElement("canvas") ;
-//         const ctx = canvas.getContext("2d");
-//         ctx.moveTo(90, 130);
-//         ctx.lineTo(95, 25);
-//         ctx.lineTo(150, 80);
-//         ctx.lineTo(205, 25);
-//         ctx.lineTo(210, 130);
-//         ctx.lineWidth = 15;
-//         ctx.strokeStyle = "red";
-//         ctx.stroke();
-
-//         event.target.append(canvas);
-
-//         // console.log(canvas)
-//         // console.log('parent',canvas.parentNode.parentNode)
-//         // console.log(canvas.parentNode.parentNode.children)
-//         // hor_factor = (event.clientX / event.target.offsetLeft)**-1;
-//         // vert_factor = (event.clientY / event.target.offsetTop)**-1;
-
-//         box = event.target.getBoundingClientRect();
-        
-//         parent = event.target.parentNode;
-
-//         let rect =event.target.parentNode.getBoundingClientRect();
-        
-//         childNodes = parent.children;
-        
-//         // count = parent.children.length
-        
-//         parentBox.x = rect.x;
-//         parentBox.y = rect.y;
-//         parentBox.left = rect.left;
-//         parentBox.right = rect.right;
-//         parentBox.height = rect.height ;
-//         parentBox.width = rect.width;
-//         parentBox.bottom = rect.bottom;
-        
-//         if (childNodes[0] ){
-
-//             rect = childNodes[0].getBoundingClientRect();
-            
-//             childBox1.x = rect.x;
-//             childBox1.y = rect.y;
-//             childBox1.left = rect.left;
-//             childBox1.right = rect.right;
-//             childBox1.height = rect.height ;
-//             childBox1.width = rect.width;
-//             childBox1.bottom = rect.bottom;
-//         }
-        
-//         if (childNodes[1]) {
-
-//             rect = childNodes[1].getBoundingClientRect();
-            
-//             childBox2.x = rect.x;
-//             childBox2.y = rect.y;
-//             childBox2.left = rect.left;
-//             childBox2.right = rect.right;
-//             childBox2.height = rect.height ;
-//             childBox2.width = rect.width;
-//             childBox2.bottom = rect.bottom;
-
-
-//         }
-        
-//         offsetX = event.clientX - event.target.offsetLeft;
-//         offsetY = event.clientY - event.target.offsetTop;
-
-//         event.target.classList.add(cl.moveme);
-
-//         event.target.style.top = `${box.top}px`;
-//         event.target.style.left = `${box.left}px`;
-//         event.target.style.right = `${box.right}px`;
-//         event.target.style.bottom= `${box.bottom}px`;
-//         event.target.style.width= `${box.width}px`;
-//         event.target.style.height= `${box.height}px`;
-//         // event.target.style.x= `${0}px`;
-//         // event.target.style.y= `${0}px`;
-        
-//         status.bool = true;
-
-//         if (event.target == childNodes[0]) {
-//             active = 0
-//     childNodes[0].setAttribute('data-prompt', 'no')
-//         }
-//         if (event.target == childNodes[1]) {
-//     childNodes[1].setAttribute('data-prompt', 'no')
-
-//             active =1
-//         }
-        
-//     // }, 0,event, status);
-
-//         document.getElementsByClassName(cl.channel_reorg)[0].addEventListener("mousedown", MouseClose);  
-
-  
-
-// };
-
-// const MouseClose = ()=> {
-//     console.log('hell world')
-// }
-
-// var isOn= false;
-// var parentBox =  Object({});
-// var childBox1 =  Object({});
-// var childBox2 =  Object({});
-// var childBox3 =  Object({});
-// var childBox4 =  Object({});
-// var parent;
-// var childNodes;
-// var offsetX;
-// var offsetY;
-// var active;
-
-
-
-// const MouseUp =  (event) => {
-//       event.preventDefault()
-
-//     // clearInterval(intervalID);
-//     // console.log('released', intervalID);
-//     // // event.target.classList.remove(cl.svg_wrapper_shake);
-//     //     // event.target.classList.remove(cl.moveme);
-//     // offsetX = 0;
-//     // offsetY = 0;
-//     // status.bool = false;
-
-//     // let c = document.getElementsByTagName("canvas");
-//     // if (Array.from(c).length) {
-//     //     let canvas = c[0];
-
-//     //     let parent = canvas.parentNode;
-//     //     parent.removeChild(canvas);
-//     // }
-     
-//     // c = document.getElementsByClassName(cl.moveme);
-//     // if (c.length) {
-//     //     c[0].classList.remove(cl.moveme);
-//     // }
-
-// };

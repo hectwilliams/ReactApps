@@ -107,10 +107,10 @@
     border: 1px solid black;
 }
 
-/* .screenGraphContainer  > div {
+.screenGraphContainer  > div {
     width: inherit;
     height: inherit;
-} */
+} 
 
 .screenBase {
     grid-column-start: 1;
@@ -318,14 +318,7 @@
         font-size: 60px; 
     }
 
-
-
-
 }
-
-
-
-
 
 
 
@@ -338,6 +331,209 @@
 
     border: 2px solid yellow;
 }
+
+
+.vizContainer[data-count="1"][data-width_0][data-height_0]  > div {
+    width: attr(data-width_0);
+    height: attr(data-height_0);
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="1"] > div > svg {
+    width: inherit;
+    height: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+
+.vizContainer[data-count="1"] > div > svg  > g {
+    width: 1000px;
+    height: 1000px;
+    padding: 0;
+    margin: 0;
+}
+
+
+
+
+
+.vizContainer[data-count="2"][data-width_0][data-height_0]  > div:nth-child(1){
+    width: attr(data-width_0);
+    height: attr(data-height_0);    
+    padding: 0;
+    margin: 0;
+}
+
+.vizContainer[data-count="2"][data-width_1][data-height_1]  > div:nth-child(2) {
+    width: attr(data-width_1);
+    height: attr(data-height_1);    
+    padding:0 ;
+    margin: 0;
+}
+
+
+.vizContainer[data-count="2"] > div > svg {
+   width: inherit;
+    height:   inherit;
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="2"] > div > svg  > g{
+    width: inherit; 
+    height: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.vizContainer[data-count="3"][data-width_0][data-height_0]  > div:nth-child(1){
+    width: attr(data-width);
+    height:  attr(data-height);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="3"][data-width_1][data-height_1]  > div:nth-child(2) {
+    width: attr(data-width);
+    height:  attr(data-height);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="3"][data-width_2][data-height_2]  > div:nth-child(3) {
+    width: attr(data-width);
+    height:  attr(data-height);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="3"] > div > svg {
+    width: inherit;
+    height: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+.vizContainer[data-count="3"] > div > svg  > g{
+    width: inherit; 
+    height: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+
+
+
+
+.vizContainer[data-count="3b"][data-width_0][data-height_0]  > div:nth-child(1){
+    width: attr(data-width);
+    height:  attr(data-height);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="3b"][data-width_1][data-height_1]  > div:nth-child(2) {
+    width: attr(data-width);
+    height:  attr(data-height);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="3b"][data-width_2][data-height_2]  > div:nth-child(3) {
+    width: attr(data-width);
+    height:  attr(data-height);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="3b"] > div > svg {
+    width: inherit;
+    height: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+.vizContainer[data-count="3b"] > div > svg  > g{
+    width: inherit; 
+    height: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.vizContainer[data-count="4"][data-width_0][data-height_0]  > div:nth-child(1){
+    width: attr(data-width_0);
+    height:  attr(data-height_0);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="4"][data-width_1][data-height_1]  > div:nth-child(2) {
+    width: attr(data-width_1);
+    height:  attr(data-height_1);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="4"][data-width_2][data-height_2]  > div:nth-child(3) {
+    width: attr(data-width_2);
+    height:  attr(data-height_2);    
+    padding: 0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="4"][data-width_3][data-height_3]  > div:nth-child(4) {
+    width: attr(data-width_3);
+    height:  attr(data-height_3);    
+    padding:0 ;
+    margin: 0;
+}
+
+.vizContainer[data-count="4"] > div > svg {
+   width: inherit;
+    height:   inherit;
+    padding:0 ;
+    margin: 0;
+}
+
+
+/* .vizContainer[data-count="2"]   > div > svg{
+   width: inherit;
+    height:  calc(inherit / 2);;
+    padding:0 ;
+    margin: 0;
+
+} */
+
+/* .vizContainer[data-count="1"] > div > svg{
+    width: inherit;
+    height:  inherit;
+} */
 
 /* .vizContainer[data-count="1"]:has(div)::nth-child(1) {
     grid-row-start: r1;
@@ -453,11 +649,6 @@
 
 
 
-
-
-
-
-
 .vizContainer[data-count="4"] > div:nth-child(1)  {
     
     grid-row-start: r1;
@@ -499,6 +690,22 @@
 }
 
 
+
+
+/* vizContainer > div is the svg wrapper  | viz is also dataviz */
+
+
+
+
+
+
+
+
+
+
+
+
+
 .screen_options > div:nth-child(6) > div  {
     margin:0 ;
     padding: 0;
@@ -526,8 +733,10 @@
     top: 0;
     left:0;
     display: grid;
-    grid-template-columns: [c0] 20% [c1] 60% [c2] auto [end];
-    grid-template-rows: [r0] 5% [r1]  80%  [end];
+    
+    grid-template-columns: [c0] 5% [c1] 90% [c2] auto [end];
+
+    grid-template-rows: [r0] 1% [r1]  80%  [end];
 }
 
 
@@ -711,6 +920,10 @@ before_channelFormatSandboxMessage    {
     padding: 0;
     margin: 0;
 }
+.before_channelFormatSandbox[data-split="50_25_25"] > p[data-swap="yes"]:nth-child(1){
+    border: 10px solid red;
+}
+
 
 
 .before_channelFormatSandbox[data-split="50_25_25"] > p:nth-child(2){
@@ -722,6 +935,10 @@ before_channelFormatSandboxMessage    {
     padding: 0;
     margin: 0;
 }
+.before_channelFormatSandbox[data-split="50_25_25"] > p[data-swap="yes"]:nth-child(2){
+    border: 10px solid red;
+}
+
 
 
 .before_channelFormatSandbox[data-split="50_25_25"] > p:nth-child(3){
@@ -729,11 +946,14 @@ before_channelFormatSandboxMessage    {
     grid-row-end: r2;
     grid-column-start: c1;
     grid-column-end:  c2;
-       border: 1px solid white;
+    border: 1px solid white;
     padding: 0;
     margin: 0;
-    
 }
+.before_channelFormatSandbox[data-split="50_25_25"] > p[data-swap="yes"]:nth-child(3){
+    border: 10px solid red;
+}
+
 
 
 
@@ -787,13 +1007,6 @@ before_channelFormatSandboxMessage    {
 
 
 
-
-
-
-
-
-
-
 .before_channelFormatSandbox[data-split="25_25_25_25"] > p:nth-child(1){
     grid-row-start: r0;
     grid-row-end: r1;
@@ -803,7 +1016,9 @@ before_channelFormatSandboxMessage    {
     padding: 0;
     margin: 0;
 }
-
+.before_channelFormatSandbox[data-split="25_25_25_25"] > p[data-swap="yes"]:nth-child(1){
+    border: 10px solid red;
+}
 
 .before_channelFormatSandbox[data-split="25_25_25_25"] > p:nth-child(2){
     grid-row-start: r0;
@@ -815,6 +1030,9 @@ before_channelFormatSandboxMessage    {
     margin: 0;
 }
 
+.before_channelFormatSandbox[data-split="25_25_25_25"] > p[data-swap="yes"]:nth-child(2){
+    border: 10px solid red;
+}
 
 .before_channelFormatSandbox[data-split="25_25_25_25"] > p:nth-child(3){
     grid-row-start: r1;
@@ -825,7 +1043,9 @@ before_channelFormatSandboxMessage    {
     padding: 0;
     margin: 0;
 }
-
+.before_channelFormatSandbox[data-split="25_25_25_25"] > p[data-swap="yes"]:nth-child(3){
+    border: 10px solid red;
+}
 
 .before_channelFormatSandbox[data-split="25_25_25_25"] > p:nth-child(4){
     grid-row-start: r1;
@@ -836,6 +1056,11 @@ before_channelFormatSandboxMessage    {
     padding: 0;
     margin: 0;
 }
+
+.before_channelFormatSandbox[data-split="25_25_25_25"] > p[data-swap="yes"]:nth-child(4){
+    border: 10px solid red;
+}
+
 
 .before_channelFormatSandbox > p[data-prompt="yes"]::after  {
     content: "click me";
