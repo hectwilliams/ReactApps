@@ -341,19 +341,21 @@
 }
 
 .vizContainer[data-count="1"] > div > svg {
-    width: inherit;
+    /* width: inherit; */
+     width: inherit;
+     /* calc(95%); */
     height: inherit;
     padding: 0;
     margin: 0;
 }
 
 
-.vizContainer[data-count="1"] > div > svg  > g {
-    width: 1000px;
-    height: 1000px;
+/* .vizContainer[data-count="1"] > div > svg  > g {
+    width: inherit;
+    height: inherit;
     padding: 0;
     margin: 0;
-}
+}  */
 
 
 
@@ -374,6 +376,8 @@
 }
 
 
+
+
 .vizContainer[data-count="2"] > div > svg {
    width: inherit;
     height:   inherit;
@@ -382,15 +386,11 @@
 }
 
 .vizContainer[data-count="2"] > div > svg  > g{
-    width: inherit; 
-    height: inherit;
+    width: calc(50%); 
+    height: calc(50%);
     padding: 0;
     margin: 0;
 }
-
-
-
-
 
 
 
@@ -548,7 +548,64 @@
 /* .vizContainer[data-count="2"]:has(.svg_wrapper)    { */
 
 /* .vizContainer[data-count="2"].svg_wrapper::nth-child(1) { */
+.plot_labels_hide {
+       opacity: 0;
+    
+}
 
+.plot_labels {
+    animation: 4s labelon;
+}
+/* @keyframes labelon {
+    from {    
+       opacity: 0;
+    }
+    to {    
+       opacity: 1;
+
+    }
+} */
+@keyframes labelon {
+
+    0% {
+        opacity: 0;
+
+    }
+
+    30% {
+        opacity: 0.3;
+
+    }
+
+
+    60% {
+        opacity: 0.4;
+
+    }
+
+    70% {
+        opacity: 0.7;
+
+    }
+
+
+    80% {
+        opacity: 0.8;
+
+    }
+
+    90% {
+        opacity: 0.9;
+
+    }
+
+    
+    100% {
+        opacity: 1;
+
+    }
+
+}
 
 .vizContainer[data-count="2"] > div:nth-child(1)  {
     

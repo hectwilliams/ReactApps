@@ -43,7 +43,7 @@ class Generator extends Component {
             ],
             
             numChannels: 0,
-            numChannelsAlpha: '',
+            numChannels_len_3_alpha: '',
             timeoutID: false,
             channelModalSetup: null,
             channelNames: {list: 0 },
@@ -54,18 +54,20 @@ class Generator extends Component {
             size: 4, 
             cc2: [],
             dataSplit: '100',
-            dataSplit2: '0',
+            len_3_nonuniform_swap_sel: '0',
             guiDiv : null,
             width: 0,
             height: 0, 
             
             width_0: 0, 
-            width_1: 0 ,
+            width_1: 0,
             width_2: 0, 
-            
+            width_3: 0, 
+
             height_0: 0,
             height_1: 0, 
             height_2: 0, 
+            height_3: 0, 
 
         }
         this.panelClick = this.panelClick.bind(this);
@@ -110,14 +112,8 @@ class Generator extends Component {
 
     }
 
-    getSvg = (index, count) => {
 
-        const margin = {
-            left: 15,
-            right: 15, 
-            top: 10, 
-            bottom:30
-        }
+    getSvg = (index, count, indicesMap = null, swapModeId = null ) => {
 
         let ele = document.getElementsByClassName(cl.screenGraphContainer)[0];
 
@@ -126,18 +122,14 @@ class Generator extends Component {
         var  this_ = this;
 
         var svg =  d3.select("#my_dataviz")
-                    .append("svg")
-                    // .attr("width", `${rect.width-50}px`)
-                    // .attr("height", `${rect.height-50}px` )
-                    .attr("style", "outline: thin solid red;")   
-                    .attr("data-name", index)
-                    .attr("data-channel", 'CH' + index)
-                    .attr("data-count", count )
-                    // .attr("class", cl.channelName)
-                    .append("g")
-                    .attr("transform", "translate(" + (margin.left + margin.right) * 2 + ',' + (margin.top + 40 ) + ")")  ;
-                    // margin left abd nargin bottom
-
+            .append("svg")
+            .attr("style", "outline: thin solid red;")   
+            .attr("data-name", index)
+            .attr("data-channel", 'CH' + index)
+            .attr("data-count", count )
+            .append("g")
+            .attr("transform",    "translate(" + (  rect.width) * 0.05 + ',' + (rect.height) * 0.05 + ")")  ; // margin left and top 
+        
         d3.csv(this.state.csvs[this.state.index],
 
             function(d){
@@ -146,26 +138,65 @@ class Generator extends Component {
 
             function(data) {
                 
-                var x = d3.scaleLinear()
-                    .domain(d3.extent(data, function(d) { return d.data; }))
-                    .range([ 0, rect.width - 30 ]);
-                    svg.append("g")
-                    .attr("transform", "translate(0," + (rect.height-210)  + ")")
-                    .attr("data-xaxis", 'x')
+                // xaxis pre-configuration 
 
-                    .call(d3.axisBottom(x))
+                var x =  ((rect) => {
+                    
+                    if ((count  == 1) || (count == 2) || (count == 2 && coount ==1 && indicesMap == null) ) {
+                        return d3.scaleLinear() .domain(d3.extent(data, function(d) { return d.data; })) .range([ 0, rect.width* 0.90    ] )  
+                    }
+                    else if (count == 4) {
+                        return d3.scaleLinear() .domain(d3.extent(data, function(d) { return d.data; })) .range([ 0, rect.width* 0.40    ] )  
+                    }
+                    else if (count == 3 ) { 
 
-                var y = d3.scaleLinear()
-                    .domain([0, d3.max(data, function(d) { return d.value; })])
-                    .range([ rect.height - 220, 0 ]);
+                           if ( (swapModeId == '' && indicesMap[index] == 2  )    ||   (swapModeId == 'b' && indicesMap[index] == 0  )  ) {
+                              return d3.scaleLinear()  .domain(d3.extent(data, function(d) { return d.data; })) .range([ 0, rect.width* 0.90    ] )  
+                           } 
+                           else {
+                                return d3.scaleLinear() .domain(d3.extent(data, function(d) { return d.data; }))  .range([ 0, rect.width * 0.40   ] )  
+                           }
+                    }
+
+                })(rect)
+
+                if (count == 1) {
+
                     svg.append("g")
+                        .attr("transform", "translate(0," + ( rect.height * 0.87)  + ")")
+                        .attr("data-xaxis", 'x')
+                        .call(d3.axisBottom(x))
+                }
+
+                else if (count == 3 || count == 4 || count == 2) {
+
+                      svg.append("g")
+                        .attr("transform", "translate(0," + (  rect.height* 0.75/2  )  + ")")
+                        .attr("data-xaxis", 'x')
+                        .call(d3.axisBottom(x))
+                }
+                
+
+                // yaxis pre-configuration 
+
+                var y = ( (rect) => {
+
+                    if (count == 1) { 
+                        return d3.scaleLinear().domain([0, d3.max(data, function(d) { return d.value; })]).range([ ( rect.height * 0.87) , 0 ])
+                    } 
+                    else {
+                        return d3.scaleLinear().domain([0, d3.max(data, function(d) { return d.value; })]).range([ ( rect.height * 0.75/2) , 0 ])
+                    }
+                })(rect)
+                
+                svg.append("g")
                     .attr("transform", "translate(0," + 0 + ")")
-                    // .text('Y Axis Label')
                     .attr("data-yaxis", 'y')
                     .call(d3.axisLeft(y))
                 
 
-                // Add the area
+                // add the area (draw)
+
                 svg.append("path")
                 .datum(data)
                 .attr("fill", "#cce5df")
@@ -177,25 +208,42 @@ class Generator extends Component {
                     .y1(function(d) { return y(d.value) })
                 )
 
-                //ylabel 
-                svg.append('text')
-                    .attr("class", "y label")
+                
+                // xlabel pre-configuration
+
+                if ( ((count == 3)  && ((swapModeId == '' && indicesMap[index] == 2)  || (swapModeId == 'b' && indicesMap[index] == 0) ) ) || count == 2  || count == 1 )  {
+                     svg.append("text")
                     .attr("text-anchor", "end")
-                    .attr("y", -35)
-                    .attr("x", -185)
-                    .attr("dy", "0.0em")
+                    .attr("class", cl.plot_labels_hide)
+                    .attr("x",  (  rect.width/2))
+                    .attr("y", (  0))
+                    .style("font-size", "12px")
+                    .style("font-family", "Helvetica")
+                    .text("Frequency")
+                } 
+
+                else {
+
+                  svg.append("text")
+                    .attr("text-anchor", "end")
+                    .attr("class", cl.plot_labels_hide)
+                    .attr("x",  (  rect.width/4))
+                    .attr("y", (  0))
+                    .style("font-size", "12px")
+                    .style("font-family", "Helvetica")
+                    .text("Frequency")
+                }
+
+                // ylabel pre-configuration
+                svg.append('text')
+                    .attr("class", cl.plot_labels_hide)
+                    .attr("text-anchor", "end")
+                    .attr("y", -( count ==2 ? 35: 30 ) )
+                    .attr("x", ( 0 ) )
                     .attr("transform", "rotate(-90)")
                     .style("font-size", "12px")
+                    .style("font-family", "Helvetica")
                     .text("Magnitude")
-
-                svg.append("text")
-                    .attr("class", "x label")
-                    .attr("text-anchor", "end")
-                    .attr("x", rect.width/2)
-                    .attr("y", rect.height-215)
-                    .attr("transform", "translate(0," + 30 + ")")
-                    .style("font-size", "12px")
-                    .text("Frequency");
 
                 
                 this_.state.channels_svg[index].xaxis = x;
@@ -207,7 +255,7 @@ class Generator extends Component {
             }
         )
         
-        this_.setState({channels_svg: this.state.channels_svg});
+        this.setState({channels_svg: this_.state.channels_svg});
         
     }
 
@@ -353,7 +401,6 @@ class Generator extends Component {
             
                 svgRecord.enabled = false;
                 if (svgRecord.svg) {
-                    console.log(svgRecord.svg , 'svg')
                     svgRecord.svg.remove();
                     svgRecord.svg = null;
                     svgRecord.divwrapsvg = null;
@@ -389,7 +436,6 @@ class Generator extends Component {
         let c = Array.from(ele.children);
         this.setState({cc2: c.map( (x) => x.getAttribute('data-channel') )   });
         
-        console.log('finsiehd swapping', c)
     }
 
     channelFormat(event) { 
@@ -414,37 +460,39 @@ class Generator extends Component {
             else if (c.length == 2) {
                 // equal split
                 element.setAttribute('data-split', "50_50");
-                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') ), numChannelsAlpha: ''  }   ); 
+                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') ), numChannels_len_3_alpha: ''  }   ); 
             }
 
             else if (c.length == 3) {
 
                 // if ( c[0].getBoundingClientRect().height * c[0].getBoundingClientRect().width > c[2].getBoundingClientRect().height * c[2].getBoundingClientRect().width) {
-                if (element.getAttribute('data-split2') == '1')   {
+                if (element.getAttribute('data-len_3_nonuniform_swap_sel') == '1')   {
                     this.state.dataSplit = "50_25_25"; 
-                    this.state.numChannelsAlpha = 'b'
+                    this.state.numChannels_len_3_alpha = 'b'
                 }
                 
-                else if (element.getAttribute('data-split2') == '0')   {
+                else if (element.getAttribute('data-len_3_nonuniform_swap_sel') == '0')   {
                     this.state.dataSplit = "25_25_50";
-                    this.state.numChannelsAlpha = ''
+                    this.state.numChannels_len_3_alpha = ''
                 }
                 
-                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') )  ,  dataSplit: this.state.dataSplit , numChannelsAlpha: this.state.numChannelsAlpha }   );  
+                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') )  ,  dataSplit: this.state.dataSplit , numChannels_len_3_alpha: this.state.numChannels_len_3_alpha }   );  
 
             }
 
             else if(c.length == 4)  {
 
                 this.state.dataSplit = "25_25_25_25";
-                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') )  ,  dataSplit: this.state.dataSplit , numChannelsAlpha: '' }   );  
+                this.setState({ channelModalSetup: true , cc2:  c.map( (x) => x.getAttribute('data-channel') )  ,  dataSplit: this.state.dataSplit , numChannels_len_3_alpha: '' }   );  
 
             }
         }
     }
 
     channelFormatOff(event) { 
-        // exits/closes "swap mode "
+        /* 
+            exits/closes "swap mode" 
+        */
 
         this.setState({channelModalSetup: null});
         if (this.state.swapblockLevel1.interface) {
@@ -452,11 +500,13 @@ class Generator extends Component {
                 this.state.swapblockLevel1.interface.funckill(null); // level 1 calls level 2 command  ( exits swap mode)
             }
         }
-
-        console.log('closing system');
     }
 
     plotCsv(id) {
+
+        /* 
+            plots csv data to channel-id
+        */
 
         let someElement = d3.select('path');
         let pathElement = someElement._groups[0][0];
@@ -480,33 +530,28 @@ class Generator extends Component {
                 },
 
                 function(data) {
-                    
-                    // Add the area
-                    // Promise.resolve( this_.state.channels_svg[id].enabled) 
-                    // .then( () => {
-
-                        // this_.state.channels_svg[id].svg.remove();
-
-                        var x = this_.state.channels_svg[0].xaxis; 
-                        var y = this_.state.channels_svg[0].yaxis; 
-                        var svg = this_.state.channels_svg[id].svg;
-                        svg.append("path")
-                        .datum(data)
-                        .attr("fill", "#cce5df")
-                        .attr("stroke", "#69b3a2")
-                        .attr("stroke-width", 1.5)
-                        .attr("d", d3.area()
-                                    .x(function(d) { return x(d.data) })
-                                    .y0(y(0))
-                                    .y1(function(d) { return y(d.value) }))
-                    // });
+           
+                    var x = this_.state.channels_svg[0].xaxis; 
+                    var y = this_.state.channels_svg[0].yaxis; 
+                    var svg = this_.state.channels_svg[id].svg;
+                    svg.append("path")
+                    .datum(data)
+                    .attr("fill", "#cce5df")
+                    .attr("stroke", "#69b3a2")
+                    .attr("stroke-width", 1.5)
+                    .attr("d", d3.area()
+                                .x(function(d) { return x(d.data) })
+                                .y0(y(0))
+                                .y1(function(d) { return y(d.value) }))
                 }
             )
 
         })
 
-
     }
+
+    
+
 
     resizeGrid(id = 0) {
         /* 
@@ -515,7 +560,6 @@ class Generator extends Component {
        
             let parentContainer = document.getElementById('my_dataviz');
  
-        
         //    if (  (this.state.channels_svg.reduce( (acc, x) => +x.enabled + acc, 0 ) == 1 ) ) {
 
         if (parentContainer.children.length == 1) {
@@ -530,7 +574,7 @@ class Generator extends Component {
             
             svgNode.remove();
 
-            this.getSvg(id);
+            this.getSvg(id, 1);
 
             clist  = Array.from(parentContainer.children) ;
             
@@ -549,8 +593,9 @@ class Generator extends Component {
 
             svgNodeParent.style.width = `${this.state.width_0}`;
             svgNodeParent.style.height = `${this.state.height_0}`;
+            updateAxisLabels(parentContainer, 1); 
 
-            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 }) ;
+            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 ,  numChannels_len_3_alpha:  ""}) ;
                 
         }
         
@@ -571,7 +616,10 @@ class Generator extends Component {
             
             svgNodes.forEach(deadNode => {deadNode.remove(); });
             
-            ids.forEach( (removedID, index) => { this.getSvg(removedID, 2)}) // regenerate the following channels (i.e. IDs)
+            let indicesMap = {} 
+            ids.forEach( (x, index)  => {indicesMap[x] = index});
+
+            ids.forEach( (removedID, index) => { this.getSvg(removedID, 2 )}) // regenerate the following channels (i.e. IDs)
             
             clist = Array.from(parentContainer.children);
 
@@ -580,25 +628,27 @@ class Generator extends Component {
             for ( let i= 1; i > -1; i--) {
                 let consumerNode = clist[i]
                 consumerNode.appendChild(clist.pop()) 
-                parentContainer.appendChild(   consumerNode  )
+                parentContainer.prepend(   consumerNode  )
             }
 
             // set dimensions 
-            
+
             node = parentContainer.children[0];
             this.state.width_0 =  "100%";
             this.state.height_0 =  "100%";
             node.style.width = `${this.state.width_0}`;
             node.style.height = `${this.state.height_0}`;
-
+            
             node = parentContainer.children[1];
             this.state.width_1 =  "100%";
             this.state.height_1 =  "100%";
             node.style.width = `${this.state.width_1}`;
             node.style.height = `${this.state.height_1}`;
-                
+      
+            updateAxisLabels(parentContainer, 2); 
 
-            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1}) ;
+            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1,  numChannels_len_3_alpha:  ""}) ;
+            
 
         }
 
@@ -610,16 +660,25 @@ class Generator extends Component {
             let node; 
             let svgNodes = [null, null, null];
             let ids = [-1, -1, -1]; 
+            let indicesMap = {};
             
             // clear and add svg componenet ( i.e. fresh display)
 
             svgNodes = svgNodes.map ( (_, index) =>   parentContainer.children[index].firstElementChild  ) 
 
+            console.log(svgNodes)
+            
             ids = ids.map( (_, index) => parseInt(svgNodes[index].getAttribute('data-name') )); 
             
-            svgNodes.forEach(deadNode => {deadNode.remove(); });
+            ids.forEach( (x, index)  => {indicesMap[x] = index});
             
-            ids.forEach( (removedID, index) => { this.getSvg(removedID, 3)}) // regenerate the following channels (i.e. IDs)
+            console.log( 'ids => \t' , ids) ;
+
+            ids.forEach( (removedID, _) => { this.getSvg(removedID, 3, indicesMap,  this.state.numChannels_len_3_alpha  )}) // regenerate the following channels (i.e. IDs)
+            
+            clist = Array.from(parentContainer.children);
+            
+            svgNodes.forEach(deadNode => {deadNode.remove(); });
             
             clist = Array.from(parentContainer.children);
 
@@ -629,23 +688,21 @@ class Generator extends Component {
                 let consumerNode = clist[i]
                 let svgNode = clist.pop()
                 consumerNode.appendChild(svgNode);
-                parentContainer.appendChild( consumerNode  );
+                parentContainer.prepend( consumerNode  );
             }
 
-
             clist = Array.from(parentContainer.children);
-            
-            console.log('data split', this.state.dataSplit )
+           
 
-            // if ( this.state.dataSplit == "50_25_25" ) {
-            if (this.state.numChannelsAlpha == 'b' ) {
+
+            if (this.state.numChannels_len_3_alpha == 'b' ) {
+                // "50_25_25" configuration
 
                 node = clist[0];
                 this.state.width_0 =  "100%";
                 this.state.height_0 =  "100%";
                 node.style.width = `${this.state.width_0}`;
                 node.style.height = `${this.state.height_0}`;
-                console.log('node', node)
 
                 node = clist[1];
                 this.state.width_1 =  "100%";
@@ -661,10 +718,9 @@ class Generator extends Component {
                 
             }
             
-            else if (this.state.numChannelsAlpha == '' ) {
+            else if (this.state.numChannels_len_3_alpha == '' ) {
+                // "25_25_50" configuration
             
-            // else if ( this.state.dataSplit == "25_25_50") {
-
                 node = clist[0];
                 this.state.width_0 =  "100%";
                 this.state.height_0 =  "100%";
@@ -685,7 +741,7 @@ class Generator extends Component {
 
             }
             
-            console.log('node----it', node)
+            updateAxisLabels(parentContainer, 3); 
 
             this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1, width_2:  this.state.width_2 , height_2:  this.state.height_2}) ;
             
@@ -694,7 +750,7 @@ class Generator extends Component {
         else if (parentContainer.children.length == 4) {
 
 
-            let svgNodeParent, svgNode ;
+            let svgNodeParent, svgNode, consumerNode ;
             let clist;
             let node; 
             let svgNodes = [null, null, null, null];
@@ -708,44 +764,57 @@ class Generator extends Component {
             
             svgNodes.forEach(deadNode => {deadNode.remove(); });
             
-            ids.forEach( (removedID, index) => { this.getSvg(removedID, 3)}) // regenerate the following channels (i.e. IDs)
+            ids.forEach( (removedID, index) => { this.getSvg(removedID, 4)}) // regenerate the following channels (i.e. IDs)
             
             clist = Array.from(parentContainer.children);
 
             parentContainer.innerHTML = ""; 
 
             for ( let i= 3; i > -1; i--) {
-                let consumerNode = clist[i]
-                let svgNode = clist.pop()
+                consumerNode = clist[i]
+                svgNode = clist.pop()
                 consumerNode.appendChild(svgNode);
                 parentContainer.appendChild( consumerNode  );
             }
 
-            node = parentContainer.children[0];
+            clist = Array.from(parentContainer.children);
+            node = clist[0];
             this.state.width_0 =  "100%";
             this.state.height_0 =  "100%";
             node.style.width = `${this.state.width_0}`;
             node.style.height = `${this.state.height_0}`;
 
-            node = parentContainer.children[1];
+            node = clist[1];
             this.state.width_1 =  "100%";
             this.state.height_1 =  "100%";
             node.style.width = `${this.state.width_1}`;
             node.style.height = `${this.state.height_1}`;
 
-            node = parentContainer.children[2];
+            node = clist[2];
             this.state.width_2 =  "100%";
             this.state.height_2 =  "100%";
             node.style.width = `${this.state.width_2}`;
             node.style.height = `${this.state.height_2}`;
 
-            node = parentContainer.children[3];
+            node = clist[3];
             this.state.width_3 =  "100%";
             this.state.height_3 =  "100%";
             node.style.width = `${this.state.width_3}`;
             node.style.height = `${this.state.height_3}`;
+            
+            updateAxisLabels(parentContainer, 4); 
 
-            this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1, width_2:  this.state.width_2 , height_2:  this.state.height_2, width_3:  this.state.width_3 , height_3:  this.state.height_3}) ;
+            this.setState({  
+                width_0:  this.state.width_0 , 
+                height_0:  this.state.height_0 , 
+                width_1:  this.state.width_1 , 
+                height_1:  this.state.height_1, 
+                width_2:  this.state.width_2 , 
+                height_2:  this.state.height_2, 
+                width_3:  this.state.width_3 , 
+                height_3:  this.state.height_3,
+                numChannels_len_3_alpha:  "" // sustains display configuration 
+            });
 
         }
 
@@ -776,7 +845,7 @@ class Generator extends Component {
                     {/* screen  */}
 
                     <div  className={cl.screenGraphContainer}>
-                        <div id={"my_dataviz"}  data-width_0={this.state.width_0} data-width_1={this.state.width_1}  data-height_0={this.state.height_0} data-height_1={this.state.height} data-power={this.state.dsp + ''} data-count={this.state.numChannels + this.state.numChannelsAlpha + ''} className={` ${cl.vizContainer}  ${cl.powerOff}   `}></div>
+                        <div id={"my_dataviz"}  data-width_0={this.state.width_0} data-width_1={this.state.width_1}  data-width_2={this.state.width_2} data-width_3={this.state.width_3}  data-height_0={this.state.height_0} data-height_1={this.state.height_1} data-height_2={this.state.height_2}  data-height_3={this.state.height_3} data-power={this.state.dsp + ''} data-count={this.state.numChannels + this.state.numChannels_len_3_alpha + ''} className={` ${cl.vizContainer}  ${cl.powerOff}   `}></div>
                     </div>
 
                       {/* screen  */}
@@ -875,12 +944,9 @@ class SandBox extends Component {
 
     }
     
-    clicked(event) {
-        console.log('inner')
-    }
+    clicked(event) {}
 
     outerClicked(event) {
-        console.log('inner')
 
         let elelayer3 = document.getElementsByClassName(cl.channelFormatSandbox)[0];
         let boxlayer3 = (elelayer3.getBoundingClientRect());
@@ -927,7 +993,7 @@ class SandBox extends Component {
                                 
                 <div className={cl.channelFormatSandbox}>
                     <div className={cl.before_channelFormatSandboxMessage}> Swap Mode</div>
-                        <div  data-split2="0" data-split={this.props.dataSplit} className={cl.before_channelFormatSandbox}>  
+                        <div  data-len_3_nonuniform_swap_sel="0" data-split={this.props.dataSplit} className={cl.before_channelFormatSandbox}>  
                             {
                                 this.props.cc2 .map( (value, index, array)=>{ return(  <SwapBlock  swapblockLevel2={this.state.swapblockLevel2}  clickedOuter={this.clicked } key={index}     value={ value }   cc2={this.props.cc2}   channelFormat = {this.props.channelFormat}   swapped={this.props.swapped}  dataSplit={this.props.dataSplit}/> )})
 
@@ -973,7 +1039,7 @@ class SwapBlock extends Component {
             toIndex: '',
             listOfChannel: ['','','',''],
             indexOrder : [], 
-            dataSplit2: null 
+            len_3_nonuniform_swap_sel: null 
             // indices: []
         }
         this.clicked = this.clicked.bind(this);
@@ -1081,15 +1147,13 @@ class SwapBlock extends Component {
                 let children = Array.from(parent.children);
                 let parentgui = document.getElementById('my_dataviz');
                 
-                if (this.state.dataSplit2) {
-                    this.state.dataSplit2.element.setAttribute('data-split2', this.state.dataSplit2.id)
+                if (this.state.len_3_nonuniform_swap_sel) {
+                    this.state.len_3_nonuniform_swap_sel.element.setAttribute('data-len_3_nonuniform_swap_sel', this.state.len_3_nonuniform_swap_sel.id)
                 }
 
                 if (this.state.fromIndex == -1 && this.state.toIndex == -1 ) {
                     let childrenofgui = Array.from(parentgui.children);
-                    console.log( 'ORDER', this.state.indexOrder)
                     let divsReordered = this.state.indexOrder.map( idx => childrenofgui[idx])  ;
-                    
                     // reorder  gui modify
                     parentgui.innerHTML = "";
                     divsReordered.forEach( (div) => {
@@ -1125,7 +1189,7 @@ class SwapBlock extends Component {
 
                 this.props.swapped();
 
-                this.setState({confirmSwap: 0, dataSplit2: null });
+                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null });
 
             } 
             
@@ -1278,15 +1342,14 @@ class SwapBlock extends Component {
                                 let element = document.getElementsByClassName(cl.before_channelFormatSandbox)[0];
                                 paras[0].setAttribute('data-swap', 'yes');
                                 paras[1].setAttribute('data-swap', 'yes');
-                                this.setState({confirmSwap: 1, fromIndex: -1, toIndex: -1 , indexOrder: [ 2, 0, 1] , dataSplit2: {id:1, element: element}  } );
+                                this.setState({confirmSwap: 1, fromIndex: -1, toIndex: -1 , indexOrder: [ 2, 0, 1] , len_3_nonuniform_swap_sel: {id:1, element: element}  } );
                             }
 
                             else {
                                 paras[0].setAttribute('data-swap', 'no');
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
-                                this.setState({confirmSwap: 0, dataSplit2: null } );
-
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null } );
                             }
                             
                         }
@@ -1305,8 +1368,8 @@ class SwapBlock extends Component {
 
                             else if ( (event.target.getBoundingClientRect().right < paras[1].getBoundingClientRect().right -  paras[1].getBoundingClientRect().width/50)  &&  (event.target.getBoundingClientRect().bottom > paras[1].getBoundingClientRect().top + paras[2].getBoundingClientRect().height/50) ) {
                                 paras[1].setAttribute('data-swap', 'yes');
-                                paras[2].setAttribute('data-swap', 'no');
-                                paras[0].setAttribute('data-swap', 'no');
+                                // paras[2].setAttribute('data-swap', 'no');
+                                // paras[0].setAttribute('data-swap', 'no');
                                 this.setState({confirmSwap: 1, fromIndex: 0, toIndex: 1});
                             }
 
@@ -1314,7 +1377,7 @@ class SwapBlock extends Component {
                                 let element = document.getElementsByClassName(cl.before_channelFormatSandbox)[0];
                                 paras[1].setAttribute('data-swap', 'yes');
                                 paras[2].setAttribute('data-swap', 'yes');
-                                this.setState({confirmSwap: 1, fromIndex: -1, toIndex: -1 , indexOrder: [ 1, 2, 0] , dataSplit2: {id:0, element: element} } );
+                                this.setState({confirmSwap: 1, fromIndex: -1, toIndex: -1 , indexOrder: [ 1, 2, 0] , len_3_nonuniform_swap_sel: {id:0, element: element} } );
                             }
                             
                             else {
@@ -1322,7 +1385,7 @@ class SwapBlock extends Component {
                                 paras[2].setAttribute('data-swap', 'no');
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[0].setAttribute('data-swap', 'no');
-                                this.setState({confirmSwap: 0, dataSplit2: null } );
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null } );
 
                             }
                         }
@@ -1344,7 +1407,7 @@ class SwapBlock extends Component {
                                 paras[0].setAttribute('data-swap', 'no');
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
-                                this.setState({confirmSwap: 0, dataSplit2: null } );
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null } );
 
                             }
 
@@ -1367,7 +1430,7 @@ class SwapBlock extends Component {
                                 paras[0].setAttribute('data-swap', 'no');
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
-                                this.setState({confirmSwap: 0, dataSplit2: null } );
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null } );
 
                             }
 
@@ -1409,6 +1472,8 @@ class SwapBlock extends Component {
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
                                 paras[3].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null });
+
                             }
                         }
 
@@ -1435,6 +1500,8 @@ class SwapBlock extends Component {
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
                                 paras[3].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null });
+
                             }
 
                         }
@@ -1467,6 +1534,8 @@ class SwapBlock extends Component {
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
                                 paras[3].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null });
+
                             }
 
 
@@ -1493,7 +1562,6 @@ class SwapBlock extends Component {
                                 
                                 paras[2].setAttribute('data-swap', 'yes');
                                 this.setState({confirmSwap: 1, fromIndex: 3, toIndex: 2});
-                                
                             }
 
                             else {
@@ -1502,6 +1570,8 @@ class SwapBlock extends Component {
                                 paras[1].setAttribute('data-swap', 'no');
                                 paras[2].setAttribute('data-swap', 'no');
                                 paras[3].setAttribute('data-swap', 'no');
+                                this.setState({confirmSwap: 0, len_3_nonuniform_swap_sel: null });
+
 
                             }
 
@@ -1530,7 +1600,6 @@ const addScript = (src) => {
 };
 
 
-
 const getWrapperDiv = () => {
     let container = document.getElementById('my_dataviz');
     let div = document.createElement('div');
@@ -1539,5 +1608,50 @@ const getWrapperDiv = () => {
     div.setAttribute('data-count', container.children[container.children.length-1].getAttribute('data-count'));
     div.setAttribute('data-channel', container.children[container.children.length-1].getAttribute('data-channel'));
     return div;
+};
+
+
+const waitForChildNodesPromise =  (parentContainer, index) => {
+    return  new Promise(  (resolve, _) => {
+
+    let id = setInterval(() => {
+        let childNodes = parentContainer.children[index].firstElementChild.childNodes[0].childNodes;
+            if (Array.from( childNodes.length > 0 ) ) {
+                resolve( {list: childNodes, intervalID: id} );
+            }
+        }, 200)
+    });
+};
+
+const updateLabelPromises = (record, swapmode = null) => {
+    return new Promise( (resolve) => {
+        clearInterval(record.intervalID)
+
+        let list = record.list;
+        let xaxis  = list[0];
+        let xlabel = list[ list.length-2 ];
+
+        let yaxis  = list[1];
+        let ylabel = list[list.length -  1];
+
+        console.log(swapmode);
+        
+        let delta = (yaxis.getBoundingClientRect().height - ylabel.getBoundingClientRect().height) / 2
+        ylabel.setAttribute('x', -delta  ) ; // center ylabel
+        ylabel.classList.remove(cl.plot_labels_hide);
+        ylabel.classList.add(cl.plot_labels);
+
+        delta = (xaxis.getBoundingClientRect().top - xlabel.getBoundingClientRect().top) 
+        xlabel.setAttribute('y', delta + 20 ) ; // center ylabel
+        xlabel.classList.remove(cl.plot_labels_hide);
+        xlabel.classList.add(cl.plot_labels);
+        resolve(record.list)
+    })
+};
+
+const  updateAxisLabels = async (parentContainer, numOfChannels, swapMode=null)=> {
+    let promises = [...Array(numOfChannels).keys()]
+    let records = await Promise.all( promises.map( index => waitForChildNodesPromise(parentContainer, index)) );
+    let resp = await Promise.all( records.map(record => updateLabelPromises(record, swapMode)) )
 };
 
