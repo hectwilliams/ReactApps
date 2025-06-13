@@ -37,4 +37,3 @@ class Artifacts(Base):
     id = Column(types.Integer, primary_key=True)
     name = Column(types.String(length=100), unique=True )
     data = Column(types.JSON)
-

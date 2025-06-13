@@ -10,8 +10,16 @@ class Banner extends Component {
         return (
         <>
         <div className={classes.bannerRow} > 
-            <a href="https://www.example.com" className={ `${classes.bannerLink} ${classes.bannerLinkFirst}`} > Link1 </a>
-            <a href="https://www.example.com" className={classes.bannerCell}  > Link2 </a>
+                <div> 
+                    <a href="https://www.example.com"  target="_blank" rel="noopener noreferrer" className={ `${classes.bannerLink} ${classes.bannerLinkFirst}`} > Link1 </a>
+
+                </div>
+
+                    <div> 
+
+            <a href="https://www.example.com"  target="_blank" rel="noopener noreferrer"  className={classes.bannerLink} > Link2 </a>
+
+                    </div>
             <div> </div>
             <Search/>
         </div>
