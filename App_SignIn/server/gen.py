@@ -165,7 +165,56 @@ def signal_tone(mode = 1):
                 writer.writeheader()
                 writer.writerows(data)
 
+    elif mode == 4:
+        
+        """
 
+            sin wave
+        
+        """
+
+        N = 2048 
+
+        T = 1 # sec
+
+        ts = T / N 
+
+        fs = 1 / ts 
+
+        fo = 900
+        
+        n = np.arange(N)
+        
+        n_ts = n * ts
+        
+        y_noise =  0.7*np.random.uniform(0,1 , N) 
+        y_noise =  0.002 * np.random.normal(0, 4, N)
+
+        y = (np.exp( 1j * 2 * np.pi * fo * n * ts ))  + y_noise
+        y_mag = np.abs(y)
+
+
+        f_x = n * (fs/N)
+        f_y = np.fft.fft(y)
+        f_y_mag = np.abs(f_y)
+        f_y_norm = f_y_mag/ np.max( f_y_mag) 
+
+        plt.plot(n, y_mag)
+        plt.show()
+
+        
+        data = [ {'time': time, 'amplitude': amplitude} for  time, amplitude in zip(n, y_mag.round(3) ) ] 
+
+        with open(os.path.join(os.getcwd(), 'bigdata', 'tones', f'sinraw.csv') , mode="w", newline="" ) as file:
+            writer = csv.DictWriter(file, fieldnames=['time', 'amplitude'])
+            writer.writeheader()
+            writer.writerows(data)
+        
+        data = [ {'frequency': freqdata, 'normalized': normdata} for freqdata, normdata in zip(f_x.round(3), f_y_norm.round( 3)) ]
+        with open(os.path.join(os.getcwd(), 'bigdata', 'tones', f'sinfft.csv') , mode="w", newline="" ) as file:
+            writer = csv.DictWriter(file, fieldnames=['frequency', 'normalized'])
+            writer.writeheader()
+            writer.writerows(data)
 
 if __name__ == "__main__":
-    signal_tone(3)
+    signal_tone(4)
