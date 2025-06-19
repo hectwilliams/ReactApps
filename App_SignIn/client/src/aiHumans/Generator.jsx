@@ -1,17 +1,7 @@
 import React, {Component} from 'react';
 import cl from './Generator.css';
-import gen1 from "./tones/wave2.csv";
 import gen2 from "./tones/wave4.csv";
-import gen3 from "./tones/wave6.csv";
-import gen4 from "./tones/wave8.csv";
-import gen5 from "./tones/wave10.csv";
 import gen6 from "./tones/wave12.csv";
-import gen7 from "./tones/wave14.csv";
-import gen8 from "./tones/wave16.csv";
-import gen9 from "./tones/wave18.csv";
-import gen10 from "./tones/wave20.csv";
-import gen11 from "./tones/gen1.csv";
-import gen12 from "./tones/gen2.csv";
 import wave from "./ocean.png";
 import grid from "./grid.png";
 import starsgif from "./stars.gif";
@@ -20,10 +10,11 @@ import fileicon from './file-icon.png';
 import playicon from './play-icon.png';
 import stopplay from './stopplay.png';
 import emptybox from './emptybox.png';
-import axios from 'axios';
 import sinraw from "./tones/sinraw.csv";
 import sinfft from "./tones/sinfft.csv";
-
+import time from "./tones/time.csv"
+import spectrum from "./tones/spectrum.csv"
+// import axios from 'axios';
 
 class Generator extends Component {
 
@@ -41,16 +32,14 @@ class Generator extends Component {
             captured: false, 
             svg: null,
             dsp: null, 
-            intervalID: null,
             index: 0,
-            csvs: [gen1, gen2, gen3, gen4, gen5, gen6, gen7, gen8, gen9, gen10] ,     // [f`./tones/wave${}.csv` for i in  np.arange(0, 11, 2)  ]
             x: null,
             y: null,
             channels_svg: [ 
-                {id:0, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null , xy:{} , op: 'raw' , x:  [new Array(1024).fill(0)], y:  [new Array(1024).fill(1)] , waveselect:[], maxlen:0, xlabel: "", ylabel: "" , s: "" , gearRef:null, samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity}  }, 
-                {id:1, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null , xy:{}, op: 'raw' , x:   [new Array(1024).fill(0)], y:  [new Array(1024).fill(1)],  waveselect:[],  maxlen:0,xlabel: "", ylabel: "" ,  s: "", gearRef:null,samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity} }, 
-                {id:2, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null , xy:{}, op: 'raw' , x:   [new Array(1024).fill(0)], y:  [new Array(1024).fill(1) ],  waveselect:[],  maxlen:0,xlabel: "", ylabel: "" , s: "", gearRef:null,samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity} }, 
-                {id:3, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null , xy:{}, op: 'raw' , x:   [new Array(1024).fill(0)], y:  [new Array(1024).fill(1) ], waveselect:[],  maxlen:0, xlabel: "", ylabel: "" , s: "" , gearRef:null,samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity} }  
+                {id:0, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null  , op: 'raw' , x:  [new Array(1024).fill(0)], y:  [new Array(1024).fill(1)] ,   waveselect:{}, maxLengthX:0, xlabel: "", ylabel: "" , simphash: [] , gearRef:null, samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity} , clone:[] }, 
+                {id:1, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null  , op: 'raw' , x:   [new Array(1024).fill(0)], y:  [new Array(1024).fill(1)],   waveselect:{},  maxLengthX:0,xlabel: "", ylabel: "" ,  simphash: [], gearRef:null,samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity} , clone:[]}, 
+                {id:2, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null  , op: 'raw' , x:   [new Array(1024).fill(0)], y:  [new Array(1024).fill(1) ],  waveselect:{},  maxLengthX:0,xlabel: "", ylabel: "" , simphash: [], gearRef:null,samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity}, clone:[] }, 
+                {id:3, enabled: false, svg: null,  divwrapsvg: null, xaxis: null, yaxis: null  , op: 'raw' , x:   [new Array(1024).fill(0)], y:  [new Array(1024).fill(1) ],  waveselect:{},  maxLengthX:0, xlabel: "", ylabel: "" , simphash: [] , gearRef:null,samples: [] , xlimit:{min:Infinity, max:-Infinity}  , ylimit:{min:Infinity, max:-Infinity} , clone:[]}  
             ],
             
             numChannels: 0,
@@ -82,11 +71,9 @@ class Generator extends Component {
             infoButtonNode: null ,
 
             intervalIDForChannels: -1,
+
+            activeWavedescr: '',
             
-            playstop: playicon,
-
-            downloadedFile: null,
-
             dataStore: {
 
                 name: "data store",
@@ -96,51 +83,79 @@ class Generator extends Component {
                 collection: [
                     {
                         
-                        name: "Received samples from active instrument 'A'" , 
-                        paths: ["http://127.0.0.1:5000/static/assets/AiHumans/wave4.csv"]  
+                        descr: "Received samples from active instrument 'A'" , 
+                        paths: ["http://127.0.0.1:5000/static/assets/AiHumans/wave4.csv"]  ,
+                        playback: 'none' ,
+                        waveselectExclude: []
+
                     },
 
-                    // {
-                    //     name: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.." , 
-                    //     paths: ["http://127.0.0.1:5000/static/assets/AiHumans/gen2.csv"]  
-                    // },
-
                      {
-                        name: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." , 
+                        descr: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." , 
                         paths: [
                             "http://127.0.0.1:5000/static/assets/AiHumans/wave4.csv",
                             "http://127.0.0.1:5000/static/assets/AiHumans/wave12.csv",
-                        ]  
+                        ],
+                        
+                        playback: 'none' ,
+                        waveselectExclude: []
+
+                        
                     },
 
                     {
-                        name: "slightly noisy 900Hz sinusoid signal; sample time approx 488us." , 
+                        descr: "slightly noisy 900Hz sinusoid signal; sample time approx 488us." , 
                         paths: [
                             "http://127.0.0.1:5000/static/assets/AiHumans/sinraw.csv",
                             "http://127.0.0.1:5000/static/assets/AiHumans/sinfft.csv",
-                        ]  
+                        ], 
+                        playback: 'none' ,
+                        waveselectExclude: []
+
+
+                    },
+
+                          {
+                        descr: "tone sweeps " , 
+                        paths: [
+                            "http://127.0.0.1:5000/static/assets/AiHumans/time.csv",
+                            "http://127.0.0.1:5000/static/assets/AiHumans/spectrum.csv",
+                        ], 
+                        playback: 'yes',
+                        sweepsize: 2048 ,
+                        waveselectExclude: [0]
+
                     }
-                    
 
                 ]
             },
 
-            channelGear: [false, false, false ,false],
 
-            hideScreenBase: false,
+            hideWaveList: true,
 
             indicesMap: {} ,
 
-            xAxisExtendedBy1: false,
-            yAxisExtendedBy1: false,
+            lineStrokes: [ "#000000","#FF0000", "#00FFFF", "#0000FF", "#C0C0C0", "#808080", "#800000" ],
 
-            waveOps: [ [true, false], [true, false], [true, false], [true, false]],
+            opaquePage: false,
 
-            waveOpsList: ['raw', 'fft'],
+            currentStory: null,
 
-            waveOpsSelection : ['raw', 'raw', 'raw', 'raw' ],
+            quiet: false,
 
-            strokes: [ "#000000","#FF0000", "#00FFFF", "#0000FF", "#C0C0C0", "#808080", "#800000" ]
+            plotCounter: 0,
+            plotCounterPrev: 0,
+
+            plotCounterReal: 0,
+            csvsRef: [],
+
+            isPlaying: false,
+
+            playbackIntervalID: false,
+
+            workers: 0,
+
+            workersStop: false
 
         }
 
@@ -155,23 +170,27 @@ class Generator extends Component {
         this.plotCsv = this.plotCsv.bind(this);
         this.infoClicked = this.infoClicked.bind(this);
         this.infoClickedClose= this.infoClickedClose.bind(this);
-        // this.runExample = this.runExample.bind(this);
         this.stopExample = this.stopExample.bind(this);
-        this.downloadFile = this.downloadFile.bind(this);
-        this.clickButton = this.clickButton.bind(this);
-        this.hoverTextEnterHandler = this.hoverTextEnterHandler.bind(this);
-        this.hoverTextExitHandler = this.hoverTextExitHandler.bind(this);
-        this.clickChannelGear = this.clickChannelGear.bind(this);
-        this.clickChannelGearSelectMode = this.clickChannelGearSelectMode.bind(this);
-        this.hideScreenBase = this.hideScreenBase.bind(this);
-        this.fft = this.fft.bind(this);
-        this.setLimits = this.setLimits.bind(this);
-        this.handleGear = this.handleGear.bind(this);
-        this.handleGearClose = this.handleGearClose.bind(this);
+        this.runWaveStory = this.runWaveStory.bind(this);
+        this.clickWaveOptions = this.clickWaveOptions.bind(this);
+        this.toggleWaveListMethod = this.toggleWaveListMethod.bind(this);
+        // this.fft = this.fft.bind(this);
+        this.selectWave = this.selectWave.bind(this);
+        this.closeWaveOptions = this.closeWaveOptions.bind(this);
+        this.handleWindowChange = this.handleWindowChange.bind(this);
+        this.stopPlayback = this.stopPlayback.bind(this);
+        this.runPlayback = this.runPlayback.bind(this);
+        // this.playWaveStory = this.playWaveStory.bind(this);
+        window.onresize = this.handleWindowChange;
+
     }
     
     componentDidMount() {
         addScript('https://d3js.org/d3.v4.js');
+    }
+
+    handleWindowChange = (event) => {
+        console.log('window changed ')
     }
 
     panelClick(event) {
@@ -239,8 +258,6 @@ class Generator extends Component {
         let container = document.getElementById('my_dataviz');
         let new_node  = null; 
         let clist;
-        let parentSwapContainer = Array.from(document.getElementsByClassName(cl.para));
-        let indexNextTo = null;
         let clickedChannelName = 'CH' + index;
 
         if (newCount > this.state.numChannels) { 
@@ -301,13 +318,12 @@ class Generator extends Component {
 
         // update indicesMap table ( number of channels changed)
         let indicesMap = {} ;
-        let svgNodes = Array(newCount).fill(null);
+        let svgNodes = Array(newCount).fill(null); 
         let ids = Array(newCount).fill(-1);
 
         svgNodes = svgNodes.map ( (_, index) =>   container.children[index].firstElementChild  );
         ids = ids.map( (_, index) => parseInt(svgNodes[index].getAttribute('data-name') )); 
         ids.forEach( (x, index)  => {indicesMap[x] = index});
-
         
         this.setState({numChannels: newCount, channels_svg: this.state.channels_svg, guiDiv: container, indicesMap: indicesMap});
         
@@ -327,49 +343,24 @@ class Generator extends Component {
 
     dspClick(event) {
         
-        const this_ = this;
-        var powerOnCommand = '';
         let container = document.getElementById('my_dataviz');
-        
+
         if (this.state.dsp == null) {
             
             // power on 
             container.classList.remove(cl.powerOff);
             container.classList.add(cl.powerOn);
+
             setTimeout(()=>{
                 container.classList.remove(cl.powerOn);
             }, 1000);
 
             //  power dsp mode 
             event.currentTarget.classList.add(cl.dspOn);
-            
-            // enabled ch0 sense
-            this.state.channels_svg[0].enabled = true;
-
-            // if (this.state.channels_svg[0].svg == null ) {} // standby mode or memory TBD
-            
-            this.getSvg(0, 1)
-            
-            let movevableSVGElement = container.children[0];
-            let div = getWrapperDiv();
-            div.appendChild(movevableSVGElement); // moves svg into div
-            container.appendChild(div); // append div to container 
-            this.state.channels_svg[0].divwrapsvg = div
-
-            // render loop 
+           
             const test_interval_ID = setInterval( ()=> {});
 
-            // update indicesMap table ( number of channels changed)
-            let indicesMap = {} ;
-            let svgNodes = [null]
-            let ids = [-1]
-            svgNodes = svgNodes.map ( (_, index) =>   container.children[index].firstElementChild  );
-            ids = ids.map( (_, index) => parseInt(svgNodes[index].getAttribute('data-name') )); 
-            ids.forEach( (x, index)  => {indicesMap[x] = index});   // map CHANNEL to cell index ( i.e. CH1 lives in cell #2)
-            
-            //  add updated states to event queue 
-            this.setState({ numChannels: 1 ,channels_svg: this.state.channels_svg, dsp: 'startup', intervalID: test_interval_ID, indicesMap: indicesMap});
-
+            this.setState({ dsp: 'startup'});
 
         } else {
             
@@ -380,27 +371,29 @@ class Generator extends Component {
             
                 svgRecord.enabled = false;
                 if (svgRecord.svg) {
+                    svgRecord.waveselect = {};
                     svgRecord.svg.remove();
                     svgRecord.svg = null;
                     svgRecord.raw = 'raw';
                     svgRecord.x = [];
                     svgRecord.y = [];
-                    svgRecord.maxlen = 0;
-                    svgRecord.s = "";
+                    svgRecord.maxLengthX = -Infinity;
+                    svgRecord.simphash = [];
                     svgRecord.xlabel = 0;
                     svgRecord.ylabel = 0;
                     svgRecord.xlimit = {min:Infinity, max:-Infinity}  
                     svgRecord.ylimit= {min:Infinity, max:-Infinity} 
-                    
                     if (svgRecord.divwrapsvg) {
                         svgRecord.divwrapsvg.remove();
                         svgRecord.divwrapsvg = null;
                     }
 
                     svgRecord.gearRef = null;
-
+                    svgRecord.activeWavedescr = '';
+                    
                 }
             })
+            
 
             container.innerHTML = "";
             
@@ -415,7 +408,6 @@ class Generator extends Component {
         }
         
         this.resizeGrid() 
-
     }
 
 
@@ -457,7 +449,6 @@ class Generator extends Component {
 
             else if (c.length == 3) {
 
-                // if ( c[0].getBoundingClientRect().height * c[0].getBoundingClientRect().width > c[2].getBoundingClientRect().height * c[2].getBoundingClientRect().width) {
                 if (element.getAttribute('data-len_3_nonuniform_swap_sel') == '1')   {
                     this.state.dataSplit = "50_25_25"; 
                     this.state.numChannels_len_3_alpha = 'b'
@@ -501,8 +492,9 @@ class Generator extends Component {
 
             Args:
 
-                channelID - identifies channel to be updated
-                signalID - select waveform in channel to be updated  ( i.e. 3 waveforms on channel would have the following signalIDs 0, 1 ,2 )
+                channelID - identifies which of the 4 channels to plot
+                signalID - list of wave identifier to be plot on channel 
+
         */
 
         if (!this.state.dsp) {
@@ -516,7 +508,6 @@ class Generator extends Component {
         let offsetXAxis = count == 1 ? rect.height * 0.87 : rect.height* 0.75/2;
         
         channelIDs.forEach( (currentID, currentIDIndex, currentReadyOnly) => {
-        
             
             let gElement = this.state.channels_svg[currentID].divwrapsvg.firstElementChild.firstElementChild;
             let x;
@@ -525,10 +516,11 @@ class Generator extends Component {
             let xlimit = this.state.channels_svg[currentID].xlimit;
             let ylimit = this.state.channels_svg[currentID].ylimit;
 
-            let placeholderX = linspace(xlimit.min, xlimit.max, this.state.channels_svg[currentID].maxlen);
+            let placeholderX = linspace(xlimit.min, xlimit.max, this.state.channels_svg[currentID].maxLengthX);
             let placeholder = placeholderX.map( (xValue, i) => {return {x:xValue, y:0}})
             
             gElement.innerHTML = ""; // clears channel plot 
+            this.state.channels_svg[currentID].clone = [];
 
             signalIDs.forEach( (signalid, signalidindex) => {
 
@@ -541,10 +533,10 @@ class Generator extends Component {
                 let extentx = d3.scaleLinear().domain( d3.extent(trueXDomain) ); 
                 let extenty = d3.scaleLinear().domain(d3.extent(trueYDomain) );
                 let result = [];
-           
+
                 if (signalidindex == 0) {
 
-                    cellIndex = this.state.indicesMap[currentID]; // channel is mapped to cell
+                    cellIndex = this.state.indicesMap[currentID]; // channel is mapped to cell 
 
                     result.push(   this.state.channels_svg[currentID].svg    )
 
@@ -604,25 +596,22 @@ class Generator extends Component {
 
                 }
                 
-                     // check is wave is filtered
-                     console.log(this.state.channels_svg[currentID].waveselect[signalidindex])
-                if ( 'true' === this.state.channels_svg[currentID].waveselect[signalidindex] ) {
-                        // console.log('so close', this.state.channels_svg[currentID].waveselect[signalidindex]);
-                    
-                    // DRAW WAVE
-                    
-                this.state.channels_svg[currentID].svg
-                .append("path")
-                .datum(this.state.channels_svg[currentID].samples[signalid])
-                .attr('data-signalID', signalidindex)
-                .attr("fill", "#cce5df")
-                .attr("stroke", this.state.strokes[signalid])
-                .attr("stroke-width", 1.5)
-                .attr("d", d3.area()
-                .x(function(d) { return x(d.x) })
-                .y0(y(0))
-                .y1(function(d) { return y(d.y) }))
-            }
+                // DRAW SELECTED WAVES ON CHANNEL
+                    this.state.channels_svg[currentID].svg
+                    .append("path")
+                    .datum(this.state.channels_svg[currentID].samples[signalid])
+                    .attr('data-signalID', signalidindex)
+                    .attr('class', ('false' === this.state.channels_svg[currentID].waveselect[signalidindex]) ? cl.hide_wave : '')
+                    .attr('data-check', this.state.channels_svg[currentID].waveselect[signalidindex])
+                    // .attr('class',  cl.hide_wave )
+                    .attr("fill", "#cce5df")
+                    .attr("stroke", this.state.lineStrokes[  (signalid % this.state.lineStrokes.length)  ])
+                    .attr("stroke-width", 1.5)
+                    .attr("d", d3.area()
+                    .x(function(d) { return x(d.x) })
+                    .y0(y(0))
+                    .y1(function(d) { return y(d.y) }))
+
                 
             });
 
@@ -676,23 +665,59 @@ class Generator extends Component {
             let element =  this.state.channels_svg[currentID].divwrapsvg;
             let clist = Array.from(element.firstElementChild.firstElementChild.children);
             
-        // center xlabel 
+            // CENTER XLABEL
             let xaxisData = clist.filter( ele => ele.hasAttribute('data-xaxis') )   ;
             let xlabel = xaxisData[1];
             let xaxis = xaxisData[0];
             let delta = (xaxis.getBoundingClientRect().top - xlabel.getBoundingClientRect().top) 
             xlabel.setAttribute('y', delta + 20 ) ; // center ylabel
             
-        // center ylabel 
+            // CENTER XLABEL 
             let yaxisData = clist.filter( ele => ele.hasAttribute('data-yaxis') )   ;
             let ylabel = yaxisData[1];
             let yaxis = yaxisData[0];
             delta = (yaxis.getBoundingClientRect().height - ylabel.getBoundingClientRect().height) / 2
             ylabel.setAttribute('x', -delta  ) ; // center ylabel
-    
+            
+            this.state.channels_svg[currentID].clone.push(element.firstElementChild.firstElementChild.outerHTML); // save most recent drawing
         })
 
+        /// wave for paths to update div 
+        let promises = Array(channelIDs.length).fill(Promise.resolve) ;
+
+        let interval = setInterval( () => {
+
+            // verfiy paths 
+            let bool = channelIDs.reduce( (accumState, currentID) => {
+
+                // verify 
+                let cnt = Array.from(this.state.channels_svg[currentID].divwrapsvg.firstElementChild.firstElementChild.children).reduce( (count, currentEle) => {
+
+                    if (  ( currentEle.hasAttribute('data-signalID')  )  ) {
+                        return +(currentEle.getAttribute('data-signalID')  != '-1') + count;
+                    }
+
+                    return  count;
+                } , 0);
+
+                return +(cnt == this.state.channels_svg[currentID].waveselect.length) + accumState
+
+            }, true)
+
+
+
+            if (bool) {
+                Promise.resolve({})
+                .then(() => {
+                    this.setState(  {plotCounterPrev: this.state.plotCounter, plotCounter: (this.state.plotCounter + 1) % 1024  , quiet: false , workers: this.state.workers -1}  );
+                    clearInterval(interval);
+                })
+            }
+
+        });
+
     }
+    
 
 
     resizeGrid(id = 0) {
@@ -734,7 +759,6 @@ class Generator extends Component {
 
             svgNodeParent.style.width = `${this.state.width_0}`;
             svgNodeParent.style.height = `${this.state.height_0}`;
-            // updateAxisLabels(parentContainer, 1); 
 
             this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 ,  numChannels_len_3_alpha:  ""}) ;
                 
@@ -786,11 +810,9 @@ class Generator extends Component {
             node.style.width = `${this.state.width_1}`;
             node.style.height = `${this.state.height_1}`;
       
-            // updateAxisLabels(parentContainer, 2); 
 
             this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1,  numChannels_len_3_alpha:  ""}) ;
             
-
         }
 
 
@@ -807,13 +829,13 @@ class Generator extends Component {
 
             svgNodes = svgNodes.map ( (_, index) =>   parentContainer.children[index].firstElementChild  ) 
 
-            console.log(svgNodes)
+            // console.log(svgNodes)
             
             ids = ids.map( (_, index) => parseInt(svgNodes[index].getAttribute('data-name') )); 
             
             ids.forEach( (x, index)  => {indicesMap[x] = index});
             
-            console.log( 'ids => \t' , ids) ;
+            // console.log( 'ids => \t' , ids) ;
 
             ids.forEach( (removedID, _) => { this.getSvg(removedID, 3, indicesMap,  this.state.numChannels_len_3_alpha  )}) // regenerate the following channels (i.e. IDs)
             
@@ -882,7 +904,6 @@ class Generator extends Component {
 
             }
             
-            // updateAxisLabels(parentContainer, 3); 
 
             this.setState({  width_0:  this.state.width_0 , height_0:  this.state.height_0 , width_1:  this.state.width_1 , height_1:  this.state.height_1, width_2:  this.state.width_2 , height_2:  this.state.height_2}) ;
             
@@ -943,7 +964,6 @@ class Generator extends Component {
             node.style.width = `${this.state.width_3}`;
             node.style.height = `${this.state.height_3}`;
             
-            // updateAxisLabels(parentContainer, 4); 
 
             this.setState({  
                 width_0:  this.state.width_0 , 
@@ -963,15 +983,25 @@ class Generator extends Component {
 
     infoClicked(event) {
 
+        /*
+
+        */
+       
         if (this.state.infoButtonNode == null) {
+
+            let rect = document.getElementById('my_dataviz').getBoundingClientRect();
             this.state.infoButtonNode = event.target;
+            // console.log(event.target.parentNode.parentNode.parentNode)
             this.state.infoButtonNode.classList.add(cl.info_card);
         
             this.setState({infoButtonNode: this.state.infoButtonNode });
             
             let node = document.createElement('div')
+            node.style.width = rect.width + 'px';
+            node.style.height = rect.height + 'px';
+            node.style.top = rect.top + 'px' ;
+            node.style.left = rect.left  + 'px';
             node.style.backgroundImage = `url(${starsgif})`;
-
             
             this.state.infoButtonNode.appendChild(node);
 
@@ -990,10 +1020,11 @@ class Generator extends Component {
             p.textContent= '© 2025';
             childNode1.appendChild(p);
             
-            childNode2.onclick =  this.infoClickedClose; 
-
+            
             node.appendChild(childNode1);
             node.appendChild(childNode2);
+
+            childNode2.onclick =  this.infoClickedClose; 
         }
 
     }
@@ -1008,10 +1039,8 @@ class Generator extends Component {
                 
                 let clist = this_.state.infoButtonNode.childNodes;
                 
-                
                 if ( this_.state.infoButtonNode.classList.contains(cl.info_card)  ) {
-                        clearInterval(id);
-
+                    clearInterval(id);
                     resolve( {list:clist, id:id, self:this_, activeNode: this_.state.infoButtonNode})
                 }
 
@@ -1024,8 +1053,8 @@ class Generator extends Component {
             let node = record.list[0] ;
             let parent = node.parentNode; 
             
-            console.log(parent)
-            console.log(node)
+            // console.log(parent)
+            // console.log(node)
             record.activeNode.classList.remove(cl.info_card)
             parent.innerHTML = "";
             parent.appendChild( list[0] );
@@ -1040,31 +1069,84 @@ class Generator extends Component {
         }
     }
 
-    fft (input_data) {
+  
 
-        const N = input_data.length;
-        if ( ( N <=1 )  && ( Math.log2(N) % 1 !==0 ) ) 
-            return 
+    stopPlayback = ()=> {
 
-        const even = fft(input_data.filter( (_, i)=>  i % 2 == 0)  );
-        const odd = fft(input_data.filter( (_, i)=>  i % 2 !== 0)  );
-        const result = new Array(N).fill(0);
+        /*
+            waits for busy status and stops plotting
+        
+         */
+        
+        let activeChannels = this.state.channels_svg.filter( (someChannelSvg) => someChannelSvg.enabled);
 
-        for (let i = 0; k < N/2; k++) {
+        this.setState({isPlaying: false, workersStop: true});
+
+        clearInterval(this.state.playbackIntervalID);
+        
+        // wait for workers count to equal 0
+        
+        
+        let interval_ = setInterval( () => {
             
-            const t = Math.exp(-2 * Math.PI * k/N)
-            // lower half
-            result[k] = even[i] + k
-            // upper half
-            result[k + N/2]
-        }
 
-    }
+            // console.log(this.state.workers)
+            
+            if (this.state.workers <= 0) {    
 
-    clickButton(event) {
+                activeChannels.forEach( (ch, index) => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(ch.clone[index], 'text/html');
+                    const node = doc.body.firstChild;
+                    ch.divwrapsvg.firstElementChild.firstElementChild.innerHTML = node;
+                })
+
+                clearInterval(interval_);
+                this.setState({workers: 0, workersStop: false});
+                
+            }
+        },100) 
+
+    } 
+
+    runPlayback = (event)=> {
+
+         let node = event.target;
+
+            let intvalID = setInterval( () => {
+
+
+                if (this.state.plotCounterPrev !=  this.state.plotCounter) {
+                    
+                    if (this.state.isPlaying) {
+                        
+                        this.setState( { plotCounterPrev: this.state.plotCounter, plotCounterReal: (this.state.plotCounterReal + 1) % 30 } );
+                        
+                        node.click();
+
+                    }
+                }
+
+            }, 300);
+            
+            this.setState( { playbackIntervalID: intvalID } );
+    } 
+
+
+    runWaveStory(event) {
+
+        /*
+            Plot/Play one of list of wave stories.
+
+        Args:
+
+            event - button event handler 
+
+            TODO - halt button 'clickness' for 200ms after click (debounce)
+
+        */
         
-        let paths = JSON.parse(event.target.getAttribute('data-csv_paths')) 
-        
+    
         //  csv file locally on server 
         let csvs = JSON.parse(event.target.getAttribute('data-csv_paths'));
         let waveIds = [...Array(csvs.length).keys()] 
@@ -1076,221 +1158,257 @@ class Generator extends Component {
         let tmpMin;
         let tmpMax;
         let activeChannels = this.state.channels_svg.filter( (someChannelSvg) => someChannelSvg.enabled);
-        let thresholdYLimit= -1;
+        let promises = Array(activeIds.length   *  waveIds.length).fill(null);
+        let tmp;
+        let samples_y;
+        let samples_x;
+        let samples;
+        let start;
+        let end;
 
-        // reset limits 
-        activeChannels.forEach( record => {
-            record.xlimit = {min:Infinity, max:-Infinity};
-            record.ylimit = {min:Infinity, max:-Infinity};
+        if (this.state.workersStop) {
+            return
+        }
+
+        if ( event.target.getAttribute('data-playback') == 'yes'  && !this.state.isPlaying )  {
+            this.setState({isPlaying: true});
+            this.runPlayback(event);
+        }
+        
+        // user selects different story 
+        if (this.state.currentStory != event.target) {
+
+            this.state.currentStory = event.target;
+                // reset wave selects 
+                activeChannels.forEach( ch => {
+                    ch.waveselect = [];
+                // clear all canvas
+                ch.divwrapsvg.firstElementChild.firstElementChild.innHTML = "";
+
+            })
+
+        }
+        
+        this.setState({quiet: true, currentStory: this.state.currentStory, workers: this.state.workers + 1})
+
+        // reset x,y domain limits 
+        activeChannels.forEach( ch => {
+            ch.xlimit = {min:Infinity, max:-Infinity};
+            ch.ylimit = {min:Infinity, max:-Infinity};
         })
 
-        // 
-        
         // write current-csv to all active channels 
         activeChannels.forEach( (ele, channelIndex, activeChannelsReadOnlyArr) => {
             
-            ele.xlimit = {min:Infinity, max:-Infinity};
-            ele.ylimit = {min:Infinity, max:-Infinity};
-
             ele.x = Array(csvs.length).fill([]);
             ele.y = Array(csvs.length).fill([]);
             ele.samples = Array(csvs.length).fill([]);
-            ele.s = '';
-        
-            // user has not not filtered signals in channel
-            if (ele.waveselect.length == 0) {
-                ele.waveselect = Array(activeChannelsReadOnlyArr.length).fill('true');
+            ele.simphash = Array(csvs.length).fill([]); 
+            ele.ylabel = "";
+            ele.xlabel = "";
+            ele.maxLengthX = -Infinity;
+            tmp = {};
+
+            // copy previous wave selects 
+            for (let key in ele.waveselect) {
+                tmp[key] = ele.waveselect[key]
+            }
+            
+            // add new wave selects
+            if (waveIds.length > Object.entries(ele.waveselect).length) {
+                waveIds.filter( id =>{ return !(id in tmp) } ).forEach(id => {  
+                    let attr = JSON.parse(event.target.getAttribute('data-waveselectfilter'))
+                    
+                    if ( attr.findIndex(excluded_id => excluded_id == id) != -1) {
+                        tmp[id] = 'false';
+                        
+                    }
+                    else {
+                        tmp[id] = 'true';
+                        
+                    }
+                })
             }
 
-            csvs.forEach( (currentCSV, waveIndex) => {
+            else { 
+                
+                // remove wave ids lost 
+                Object.keys(tmp).forEach( key=> { 
+                    if (!(parseInt(key) in waveIds)) {
+                        delete tmp[key]
+                    }
+                })
+                
+            }
+            
+            ele.waveselect = tmp ;
 
+            csvs.forEach( (currentCSV, waveIndex, waveIndicesReadyOnly) => {
+
+                // parse table, selects parse options based on filename info 
+                // TODO - prefix x, and y label in filename
+                // TODO - handle increase data dimensions large than 2 
+                
                 const parserD3CSV = (headers) => {
                     
-                    if (paths[waveIndex].indexOf('sinfft')  !==- 1   ){
+                    if (csvs[waveIndex].indexOf('sinfft')  !==- 1   ){
 
                         return { x: headers.frequency, y:headers.normalized}
 
-                    } else if (paths[waveIndex].indexOf('sinraw')  !==- 1 ) {
+                    } 
+                    
+                    else if (csvs[waveIndex].indexOf('sinraw')  !==- 1 ) {
                     
                         return { x: headers.time, y:headers.amplitude}
                     
-                    } else if (paths[waveIndex].indexOf('gen2')  !==- 1 ) {
+                    } 
+                    
+                    else if (csvs[waveIndex].indexOf('gen')  !==- 1 ) {
 
                         return {x: headers.date, y: headers.value }
 
-                    } else {
+                    } 
+                    
+                    else if (csvs[waveIndex].indexOf('time.csv')  !==- 1   ){
+
+                        return { x: headers.time, y:headers.amplitude};
+
+                    } 
+
+                    else if (csvs[waveIndex].indexOf('spectrum.csv')  !==- 1   ){ 
+                     
+                        return { x: headers.frequency, y:headers.magnitude};
+                        
+                    }
+                    
+                    else {
                     
                         return { x: headers.data, y:headers.value}
-                    
                     }
+                                       
+                
                 }
 
+                
+                d3.csv( currentCSV  , parserD3CSV, data => {
 
-                d3.csv( currentCSV  , parserD3CSV, (data) => {
-                   
-
-                    // margin to max x range 
-                    let samples_y = data.map( (xyRecord) => {return  parseFloat(xyRecord.y)    });
-                    let samples_x  = data.map( (xyRecord) => {return  parseFloat(xyRecord.x)   });
-
-                    tmpMin = Math.floor( getMin(samples_y));
-                    tmpMax = getMax(samples_y);
+                    if (event.target.innerHTML.trim() == "PLAY" ) {
+                        start = this.state.plotCounterReal * 2048;
+                        end = (this.state.plotCounterReal+1) * 2048;
+                    } else {
+                        start = 0;
+                        end = data.length;
+                    }
                     
-                    if (tmpMin < minValueY) {
-                        minValueX = tmpMin;
-                    }
-
-                    if (tmpMax > maxValueY) {
-                        maxValueY = tmpMax;
-                    }
-
-                    tmpMin = Math.floor( getMin(samples_x) ) ;
-                    tmpMax =  Math.ceil(getMax(samples_x));
-
-                    if (tmpMin < minValueY) {
-                        minValueY = tmpMin;
-                    }
-
-                    if (tmpMax > maxValueY) {
-                        maxValueX = tmpMax;
-                    }
-
-                    let samples = samples_x.map( (_ , index) => {return {x:samples_x[index] , y:samples_y[index]}} )
+                    data = data.slice( start, end);
                     
-                    if ( ele.op  == 'raw'  ) {
+                    samples_y = data.map( (xyRecord) => {return  parseFloat(xyRecord.y)    });
+                    samples_x = data.map( (xyRecord) => {return  parseFloat(xyRecord.x)   });
 
-                        ele.x[waveIndex] = samples_x ;
-                        ele.y[waveIndex] = samples_y ;
-                        ele.samples[waveIndex] = samples;
-                        // ele.xlabel = "Time";
-                        // ele.ylabel = "Amplitude";
-                        ele.ylabel = "";
-                        ele.xlabel = "";
+                    samples = samples_x.map( (_ , index) => {return {x: samples_x[index] , y: samples_y[index]}} )
+                    ele.x[waveIndex] = samples_x ;
+                    ele.y[waveIndex] = samples_y ;
+                    ele.samples[waveIndex] = samples;
+                    ele.simphash[waveIndex] = JSON.stringify(samples);
+
+                    if (ele.waveselect[waveIndex] === 'true') {
+                        
+                        tmpMin = Math.floor( getMin(samples_y));
+                        tmpMax = getMax(samples_y);
+                        
+                        if (tmpMin < minValueY) {
+                            minValueX = tmpMin;
+                        }
+                        
+                        if (tmpMax > maxValueY) {
+                            maxValueY = tmpMax;
+                        }
+                        
+                        tmpMin = Math.floor( getMin(samples_x) ) ;
+                        tmpMax =  Math.ceil(getMax(samples_x));
+                        
+                        if (tmpMin < minValueY) {
+                            minValueY = tmpMin;
+                        }
+                    
+                        if (tmpMax > maxValueY) {
+                            maxValueX = tmpMax;
+                        }
+
                         ele.xlimit = {min: minValueX, max: maxValueX}
                         ele.ylimit = {min: minValueY, max: maxValueY}
 
-
-                    } else if ( ele.op  == 'fft'  ) {
-
-                        ele.y[waveIndex] = Array(samples_y.length).fill(0.5) ;
-                        samples = ele.y.map( (_ , index) => {return {x:ele.x[index] , y:ele.y[index]}} )
-                        ele.samples[waveIndex]  = samples 
-                        // ele.xlabel = "Frequency";
-                        // ele.ylabel = "Normalized Amplitude";
-                        ele.ylabel = "";
-                        ele.xlabel = "";
-                    }
-                    
-                    this.setLimits(ele.id, waveIndex);
-
-                    ele.s += channelIndex  + JSON.stringify(samples);
-
-                    if (samples.length > ele.maxlen ) {
-                        ele.maxlen = samples.length;
+                        if (samples.length > ele.maxLengthX ) {
+                            ele.maxLengthX = samples.length;
+                        }
                     }
 
-                    
+                    // update promises ( resolve promise at index 0 and move to end)
+                    let promiseIndex = channelIndex * waveIndicesReadyOnly.length +  waveIndex ;
+                    promises[promiseIndex] = Promise.resolve( { this: self, channels: activeIds , waves: waveIds} );
+                
                 });
 
-            });
+            })
+
+            // check if limits were set (if not add placeholder for limits)
+            if (ele.maxLengthX = -Infinity) {
+                ele.maxLengthX = 2048; // placeholder
+            }
+            if (ele.xlimit.min == Infinity) {
+                ele.xlimit.min = 0
+            }
+
+            if (ele.xlimit.max == -Infinity) { 
+                ele.xlimit.max = 1;
+            }
+
+            if (ele.ylimit.min == Infinity) { 
+                ele.ylimit.min = 0;
+            }
             
+            if (ele.ylimit.max == -Infinity) { 
+                ele.ylimit.max = 1;
+            }
+
         })
 
-        this.setState({channels_svg: this.state.channels_svg })
-        
-        new Promise( (resolve, reject)=> {
+        this.setState({channels_svg: this.state.channels_svg});
 
-            let id = setInterval( (self, activeIds, waveIds)=>{
-                let isStateUpdated = activeIds.reduce( (boolState, channelId) => {
-                    let shash = '';
+        let intervalID = setInterval( () => {
 
-                    self.state.channels_svg[channelId].samples.forEach( samples2DArray => {
-                        shash += channelId + JSON.stringify(samples2DArray);
-                    })
+            Promise.all(promises)
+                .then( (response) => {
+                
+                // wait for promise 
+                if (response.reduce( (acc, promiseElement) => {return acc & (promiseElement != null)  }, true) ) {
+                    
+                    Promise.resolve(response)
+                    .then( (response) => {
+                        let resp = response[0];
 
-                    return (shash == self.state.channels_svg[channelId].s) & boolState;
+                        (async (self, channelIDs, waveIDs ) => {
+                            await plotCsvHelper(self, channelIDs, waveIDs)
+                            .then()
+                            clearInterval(intervalID);
+                        })( this, resp.channels, resp.waves);
+                    }) 
 
-                }, true)
-
-                if (isStateUpdated) {
-                    clearInterval(id);
-
-                    // update state
-                    this.setState({channels_svg: this.state.channels_svg })
-
-                    // resolve promise
-                    resolve({id:id, self: self, activeIds: activeIds, waveIds: waveIds});
                 }
+            
+            })
 
-            }, 10, this, activeIds, waveIds);
-
-        })
-        .then( (record)=> {
-
-            record.self.plotCsv(record.activeIds, record.waveIds );  // plot axis and data 
-
-        })
-        .catch( (err) => {
-
-            console.log('error', err);
-        })
-
+        } ,100)
+        
         
     }
 
-    setLimits (currentChannelID, waveIndex) {
-        let x = this.state.channels_svg[currentChannelID].x[waveIndex];
-        let y = this.state.channels_svg[currentChannelID].y[waveIndex];
-        let xlimitRecord = this.state.channels_svg[currentChannelID].xlimit;
-        let ylimitRecord = this.state.channels_svg[currentChannelID].ylimit;
+    selectWave (event) {
+          /*
+            handle changes to checklist 
+         */
 
-        let tmp = Math.floor(getMin(x));
-
-        if (tmp < xlimitRecord.min) {
-            xlimitRecord.min = tmp;
-        }
-
-        tmp = Math.ceil(getMax(x));
-        if (tmp > xlimitRecord.max) {
-            xlimitRecord.max = tmp;
-        }
-
-        tmp = Math.floor(getMin(y));
-        if (tmp < ylimitRecord.min) {
-            xlimitRecord.min = tmp;
-        }
-        
-        tmp = getMax(y);
-        if (tmp > ylimitRecord.max) {
-            xlimitRecord.min = tmp;
-        }
-    }
-
-    downloadFile() {
-
-        // trigger browser download functionality 
-
-    }
-
-    hoverTextEnterHandler() {
-        console.log('enter')
-    }
-
-    hoverTextExitHandler() {
-        console.log('exit')
-        
-    }
-
-    handleGear (event) {
-        console.log('--')
-
-        console.log(event.target)
-
-        console.log(event.target.parentNode.parentNode.parentNode)
-        
-        console.log('--')
-
-        let channelID = parseInt(event.target.getAttribute('data-channelid'))
+        let channelID = parseInt(event.target.getAttribute('data-channelid'));
 
         if (event.currentTarget.getAttribute('data-check') == 'true') {
             event.currentTarget.setAttribute('data-check', 'false');
@@ -1298,54 +1416,73 @@ class Generator extends Component {
             event.currentTarget.setAttribute('data-check', 'true');
         }
                     
-        // this.state.channels_svg[channelID].waveselect = Array( this.state.channels_svg[channelID].waveselect.length ).fill([]);
-
-        // update wave selection 
-        Array.from(event.target.parentNode.children).forEach( (element, i) => {
-            let idx = parseInt(element.getAttribute('data-channelid'));
-            this.state.channels_svg[idx].waveselect[i] = element.getAttribute('data-check');
-            // console.log('log', element.getAttribute('data=check') )
-        })
-
-        this.state.channels_svg[channelID].gearRef = event.target;
-
-        console.log(this.state.channels_svg[channelID].waveselect);
-
-        this.setState({channels_svg: this.state.channels_svg});
-
-    }
-
-    handleGearClose(event) {
-        let chIndex = parseInt(event.target.parentNode.getAttribute('data-channelid'));
-        console.log('parent node ', event.target.parentNode)
-        event.target.parentNode.setAttribute('data-visible', "false");
-        // console.log(this.state.channels_svg[chIndex].gearRef)
-        // this.state.channels_svg[chIndex].gearRef.setAttribute('data-visible', 'false'); 
-        // this.state.channels_svg[chIndex].gearRef = event.target.parentNode;
-
-        console.log('node ', event.target.parentNode.lastElementChild)
+        // update wave selections 
+        let clist = Array.from(event.target.parentNode.children);
+        let buffer = {}
         
-        Array.from(event.target.parentNode.lastElementChild.children).forEach( (element, i) => {
-            let idx = parseInt(element.getAttribute('data-channelid'));
-            this.state.channels_svg[idx].waveselect[i] = element.getAttribute('data-check');
-        })
+        clist.forEach( (li_element, i) => {
+            let channelid = parseInt(li_element.getAttribute('data-channelid'));
+            let waveid = parseInt(li_element.getAttribute('data-waveid'));
+            buffer[waveid] = li_element.getAttribute('data-check')
+            console.log('update wave selections', channelid, waveid, li_element.getAttribute('data-check'))
+            this.state.channels_svg[channelid].waveselect[waveid] = li_element.getAttribute('data-check');
+        });
+        
+        
+        this.setState({channels_svg: this.state.channels_svg});
+        
+        let intervalID = setInterval( () => {
+
+            let ready = clist.reduce( ( accumlator, li_element, i) => {
+                let channelid = parseInt(li_element.getAttribute('data-channelid'));
+                let waveid = parseInt(li_element.getAttribute('data-waveid'));
+
+                return ( JSON.stringify(this.state.channels_svg[channelid].waveselect[waveid])  == JSON.stringify((buffer[waveid])) ) & accumlator;
+                
+            }, true) 
+            
+            if (ready) {
+                    
+                clearInterval(intervalID);
+                
+                this.state.currentStory.click();
+
+            }
        
-        console.log('closed',   this.state.channels_svg[chIndex].waveselect) 
-        
-        this.setState({channels_svg: this.state.channels_svg});
+
+        }, 100);
 
     }
 
-    clickChannelGear (event) {
+    closeWaveOptions(event) {
 
+        /* 
+            close wave checklist 
+        */
+
+        let channelID = parseInt(event.target.parentNode.getAttribute('data-channelid'));
+       
+        this.state.channels_svg[channelID].gearRef = event.target.parentNode;
+       
+        event.target.parentNode.setAttribute('data-visible', "false");
+        
+    }
+
+    clickWaveOptions (event) {
+        /*
+            opens wave checklist 
+        */
         
         let channelID = event.target.getAttribute("data-key");
         
         let div = this.state.channels_svg[channelID].divwrapsvg;
         
         let divRect = div.getBoundingClientRect();
-        
-        
+        let d = div.firstElementChild.firstElementChild.children;
+
+        let paths = Array.from(d).filter( (node) => parseInt(node.getAttribute( 'data-signalID' )  ) >=0 )
+        let ul;
+
         if ( this.state.channels_svg[channelID].waveselect.length <=0) {
             return; 
         }
@@ -1355,89 +1492,65 @@ class Generator extends Component {
             let newDiv = document.createElement('div');
         
             newDiv.style.width = divRect.width*0.25  + 'px'
-            newDiv.style.height = divRect.height*0.25 + 'px';
-            newDiv.style.left = (divRect.left + divRect.width*0.75) +  'px';
-            newDiv.style.top= divRect.top + 'px';
+            newDiv.style.height = divRect.height*0.40 + 'px';
+            newDiv.style.left = (divRect.left + divRect.width*0.70) +  'px';
+            newDiv.style.top= (divRect.top + divRect.height*0.05) + 'px';
             newDiv.classList.add(cl.minibox);
             newDiv.setAttribute('data-visible', "true");
             newDiv.setAttribute('data-channelid', channelID);
             this.state.channels_svg[channelID].gearRef = newDiv;
 
-            let ul = document.createElement('ul');
+            ul = document.createElement('ul');
             ul.classList.add(cl.minibox_ul);
 
             let waveSelectDiv = document.createElement('div')
-            waveSelectDiv.onclick = this.handleGearClose;
+            waveSelectDiv.onclick = this.closeWaveOptions;
           
             newDiv.appendChild(waveSelectDiv);
             newDiv.appendChild(ul);
             div.appendChild(newDiv);
-
-            let d = div.firstElementChild.firstElementChild.children;
-            console.log(d)
-            console.log(div)
-
-            let paths = Array.from(d).filter( (node) => parseInt(node.getAttribute( 'data-signalID' )  ) >=0 )
-            console.log(paths);
-            
-            paths.forEach ( (currentPathNode, index) => {
-                let li = document.createElement('li');
-                li.setAttribute('data-check', 'true');
-                li.textContent = 'wave';
-                li.style.color = currentPathNode.getAttribute('stroke');
-                li.setAttribute('data-index', index);
-                li.setAttribute('data-channelid', channelID);
-                li.classList.add(cl.minibox_li);
-                ul.appendChild(li);
-                li.onclick  = this.handleGear;
-
-            })
-
-            this.setState({channels_svg: this.state.channels_svg});
-
+      
         }
 
         else  {
-            console.log(this.state.channels_svg[channelID].gearRef.parentNode.parentNode);
-            this.state.channels_svg[channelID].gearRef.parentNode.parentNode.setAttribute('data-visible', 'true'); 
+
+            ul = this.state.channels_svg[channelID].gearRef.lastElementChild;
+            // console.log(this.state.channels_svg[channelID].gearRef);
+            this.state.channels_svg[channelID].gearRef.setAttribute('data-visible', 'true'); 
+            this.setState({channels_svg:this.state.channels_svg ,opaquePage: false});
 
         }
+
+        ul.innerHTML = "";
+
+        paths.forEach ( (currentPathNode, index) => {
+            let li = document.createElement('li');
+            li.setAttribute('data-check', currentPathNode.getAttribute('data-check') ); // currentPathNode.classList.contains(cl.hide_wave) ? 'false': 'true');
+            li.textContent = 'wave';
+            li.style.color = currentPathNode.getAttribute('stroke');
+            li.setAttribute('data-waveid', currentPathNode.getAttribute('data-signalID') );
+            li.setAttribute('data-channelid', channelID);
+            li.classList.add(cl.minibox_li);
+            ul.appendChild(li);
+            li.onclick  = this.selectWave;
+
+        })
+
+        this.setState({channels_svg: this.state.channels_svg, opaquePage: true});
+
     }
 
-    clickChannelGearSelectMode (event) {
-
-
-
-        if (event.target.getAttribute('data-sel') == 'false') {
-            let chidren = Array.from(event.target.parentNode.children);
-            let oldIndex = chidren.findIndex(ele => ele.getAttribute('data-sel') == 'true' ) ;
-            
-            let updateIndex = parseInt(event.target.getAttribute('data-index'));
-            let parentIndex = parseInt(event.target.parentNode.parentNode.parentNode.getAttribute('data-key'));
-
-            this.state.waveOps[parentIndex][updateIndex] = true;
-            this.state.waveOps[parentIndex][oldIndex] = false;
-
-            this.state.waveOpsSelection[parentIndex] =  this.state.waveOpsList[updateIndex] ;
-            
-            let channel = this.state.channels_svg.find(ele => ele.id == parentIndex); // get channel
-            channel.op = this.state.waveOpsList[updateIndex]  ;  
-            this.setState( {waveOps: this.state.waveOps, waveOpsSelection: this.state.waveOpsSelection, channels_svg: this.state.channels_svg} );
-
-
-        }
-    }
 
     
-    hideScreenBase(event) {
-        this.setState({hideScreenBase : !this.state.hideScreenBase }) 
+    toggleWaveListMethod(event) {
+        this.setState({hideWaveList : !this.state.hideWaveList }) 
     }
 
     render() {
         return (
             <div className={cl.component_grid}>
 
-                <div className={cl.screen}>
+                <div  className={cl.screen}>
                     
                     {/* screen top button */}
 
@@ -1462,16 +1575,16 @@ class Generator extends Component {
 
                     {/* screen bottom buutton  */}
 
-                    <div data-power={this.state.dsp + ''} className={cl.screenBase} >
+                    <div data-quiet={this.state.quiet + 'xx' } data-power={ this.state.channels_svg.reduce( (bbool, v) => bbool || v.enabled, false) } className={cl.screenBase} >
                         
                         <div>
                             
                             {/* collection of waveforms */}
 
-                            <div data-hide={(this.state.dataStore.collection.length == 0 || this.state.hideScreenBase) + ""} data-store_len={this.state.dataStore.collection.length  + ''}>
+                            <div  data-hide={(this.state.dataStore.collection.length == 0 || this.state.hideWaveList) + ""} data-store_len={this.state.dataStore.collection.length  + ''}>
 
                                 {
-                                    this.state.dataStore.collection.length == 0 || this.state.hideScreenBase
+                                    this.state.dataStore.collection.length == 0 || this.state.hideWaveList
                                     
                                     ?                                 
                                         //  render empty box if list is waveform store empty
@@ -1484,15 +1597,23 @@ class Generator extends Component {
 
                                     this.state.dataStore.collection.map ( (record, index) => {return (
                                         <div key={index} className={cl.datalist_container}> 
-                                            <div > 
+                                            <div> 
 
-                                                <label data-csv_paths = {JSON.stringify(record.paths)} data-index ={index} data-on={"false"} onClick={this.clickButton}  > {index==1?"PLOT": "PLOT"} </label>
+                                                <label onClick={ record.playback =="yes"? this.runWaveStory:this.runWaveStory}   data-waveselectfilter={JSON.stringify(record.waveselectExclude)} data-playback={record.playback} data-descr={record.descr} data-csv_paths = {JSON.stringify(record.paths)} data-index ={index} data-on={"false"}   > {record.playback=='yes' ? "PLAY": "PLOT"} </label>     
+                                                
+                                                {
+                                                    record.playback =="yes"?
+                                                        <label onClick={this.stopPlayback}> STOP</label>
+                                                    : ''
+
+                                                }
+
                                             </div>
                                             
                                             <div> 
                                                 
-                                                <label data-text= { `${record.name}`  }> 
-                                                    {`${record.name}`}
+                                                <label data-text= { `${record.descr}`  }> 
+                                                    {`${record.descr}`}
                                                 </label>
 
                                             </div>
@@ -1507,79 +1628,17 @@ class Generator extends Component {
 
 
                        <div className={cl.hoverText}>
-                        {/* fixed buttons allow each channel to tranform the raw data from a list of operations */}
+                        {/* BUTTONS ALLOW WAVE SELECTIONS PER CHANNEL */}
                             
-                            <button onClick={this.hideScreenBase} data-key={'hide'}>
-                                <img src={playicon} />
-                            </button>
+                            <button onClick={this.toggleWaveListMethod} data-key={'hide'}></button>
 
-                            <button data-key={'0'} onClick={this.clickChannelGear} data-channel_is_on={this.state.channels_svg[0].enabled + ""}>
-                                {
-                                 this.state.channelGear[0] ? 
-                                    <div   data-key={'0'} onClick={this.clickChannelGear}  className={cl.gear}>  
-                                         <div>    
-                                            <ul>
-                                                {
-                                                    this.state.waveOps[0].map( (isOn, index)=> {return (<li key={index} data-index={index} data-sel={isOn} onClick={this.clickChannelGearSelectMode}> {this.state.waveOpsList[index]} </li>)} )
-                                                }
-                                                </ul>
-                                        </div>  
-                                        <label  name={0 + ""} data-key={'0'} onClick={this.clickChannelGear}  > {  "\u{2716}"}  </label> 
-                                    </div> 
-                                :  
-                                     <label  > </label>} 
-                            </button>
+                            <button data-key={'0'} onClick={this.clickWaveOptions} data-channel_is_on={this.state.channels_svg[0].enabled + ""}></button>
 
-                            <button data-key={'1'} onClick={this.clickChannelGear} data-channel_is_on={this.state.channels_svg[1].enabled + ""}>
-                                {
-                                 this.state.channelGear[1] ? 
-                                    <div   data-key={'1'} onClick={this.clickChannelGear}  className={cl.gear}>  
-                                         <div>    
-                                            <ul>
-                                                 {
-                                                    this.state.waveOps[1].map( (isOn, index)=> {return (<li key={index} data-index={index} data-sel={isOn} onClick={this.clickChannelGearSelectMode}> {this.state.waveOpsList[index]} </li>)} )
-                                                }
-                                                </ul>
-                                        </div>  
-                                        <label  name={1 + ""} data-key={'1'} onClick={this.clickChannelGear}  > {  "\u{2716}"}  </label> 
-                                    </div> 
-                                :  
-                                     <label  > </label>} 
-                            </button>
+                            <button data-key={'1'} onClick={this.clickWaveOptions} data-channel_is_on={this.state.channels_svg[1].enabled + ""}></button>
 
-                            <button data-key={'2'} onClick={this.clickChannelGear} data-channel_is_on={this.state.channels_svg[2].enabled + ""}>
-                                {
-                                 this.state.channelGear[2] ? 
-                                    <div   data-key={'2'} onClick={this.clickChannelGear}  className={cl.gear}>  
-                                         <div>    
-                                            <ul>
-                                           {
-                                                    this.state.waveOps[2].map( (isOn, index)=> {return (<li key={index} data-index={index} data-sel={isOn} onClick={this.clickChannelGearSelectMode}> {this.state.waveOpsList[index]} </li>)} )
-                                                }
-                                                </ul>
-                                        </div>  
-                                        <label  name={2 + ""} data-key={'2'} onClick={this.clickChannelGear}  > {  "\u{2716}"}  </label> 
-                                    </div> 
-                                :  
-                                     <label  > </label>} 
-                            </button>
+                            <button data-key={'2'} onClick={this.clickWaveOptions} data-channel_is_on={this.state.channels_svg[2].enabled + ""}></button>
 
-                             <button data-key={'3'} onClick={this.clickChannelGear} data-channel_is_on={this.state.channels_svg[3].enabled + ""}>
-                                {
-                                 this.state.channelGear[3] ? 
-                                    <div   data-key={'3'} onClick={this.clickChannelGear}  className={cl.gear}>  
-                                         <div>    
-                                            <ul>
-                                                {
-                                                    this.state.waveOps[3].map( (isOn, index)=> {return (<li key={index} data-index={index} data-sel={isOn} onClick={this.clickChannelGearSelectMode}> {this.state.waveOpsList[index]} </li>)} )
-                                                }
-                                            </ul>
-                                        </div>  
-                                        <label  name={3 + ""} data-key={'3'} onClick={this.clickChannelGear}  > {  "\u{2716}"}  </label> 
-                                    </div> 
-                                :  
-                                     <label  > </label>} 
-                            </button>
+                             <button data-key={'3'} onClick={this.clickWaveOptions} data-channel_is_on={this.state.channels_svg[3].enabled + ""}></button>
 
                         </div> 
 
@@ -1587,20 +1646,19 @@ class Generator extends Component {
 
 
 
-                <div  data-mode={this.state.channelModalSetup + ''}  className={cl.channel_reorg}>
-                        <div className={cl.exitchannelFormat}>
-                            <p onClick= {this.channelFormatOff} >{  "\u{2716}"}</p> 
-                        </div>
-                        <SandBox channelFormatOff={this.channelFormatOff}  swapblockLevel1= {this.state.swapblockLevel1} channelModalSetup={this.state.channelModalSetup}  channelNames= {this.state.channelNames }   cc2={this.state.cc2}  swapped={this.swapped}  channelFormat = {this.channelFormat} dataSplit= {this.state.dataSplit}  />
-
-                </div>
+                    <div  data-mode={this.state.channelModalSetup + ''}  className={cl.channel_reorg}>
+                            <div className={cl.exitchannelFormat}>
+                                <p onClick= {this.channelFormatOff} >{  "\u{2716}"}</p> 
+                            </div>
+                            <SandBox channelFormatOff={this.channelFormatOff}  swapblockLevel1= {this.state.swapblockLevel1} channelModalSetup={this.state.channelModalSetup}  channelNames= {this.state.channelNames }   cc2={this.state.cc2}  swapped={this.swapped}  channelFormat = {this.channelFormat} dataSplit= {this.state.dataSplit}  />
+                    </div>
 
 
                 </div>
 
                 {/* front panel buttons */}
 
-                <div className={cl.screen_options}>
+                <div   className={cl.screen_options}>
                            
                     <div className={cl.screen_options_ele_container}>
                         <div className={cl.screen_options_ele} onClick={this.infoClicked} > <p>INFO</p>  </div>
@@ -2330,7 +2388,6 @@ const addScript = (src) => {
     document.head.appendChild(some_script_ele);
 };
 
-
 const getWrapperDiv = () => {
     let container = document.getElementById('my_dataviz');
     let div = document.createElement('div');
@@ -2376,3 +2433,51 @@ const getMax = (numbers) => {
   return color;
 };
 
+
+const plotCsvHelper = async (self, activeChannelIds, WaveIDsList) => {
+    
+    /*
+        Verify changes in state using simple hash
+    */    
+
+    return new Promise ((resolve)=> {
+        
+        let id = setInterval( (self, activeChannelIds, waveIds)=>{
+
+            // calculate layman hash channel
+            let isStateUpdated = activeChannelIds.reduce( (boolState, channelId) => {
+
+                let simphash = 0;
+                
+                self.state.channels_svg[channelId].simphash.forEach( (hashData) => { simphash += +((typeof hashData) == 'string')})
+
+                return (simphash === waveIds.length) & boolState;
+
+            }, true);
+
+            if (isStateUpdated) { 
+
+                Promise.resolve( { id:id, self: self, activeIds: activeChannelIds, waveIds: waveIds} )
+                .then(record => {
+                    resolve(record);
+                }) 
+                
+            }
+            
+        }, 10, self, activeChannelIds, WaveIDsList);
+
+    })
+    
+    .then( (record)=> {
+
+        record.self.plotCsv(record.activeIds, record.waveIds );  // plot axis and data 
+        clearInterval(record.id );
+
+    })
+
+    .catch( (err) => {
+
+        console.log('plotCsvHelper() error_message', err);
+
+    })
+}

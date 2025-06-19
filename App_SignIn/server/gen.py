@@ -216,5 +216,80 @@ def signal_tone(mode = 1):
             writer.writeheader()
             writer.writerows(data)
 
+    elif mode == 5:
+            
+            """
+
+                sweep signal
+            
+            """
+            
+            num_waves = 30; 
+            N = 2048 
+            steps = np.floor(N/num_waves)
+            dataTimeX = np.zeros(shape=(N * num_waves))
+            dataTimeY = np.zeros(shape=(N * num_waves))
+
+            dataFFTX = np.zeros(shape=(N * num_waves))
+            dataFFTY = np.zeros(shape=(N * num_waves))
+
+            i = 0
+            # .linspace(0, 2048, 2048)
+            for fo in  np.arange(0, num_waves ) :
+
+
+                T = 1 # sec
+
+                ts = T / N 
+
+                fs = 1 / ts 
+
+                # fo = 900
+                n = np.arange(N)
+                
+                n_ts = n * ts
+                
+                y_noise =  0.7*np.random.uniform(0,1 , N) 
+                y_noise =   0.1* np.random.normal(0, 1, N)
+
+                y =  (0.1 if fo == 0 else 0.6) * (np.exp( 1j * 2 * np.pi * fo * 68 * n * ts ))  + y_noise + 1
+                y_mag = np.abs(y)
+
+
+                f_x = n * (fs/N)
+                f_y = np.fft.fft(y)
+                f_y_mag = np.abs(f_y)
+                f_y_norm = f_y_mag/ np.max( f_y_mag) 
+
+                # plt.plot(f_x, f_y_norm)
+                # plt.show()
+                
+                # plt.plot(n, y)
+                # plt.show()
+                
+                dataTimeX[i * N : N * (i+1)] =  n
+                dataTimeY[i * N : N * (i+1)] =  y
+                
+                dataFFTX[i * N : N * (i+1)] =  f_x
+                dataFFTY[i * N : N * (i+1)] =  f_y_norm
+
+                data_time = [ {'time': t, 'amplitude': a} for  t, a in zip(dataTimeX, dataTimeY.round(3) ) ] 
+                
+                data_spectrum = [ {'frequency': f, 'magnitude': a} for  f, a in zip(dataFFTX, dataFFTY.round(3) ) ] 
+                i += 1
+                # data = [ {'time': time, 'amplitude': amplitude} for  time, amplitude in zip(n, y_mag.round(3) ) ] 
+
+            with open(os.path.join(os.getcwd(), 'bigdata', 'tones', f'time.csv') , mode="w", newline="" ) as file:
+                writer = csv.DictWriter(file, fieldnames=['time', 'amplitude'])
+                writer.writeheader()
+                writer.writerows(data_time)
+            
+            # data = [ {'frequency': freqdata, 'normalized': normdata} for freqdata, normdata in zip(f_x.round(3), f_y_norm.round( 3)) ]
+            with open(os.path.join(os.getcwd(), 'bigdata', 'tones', f'spectrum.csv') , mode="w", newline="" ) as file:
+                writer = csv.DictWriter(file, fieldnames=['frequency', 'magnitude'])
+                writer.writeheader()
+                writer.writerows(data_spectrum)
+
+
 if __name__ == "__main__":
-    signal_tone(4)
+    signal_tone(5)
