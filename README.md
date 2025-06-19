@@ -1,6 +1,6 @@
 # ReactApps
-Applications built using React and Flask
-
+Applications built using React (Javascript) and Flask(Python) and SQL (SQLAlchemy)
+ 
 ## Project Videos 
 
 - Wave Generator   
