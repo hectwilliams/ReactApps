@@ -110,12 +110,17 @@ def aihumans():
 
             data = array.array('B', img_resp.raw.read() )
  
-
             return make_response(jsonify( data.tolist() ), 200)
-                
+        
+        elif request.args.get('req') == 'wavesmeta':
+
+            return make_response({'testing': 1234}, 200)
+
         else:
+
             response = make_response(render_template('aihumans.html'))
             return response
+        
         # return render_template('aihumans.html'), 200
         # response.set_cookie('cookie_name', 'example')
     except:

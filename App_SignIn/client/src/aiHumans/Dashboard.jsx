@@ -4,6 +4,7 @@ import Fortune from './Fortune';
 import Movies from './Movies';
 import Waitx from "./Waitx";
 import PersonNotExist from "./PersonNotExist";
+import Generator from "./Generator";
 import axios from 'axios';
 
 class Dashboard extends Component {
@@ -12,7 +13,7 @@ class Dashboard extends Component {
         this.state = {
             pageRef: null,
             pageKey: 'fortune',
-            pages: {fortune: <Fortune/>, movies:<Movies/> ,  personsnotexist: <PersonNotExist/>}  
+            pages: {fortune: <Fortune/>, movies:<Movies/> ,  personsnotexist: <PersonNotExist/>, generator: <Generator/> }  
         }
         this.modifyPage = this.modifyPage.bind(this);
     }
@@ -26,8 +27,8 @@ class Dashboard extends Component {
     }
     
     modifyPage (value) {
-        console.log(this.state.pageKey);
-        console.log(value.toLowerCase().trim());
+        // console.log(this.state.pageKey);
+        // console.log(value.toLowerCase().trim());
         this.setState({pageKey: value.toLowerCase().trim()});
     }
 
@@ -95,7 +96,6 @@ class MenuItem extends Component {
                 </div>
 
                 <div>
-
                     {
                         this.state.buttonState? '' : <Suboptions func_dashboard_modify_pg={this.props.func_dashboard_modify_pg}  key={0} depth={0} pages={this.props.pages} /> 
                     }
@@ -115,7 +115,7 @@ class Suboptions extends Component {
     }
 
     click(event) {
-        this.props.func_dashboard_modify_pg(event.currentTarget.innerHTML);
+        this.props.func_dashboard_modify_pg(event.target.firstChild.wholeText.toLowerCase().trim());
     }
 
     render() {
@@ -128,7 +128,9 @@ class Suboptions extends Component {
                     this.props.name? 
                         <div className={dashboardClass.suboptions_div}>
                             <div depth={this.props.depth}  className={dashboardClass.suboptions_div_ident}> • </div>
-                            <p onClick={this.click}className={dashboardClass.suboptions_div_value}>  {this.props.name} </p>
+                            <div onClick={this.click} className={dashboardClass.name_container}> 
+                                <p className={dashboardClass.suboptions_div_value}>  {this.props.name} </p>
+                            </div>
                         </div>
 
                     : ''
@@ -142,9 +144,7 @@ class Suboptions extends Component {
                     :
                         ''
                 }
-
             </div>
-
         )
     }
 }

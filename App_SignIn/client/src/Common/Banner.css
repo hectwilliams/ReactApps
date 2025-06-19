@@ -2,31 +2,46 @@
     display: grid;
     grid-template-columns: 120px 100px auto 320px;
     /* visibility: hidden; */
+            z-index: 1;
+
+    
+}
+
+.bannerRow  > div{
+            z-index: 1;
+
     
 }
 
 .bannerLink {
-    border-style: none;
     margin: 0;
     padding: 0;
     color: black;
+    z-index: 1;
+    border: none;
+    font-size: smaller;
+
 }
 
 .bannerLinkFirst {
     padding-left: 1em;
+    z-index: 1;
 }
 
 /* remove underline */
 a {
     text-decoration: none;
-        color: black
+        color: black;
+        border: none
 
 }
 
 /* prevent text change after click */
 a:visited {
     text-decoration: none;
-    color: black
+    color: black;
+            z-index: 1;
+
 }
 
 .search {
@@ -35,6 +50,8 @@ a:visited {
     column-gap: 10px; /* Adds 20px space between columns */
     /* visibility: hidden; */
     /* opacity: 0; */
+            z-index: 1;
+
 }
 
 .search_inside {
