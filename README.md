@@ -5,9 +5,9 @@ Applications built using React (Javascript) and Flask(Python) and SQL (SQLAlchem
 
 - Sign in 
 ![](./App_SignIn/miscellaneous/site_state_000.png)
-[![](./App_SignIn/client/src/SignIn/snapshots/snapshot_000.png)]
-[![](./App_SignIn/client/src/SignIn/snapshots/snapshot_001.png)]
-[![](./App_SignIn/client/src/SignIn/snapshots/snapshot_002.png)]
+![](./App_SignIn/client/src/SignIn/snapshots/snapshot_000.png)
+![](./App_SignIn/client/src/SignIn/snapshots/snapshot_001.png)
+![](./App_SignIn/client/src/SignIn/snapshots/snapshot_002.png)
 -> /App_SignIn/client/src/SignIn/App.jsx
 
 - Wave Generator   
