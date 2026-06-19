@@ -20,9 +20,6 @@ const fastify = Fastify({logger: true});
 // fastify.register(fastifyStatic, {root:  ) ;
 const p = path.join( workDir , 'client' , 'public' );
 console.log(p)
-console.log()
-console.log()
-console.log()
 fastify.register(fastifyStatic, {
     // root directory to serve from
     root:  p, 
@@ -30,24 +27,13 @@ fastify.register(fastifyStatic, {
     prefix: '/' 
 });
 
-// // callack 
+// callack 
 async function handler(request: FastifyRequest , reply:FastifyReply)  {
-
     console.log(request.headers);
-
     return reply
-        
-        // .header('Content-Type', 'text/html; charset=utf-8')
-        
         .type( 'text/html' )
-
         .sendFile('index.html')
-        
-        // .send('<h1>Hello World</h1>')
-   
-        // .send({name: p})
 }
-
 // route 
 fastify.get('/', handler);
 
@@ -58,8 +44,6 @@ try {
         await fastify.listen({port: 3000})
     })();
 } catch(err) {
-    
     fastify.log.error(err);
-
     process.exit();
 }

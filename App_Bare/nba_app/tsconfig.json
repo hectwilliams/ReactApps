@@ -41,12 +41,14 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true
   },
 
   "include" : [
     "./server/**/*", 
-   "./client/src/**/*"
+   "./client/src/**/*",
+   "./client/public/src/*.css"
   ]
 
 
