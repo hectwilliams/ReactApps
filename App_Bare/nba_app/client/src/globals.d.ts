@@ -1,12 +1,18 @@
-// // help ts understand import structure
-// declare module "*.module.css"; // App.module.css
-// declare module "*.css"; // main.css 
 
-// App.module.css
+//s
 declare module '*.module.css' {
-  const classes: { [key: string]: string };
+    const classes: { 
+        readonly [key: string]: string
+    };
+    // export default classes;
   return classes;
 }
+declare module '*.module.scss' {
+  const classes: { [key: string]: string };
+//   export default classes;
+    // return classes;
+}
 
-// main.css 
+// named import 
 declare module '*.css';
+

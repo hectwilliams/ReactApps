@@ -1,36 +1,38 @@
-import mainCss from './main.module.css'; // import css module 
-
+// import css modules 
+import  {
+    body_cls, 
+    root_container_cls,
+    leader_cls, 
+    follower1_cls,
+    follower2_cls,
+    follower3_cls,
+} from'./static/module.css'; 
 
 // const mainCss = require('./main.css');
 const rootDiv = document.getElementById('root');
 const body = document.body;
+var leader = document.createElement('div');
+var follower1 = document.createElement('div');
+var follower2 = document.createElement('div');
+var follower3 = document.createElement('div');
 
-
-
-var node = document.createElement('p');
-node.textContent = "just getting started";
-node.className = "test-para";
-
-// set background
 body.style.backgroundColor = 'gray';
 
+leader.className = leader_cls;
+follower1.className = follower1_cls;
+follower2.className =follower2_cls ;
+follower3.className =follower3_cls ;
+
 // set
+body.className  = body_cls;
+
 if (rootDiv) {
-
-    // add placeholder string
-    rootDiv.append(node);
-
-    rootDiv.className = mainCss['rootDiv'] ; //`${mainCss['rootDiv']}`; //  `${}`  ;
-    // expand div size 
-    // const w: number =  window.screen.availWidth; // window.screen.width ; 
-    // const h: number = window.screen.availHeight;
-    
-    // // resize div
-    // rootDiv.style.width  = w + `px` ;
-    // rootDiv.style.height = h + `px`;
-    // rootDiv.style.border =  "1px solid black";
-    // rootDiv.style.color = 'green';
-    // rootDiv.style.margin = '0';
-    // rootDiv.style.padding = '0';
+    // / griddy div
+    rootDiv.className  = root_container_cls;
+    // append node
+    rootDiv.append(leader);
+    rootDiv.append(follower1);
+    rootDiv.append(follower2);
+    rootDiv.append(follower3);
 }
 

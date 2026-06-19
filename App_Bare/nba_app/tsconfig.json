@@ -48,8 +48,14 @@
   "include" : [
     "./server/**/*", 
    "./client/src/**/*",
-   "./client/public/src/*.css"
-  ]
+   "client/src/globals.d.ts",
+      "client/src/static/**/*"
+
+  ],
+
+  // "plugins": [
+  //   {"name": "typescript-plugin-css-modules"}
+  // ]
 
 
   

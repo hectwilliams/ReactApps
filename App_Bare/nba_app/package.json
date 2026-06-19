@@ -40,9 +40,11 @@
 
   "scripts": {
 
-    "ts-dev": "webpack ",
+    "ts-dev": "webpack",
 
     "server-dev": "node server/server.ts"
+
+
 
   }
 
