@@ -140,4 +140,28 @@ dist
 #
 */venv
 
+# -Typescript- 
+
+# Dependencies
+node_modules/
+
+# TypeScript Build Outputs
+# (Matches the "outDir" specified in your tsconfig.json)
+dist/
+build/
+out/
+
+# TypeScript Incremental Compilation Cache
+.tsbuildinfo
+
+# Compiled JavaScript output (Use only if JS is generated next to TS files)
+# *.js
+# *.js.map
+# *.d.ts.map
+
+# Logs and Environment Files
+*.log
+.env
+.env.local
+
 
