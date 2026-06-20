@@ -74,13 +74,13 @@
 
 }
 
-.follower1_cls {
+.dashboard_1_cls {
 
-    grid-column: 50 / span 30;
+    grid-column: 52 / span 30;
     
-    grid-row: 20 / span 21;
+    grid-row: 10 / span 21;
 
-    border: 5px solid red; 
+    border: 1px solid black; 
     
     height: inherit;
     width: inherit; 
@@ -91,32 +91,46 @@
     min-width: 0;
     min-height: 0;   
 
+
+       display: grid;
+    grid-template-columns: repeat(100, 1%);
+    grid-template-rows: repeat(100, 1%);
+    background-color: lightcyan;
+
 }
 
-.follower2_cls {
+.dashboard_2_cls {
 
-    grid-column: 50 / span 30;
-    grid-row: 42 / span 21;
-    border: 5px solid yellow; 
+    grid-column: 52 / span 30;
+    grid-row: 32 / span 21;
+    border: 1px solid black; 
 
     height: inherit;
     width: inherit; 
     width: 100%;
-    height: 20vh;
+    height: 100%;
 
     /* prevent blow up of thiscontainer */
     min-width: 0;
     min-height: 0; 
 
+    max-height: 20vh;
+
+       display: grid;
+    grid-template-columns: repeat(100, 1%);
+    grid-template-rows: repeat(100, 1%);
+    background-color: lightcyan;
+
+
 }
 
-.follower3_cls {
+.dashboard_3_cls {
 
-    grid-column: 50 / span 30;
+    grid-column: 52 / span 30;
     
-    grid-row: 64 / span 21;
+    grid-row: 54 / span 21;
 
-    border: 5px solid yellowgreen; 
+    border: 1px solid black; 
     
     height: inherit;
     width: inherit; 
@@ -126,5 +140,35 @@
     /* prevent blow up of thiscontainer */
     min-width: 0;
     min-height: 0;   
+
+       display: grid;
+    grid-template-columns: repeat(100, 1%);
+    grid-template-rows: repeat(100, 1%);
+    background-color: lightcyan;
+
+
+}
+
+.dashboard_4_cls {
+
+    grid-column: 52 / span 30;
+    
+    grid-row: 76 / span 21;
+
+    border: 1px solid black; 
+    
+    height: inherit;
+    width: inherit; 
+    width: 100%;
+    height: 20vh;
+
+    /* prevent blow up of thiscontainer */
+    min-width: 0;
+    min-height: 0;   
+
+       display: grid;
+    grid-template-columns: repeat(100, 1%);
+    grid-template-rows: repeat(100, 1%);
+    background-color: lightcyan;
 
 }

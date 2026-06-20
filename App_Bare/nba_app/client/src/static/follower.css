@@ -1,0 +1,28 @@
+.name_cls {
+
+    grid-row: 3/ span 10;
+    grid-column: 5/ 20;
+    /* border: 1px dotted black; */
+}
+
+.logname_cls {
+
+    grid-row: 15/ span 5;
+    grid-column: 20/ 20;
+    /* border: 1px dotted black; */
+}
+
+.logger_cls {
+
+    grid-row: 23/ span 50;
+    grid-column: 20/ 80;
+    border: 1px dotted black;
+}
+
+.timelog_cls {
+
+    grid-row: 75/ span 15;
+    grid-column: 10/ 90;
+    border: 1px dotted black;
+}
+

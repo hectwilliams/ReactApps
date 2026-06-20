@@ -4,6 +4,11 @@ import  {
     root_container_cls,
 } from './static/module.css'; 
 
+// add buttons to board 
+import './startButton';
+import './resetButton';
+import './clearButton';
+
 // turn on leader board 
 import './leader';
 
@@ -29,5 +34,3 @@ body.style.backgroundColor = 'gray';
 body.className  = body_cls;
 
 
-
-    
