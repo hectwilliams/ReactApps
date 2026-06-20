@@ -1,9 +1,11 @@
 const path = require('path');
+const webpack = require('webpack');
+
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: "development",
-    entry: './client/src/main.tsx',
+    entry: './client/src/index.tsx',
 
     output: {
         filename: 'bundle.js',
@@ -26,12 +28,19 @@ module.exports = {
           {loader: "css-loader",
             options: {
               modules: true
+              // url: false
             }
 
           }
 
         ]
       },
+
+      {
+        test: /\.(png|jpg|jpeg)$/i,
+        type: 'asset',
+
+      }
 
         ],
     },
@@ -45,6 +54,15 @@ module.exports = {
     //         filename: '[name].css',
     //     }),
     // ]
-
+  
+  //   plugins: [
+  //   new webpack.NormalModuleReplacementPlugin(
+  //     /^node:/,
+  //     (resource) => {
+  //       resource.request = resource.request.replace(/^node:/, '');
+  //     }
+  //   ),
+  // ],
+  
 
 };

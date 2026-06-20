@@ -4,11 +4,11 @@ import {
 } from './static/player.css';
 
 interface Leader {
-    dnode: HTMLUListElement;
+    dnode: HTMLDivElement;
 }
 
 interface PlayerElement {
-    cnode: HTMLLIElement;
+    cnode: HTMLDivElement;
 }
 
 interface SimplePlayerProfile {
@@ -25,7 +25,7 @@ const PlayerCard = ( player: SimplePlayerProfile): PlayerElement =>  {
             player.img 
             player.name 
     */
-    let element = document.createElement('li');
+    let element = document.createElement('div');
     element.innerHTML = `<div src=${player.img}> </div>  <div> ${player.name} </div>`;
     element.className = player_card_cls;
     return {cnode: element};
@@ -37,8 +37,9 @@ export function Accumulator( {dnode}: Leader   ) {
 
     const img = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/img.png";
     const name = "Bob Lazar";
+// 28266
 
-    for (let i= 0; i <20; i++) {
+    for (let i= 0; i <100; i++) {
 
         // set Profile 
         const profile :  SimplePlayerProfile = {
@@ -50,7 +51,7 @@ export function Accumulator( {dnode}: Leader   ) {
         const card =  PlayerCard(profile);
 
         // append to leader 
-        dnode.appendChild(card.cnode);
+        dnode.append(card.cnode);
     }
 
 }

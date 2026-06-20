@@ -3,9 +3,6 @@ import {
     option_button_cls
 } from './static/option.css';
 
-// import path from 'node:path';
-// import process from 'node:process';
-// const iconPath = path.join(__dirname, 'static',  'images', 'icons') ;
 const iconPath = "./static/images/icons";
 const rootDiv = document.getElementById('root');
 
@@ -33,16 +30,9 @@ items.forEach((record, index) => {
     
     // set css class of button
     element.className = option_button_cls;
-    
-    // set src 
-    // element.style.backgroundImage =   `url(${iconPath + '/' + basename})`;
-    // element.style.backgroundImage = `url("/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/icons/date_added.png")`;
-
-    // element.style.setProperty('--background-src', 'url("/path/to/my-image.png")');
-    // .style.setProperty()
-    // append element to option Node 
 
     element.dataset.status = index.toString();
+
     optionNode.append(element);
 
 });
