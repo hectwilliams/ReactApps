@@ -1,0 +1,42 @@
+.option_container_cls {
+    grid-column: 20 / span 30;
+    grid-row: 18 / span 2;
+
+    /* border: 2px solid yellowgreen; */
+
+    height: 100%;
+
+    display: flex;
+
+    justify-content: flex-start;
+
+}
+
+/* background-image: url( var(--background-src) ) */
+/* background-image: url(var(--background-src)); */
+
+.option_button_cls {
+    border: 1px solid salmon;
+    width: 50px;
+
+    background-size:contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.option_button_cls[data-status="0"] {
+    background-image: url("./images/icons/date_added.png");
+}
+
+.option_button_cls[data-status="1"] {
+    background-image: url("./images/icons/first_name.png");
+}
+
+.option_button_cls[data-status="2"] {
+    background-image: url("./images/icons/last_name.png");
+}
+
+.option_button_cls[data-status="3"] {
+    background-image: url("./images/icons/full_name.png");
+}
+
