@@ -10,7 +10,11 @@ import  {
 
 import { setDashboardObjects } from './follower';
 
-
+export interface LogInterface {
+    date:string;
+    message: string;
+    dashboard?: HTMLDivElement; // optional
+} 
 
 const rootDiv = document.getElementById('root');
 const num_dashboards = 4;
@@ -18,10 +22,10 @@ const num_dashboards = 4;
 // block for rootDiv
 while(rootDiv== null){}
 
-var dashboard_1 = document.createElement('div');
-var dashboard_2 = document.createElement('div');
-var dashboard_3 = document.createElement('div');
-var dashboard_4 = document.createElement('div');
+const dashboard_1 = document.createElement('div');
+const dashboard_2 = document.createElement('div');
+const dashboard_3 = document.createElement('div');
+const dashboard_4 = document.createElement('div');
 
 dashboard_1.classList.add(dashboard_1_cls, ul_cls); 
 dashboard_2.classList.add(dashboard_2_cls, ul_cls); 
@@ -45,3 +49,6 @@ setDashboardObjects(2, dashboard_2);
 setDashboardObjects(3, dashboard_3);
 setDashboardObjects(4, dashboard_4);
 
+
+const dashboards =  {dashboard_1, dashboard_2, dashboard_3, dashboard_4};
+export default  dashboards;

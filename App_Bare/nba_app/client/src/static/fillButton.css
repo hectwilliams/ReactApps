@@ -1,0 +1,12 @@
+.fill_button_cls {
+    grid-column: 7 / span 1;
+    grid-row: 30 / span 2;
+    border: 1px dotted turquoise;
+    background-image: url("./images/icons/fill.png");
+    background-size: contain;
+    background-position: center; 
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+}
+

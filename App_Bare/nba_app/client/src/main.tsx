@@ -5,9 +5,12 @@ import  {
 } from './static/module.css'; 
 
 // add buttons to board 
+import './powerButton';
 import './startButton';
 import './resetButton';
 import './clearButton';
+import './fillButton';
+import './randButton';
 
 // turn on leader board 
 import './leader';

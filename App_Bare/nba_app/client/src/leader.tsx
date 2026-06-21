@@ -15,9 +15,9 @@ while(rootDiv== null){}
 rootDiv.append(leader);
 
 // import 
-import {Accumulator} from './player';
+// import {Accumulator} from './player';
 
-// pass leader object to Accumulator
-Accumulator({dnode: leader});
+// // pass leader object to Accumulator
+// Accumulator({dnode: leader});
 
-// export default leader;
+export default leader;
