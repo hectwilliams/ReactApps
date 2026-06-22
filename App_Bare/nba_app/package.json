@@ -44,11 +44,7 @@
 
     "server-dev": "node server/server.ts"
 
-
-
   }
-
-  
 
 }
 

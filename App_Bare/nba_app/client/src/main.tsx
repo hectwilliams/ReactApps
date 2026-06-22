@@ -3,6 +3,7 @@ import  {
     body_cls, 
     root_container_cls,
 } from './static/module.css'; 
+import { findNodeByDataset } from './handlers';
 
 // add buttons to board 
 import './powerButton';
@@ -31,9 +32,11 @@ while(rootDiv== null){}
 // set root div using .css declaration 
 rootDiv.className  = root_container_cls;
 
+// set start
 // set html body using .css declaration
 const body = document.body;
 body.style.backgroundColor = 'gray';
 body.className  = body_cls;
 
+export const activePlayerList = findNodeByDataset(rootDiv, 'name','leader') as HTMLElement;
 

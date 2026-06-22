@@ -3,3 +3,11 @@
     grid-row: 60 / span 10;
     border: 1px dotted brown;
 }
+
+reset_button_cls:disabled {
+    background-color: #cccccc;
+  color: #666666;
+  opacity: 0.6;
+  cursor: not-allowed; /* Shows a circle-with-a-slash cursor */
+  pointer-events: none; /* Prevents hover and click interactions */
+}

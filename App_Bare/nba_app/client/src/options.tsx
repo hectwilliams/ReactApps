@@ -3,6 +3,9 @@ import {
     option_button_cls
 } from './static/option.css';
 
+import { start_button } from './startButton';
+import { powerButton } from './powerButton';
+
 const iconPath = "./static/images/icons";
 const rootDiv = document.getElementById('root');
 
@@ -34,11 +37,12 @@ items.forEach((record, index) => {
     element.dataset.status = index.toString();
 
     optionNode.append(element);
-
 });
 
 if (rootDiv) {
     rootDiv.prepend(optionNode)
 }
+
+console.log(optionNode);
 
 export default optionNode;

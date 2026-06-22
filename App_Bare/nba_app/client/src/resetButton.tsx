@@ -1,6 +1,9 @@
 import {reset_button_cls} from './static/resetButton.css'
 import { findNodeByDataset } from './handlers';
 import { clearDB } from './clearButton';
+import { start_button } from './startButton';
+import dashboards from './followers';
+import { powerButton } from './powerButton';
 
 const button = document.createElement('button');
 button.className = reset_button_cls;
@@ -13,17 +16,41 @@ while(rootDiv== null){}
 //add to browser canvas 
 rootDiv.append(button);
 
+// disable button for now
+button.disabled = true;
+
 // set handlers 
 button.onclick = (event: MouseEvent) => {
 
-    /* Reset flag in START DB button */
+    // restart database 
 
-    let curr = event.currentTarget as HTMLElement;
-    let parent = curr.parentElement as HTMLElement;
-    let startButtonNode = findNodeByDataset(parent, 'name', 'start_button' ) as HTMLElement;
-    if (startButtonNode) {
-        startButtonNode.dataset.onRequest = "0";
-    }
-    clearDB();
+    // pause webpage 
 
+
+    // if(powerButton.dataset.isOn == "0") {
+    //     console.log('system is not on');
+    //     return;
+    // }
+    // // restart database 
+
+    // // once event starts disable start_button.DbRunning off
+    // start_button.dataset.dbRunning = "0";
+
+    // // clear local player table 
+    // clearDB();
+
+    // // once complete  set start_button.DbRunning on
+    // start_button.dataset.dbRunning = "1";
+    
+    // // clear log list  ( store in file prior to deleting)
+    // if (dashboards.dashboard_1)  {
+    //     if (dashboards.dashboard_1.children[2]) {
+    //         if (dashboards.dashboard_1.children[2].childElementCount) {
+    //             console.log('cleared logs ')
+    //             dashboards.dashboard_1.children[2].replaceChildren();
+    //         } else {
+    //             console.log('no logs to clear ')
+    //         }
+    //     }
+    // }
 }

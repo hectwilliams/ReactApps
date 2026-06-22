@@ -1,4 +1,10 @@
 import {power_button_cls} from './static/powerButton.css';
+import type { LogInterface } from './followers';
+import dashboards from './followers';
+import { writeLog } from './handlers';
+import optionNode from './options';
+import { readyStatus } from './selectraw';
+import { activePlayerList } from './main';
 
 const button = document.createElement('button');
 
@@ -14,11 +20,34 @@ rootDiv.append(button);
 
 //set handlers 
 button.onclick = (event: MouseEvent) => {
+
+    // prevent shut down if data in broswer
+    if (activePlayerList.childElementCount) {
+        console.log('data is memory, clear(or store) before shutting down');
+        return;
+    }
+
     if (button.dataset.isOn == "0") {
         button.dataset.isOn = "1";
-        console.log('turn on database');
+        
+        console.log('starting db...');
+         const logRecord : LogInterface = {
+        date: (new Date()).toLocaleString(),
+        message: "-\t Starting DB",
+        dashboard: dashboards.dashboard_1
+        }
+        writeLog(0, logRecord);
+        readyStatus.dataset.dbready ='1';
+
+        console.log('db connected');
     } else {
         button.dataset.isOn = "0";
+           const logRecord : LogInterface = {
+        date: (new Date()).toLocaleString(),
+        message: "-\t Shutting Down DB",
+        dashboard: dashboards.dashboard_1
+        }
+        writeLog(0, logRecord);
         console.log('turn off database');
         // prevent button clicks 
 
@@ -28,5 +57,11 @@ button.onclick = (event: MouseEvent) => {
 
         // enable buttons 
 
+        // update status 
+        readyStatus.dataset.dbready ='0';
+
     }
 }
+
+
+export { button as powerButton };

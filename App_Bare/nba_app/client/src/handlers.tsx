@@ -1,9 +1,45 @@
-import type { LogInterface } from "./followers";
 
+import type { SimplePlayerProfileInterface } from './player';
+import dashboards from './followers';
+import { PlayerCard } from './player';
+import { activePlayerList } from './main';
+
+export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
+
+    list.forEach((record)=>{
+           // // set Profile 
+            const profile :  SimplePlayerProfileInterface = {
+                img: record.img,
+                name: record.name
+            }
+
+            // set log message 
+            const logRecord : LogInterface = {
+                date: (new Date()).toLocaleString(),
+                message: `Write to client ${list.length} items`,
+                dashboard: dashboards.dashboard_1
+            }
+
+            // pass profile object to player card
+            const node =  PlayerCard(profile);
+
+            // append to leader list 
+            if (activePlayerList) {
+                activePlayerList.append(node);
+                // send to log
+                let log: Element | null =  dashboards.dashboard_1.children.item(2);
+                writeLog(0, logRecord);
+            }
+    
+        });
+}
+
+
+import type { LogInterface } from "./followers";
 export function writeLog(id:number, record: LogInterface) {
     var liElement = document.createElement('li');
     // // set animation dataset 
-    liElement.textContent = record.message;
+    liElement.textContent = `Time: [${record.date}] Message: [${record.message}]`;
     
     let node = record.dashboard?.children[2] as HTMLElement; 
     node.append(liElement);
@@ -40,36 +76,43 @@ export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, d
     return returnNode;
 }
 
-export function wrPlayerList(node:HTMLElement, datasetName: string) {
-
+export interface ServerRecordInterface {
+    page: number;
+    start: number;
+    numPages: string;
+    players: Array<SimplePlayerProfileInterface>;
+    img: string; 
 }
 
-export function wrDashboard(id: number, logMessage: string) {
+export async function fetchPages(page?:number): Promise<ServerRecordInterface | undefined> {
+    
+    if (page == undefined) {
+        page = 0;
+    }
+    
+    const params = new URLSearchParams({page: `${page}`});
 
+    // const path = + '/' + 'page';
+
+    const path = `${ window.location.origin}/${params}`;
+    
+    console.log(path);
+
+    try {
+        const response = await fetch( path );
+            // method: "GET", 
+            // headers: {"Content-Type": "application/json"}     ,
+            // body: JSON.stringify({id: page })
+        
+            if (!response.ok) {
+                throw new Error("HTTP error! ");
+            }
+            const data : ServerRecordInterface = await response.json();
+            return data;
+        } catch {
+            return undefined;
+        }
+  
 }
 
-export function Accumulator() {
-//     console.log(dnode);
-//     console.log('hellow world');
-
-//     const img = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/img.png";
-//     const name = "Bob Lazar";
-// // 28266
-
-//     for (let i= 0; i <100; i++) {
-
-//         // set Profile 
-//         const profile :  SimplePlayerProfile = {
-//             img: img,
-//             name: name
-//         }
-
-//         // pass profile object to player card
-//         const card =  PlayerCard(profile);
-
-//         // append to leader 
-//         dnode.append(card.cnode);
-//     }
-
-}
 

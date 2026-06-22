@@ -5,7 +5,8 @@ import { findNodeByDataset } from './handlers';
 import { writeLog } from './handlers';
 import dashboards from './followers';
 import type { LogInterface } from './followers';
-
+import { powerButton } from './powerButton';
+import { activePlayerList } from './main';
 // const img = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/img.png";
 
 var playerListNode: HTMLElement | undefined;
@@ -24,14 +25,23 @@ button.dataset.isfull = "0";
 rootDiv.append(button);
 
 // meets async imports of main.tsx 
-setTimeout(()=>{
-    playerListNode = findNodeByDataset(rootDiv, 'name', 'leader');
-}, 10);
+// setTimeout(()=>{
+    // playerListNode = findNodeByDataset(rootDiv, 'name', 'leader');
+// }, 10);
+// playerListNode = activePlayerList;
 
 button.onclick = (event: MouseEvent) => {
     // async event 
 
+    if (powerButton.dataset.isOn == '0') {
+        console.log('database not on');
+        return;
+    }
+
     if (button.dataset.isfull == "0") {
+
+
+        // get csv 
         
         // fiiling database 
 
@@ -46,18 +56,18 @@ button.onclick = (event: MouseEvent) => {
             // set log message 
             const logRecord : LogInterface = {
                 date: (new Date()).toLocaleString(),
-                message: `Image: [${img}] Msg: [${name}]`,
+                message: `${name}`,
                 dashboard: dashboards.dashboard_1
             }
 
             // pass profile object to player card
             const node =  PlayerCard(profile);
 
-            console.log('hellow world', playerListNode, dashboards.dashboard_1);
+            // console.log('hellow world', playerListNode, dashboards.dashboard_1);
 
             // append to leader list 
-            if (playerListNode) {
-                playerListNode.append(node);
+            if (activePlayerList) {
+                activePlayerList.append(node);
                 // send to log
                 let log: Element | null =  dashboards.dashboard_1.children.item(2);
                 writeLog(0, logRecord);
