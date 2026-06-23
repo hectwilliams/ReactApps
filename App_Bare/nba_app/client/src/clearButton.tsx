@@ -1,6 +1,6 @@
 
 import {clear_button_cls} from './static/clearButton.css'
-import { findNodeByDataset } from './handlers';
+import { findNodeByDataset, updateLog } from './handlers';
 import { start_button } from './startButton';
 import { powerButton } from './powerButton';
 import dashboards from './followers';
@@ -8,7 +8,11 @@ import { activePlayerList } from './main';
 import { fetchPages } from './handlers';
 import { loadPlayerData } from './handlers';
 import {  folio } from './selectraw';
+import type { LogInterface } from "./followers";
+import { writeLog } from './handlers';
 
+// log 
+const logRelPathRoot = './static/log'
 // block for rootDiv
 const rootDiv = document.getElementById('root');
 while(rootDiv== null){}
@@ -32,9 +36,16 @@ export const clearDB = () => {
     
 }
 
+export interface LoggerInterface {
+    dashboard_1: string[];
+    dashboard_2: string[];
+    dashboard_3: string[];
+    dashboard_4: string[];
+}
+
 const button = document.createElement('button');
 button.className = clear_button_cls;
-button.innerHTML = "<p> CLEAR STORAGE </p>"
+button.innerHTML = "<p> CLEAR DASHBOARDS </p>"
 button.dataset.name = "clear_button";
 
 //add to browser canvas 
@@ -42,41 +53,44 @@ rootDiv.append(button);
 
 // handler 
 button.onclick = (event: MouseEvent) => {
+
+    // stat(logRelPathRoot)
+    // .then((stats)=>{
+    //     console.log(stats.isDirectory());
+    // })
+    // .catch((err)=>{
+    //     console.log('does not exist')
+    // })
     
-    if (powerButton.dataset.isOn == "0") {
-        console.log('database if off, skip clearing');
-        return;
+    // set log message 
+    const logRecord : LogInterface = {
+        date: (new Date()).toLocaleString(),
+        message: `Cleared list`,
+        dashboard: dashboards.dashboard_1
     }
+    writeLog(0, logRecord);
 
-    // clear log
-    let logElement = dashboards.dashboard_1.children[2] as HTMLParagraphElement;
-    if (logElement.children.length) {
-        logElement.replaceChildren();
-        console.log('cleared dashboard');
-    }
+    // POST dashboard data to http webserver 
+    let data :  Array<string[]> = [];
+    let clearableEle = [] as Element[];
+    Object.entries(dashboards).forEach( (entry, index) =>{
+        let db = entry[1];
+        let key = entry[0];
+        let arr = db.children[2];
+        if (arr) {
+            clearableEle.push(arr);
+            data.push(Array.from(arr.children).map((x)=>{
+                return x.textContent;
+            }))    
+        }    
+    });    
+    updateLog(data);
 
-    // clear player list 
-    // let playerListNode = findNodeByDataset(rootDiv, 'name','leader') as HTMLElement;
-    if (activePlayerList.childElementCount) {
-        activePlayerList.replaceChildren(); // memory clean up 
-        // console.log(playerListNode);
-        console.log('cleared player list');
-    }
+    clearableEle[0]?.replaceChildren();
+    clearableEle[1]?.replaceChildren();
+    clearableEle[2]?.replaceChildren();
+    clearableEle[3]?.replaceChildren();
 
-    // load first page
-
-    fetchPages().then ((data)=>{
-        if (!data)
-            return;
-        folio.innerText = `${data.page} of ${data.numPages}`;
-        loadPlayerData(data.players);
-        console.log(data.players)
-        console.log('hello world');
-
-        // data.players.map((value, index) => {
-        //     return     
-        // })
-    });
     
 }
 

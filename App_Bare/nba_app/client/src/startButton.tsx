@@ -50,19 +50,13 @@ button.onclick = (event: MouseEvent)=>{
         folio.innerText = `${data.page} of ${data.numPages}`;
         folio.dataset.recentpage = data.page.toString();
         folio.dataset.numpages = data.numPages.toString();
-
-        console.log(data.players)
         loadPlayerData(data.players);
-
-        // data.players.map((value, index) => {
-        //     return     
-        // })
     });
 
 
     const logRecord : LogInterface = {
         date: (new Date()).toLocaleString(),
-        message: "-\t Starting DB",
+        message: "\t Starting DB",
         dashboard: dashboards.dashboard_1
     }
     console.log('starting db');

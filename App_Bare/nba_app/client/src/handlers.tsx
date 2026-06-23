@@ -16,7 +16,7 @@ export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
             // set log message 
             const logRecord : LogInterface = {
                 date: (new Date()).toLocaleString(),
-                message: `Write to client ${list.length} items`,
+                message: `Write/Add ${record.name} `,
                 dashboard: dashboards.dashboard_1
             }
 
@@ -42,6 +42,7 @@ export function writeLog(id:number, record: LogInterface) {
     liElement.textContent = `Time: [${record.date}] Message: [${record.message}]`;
     
     let node = record.dashboard?.children[2] as HTMLElement; 
+    console.log(node);
     node.append(liElement);
     
     // animation condition 
@@ -92,11 +93,7 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
     
     const params = new URLSearchParams({page: `${page}`});
 
-    // const path = + '/' + 'page';
-
     const path = `${ window.location.origin}/${params}`;
-    
-    console.log(path);
 
     try {
         const response = await fetch( path );
@@ -113,6 +110,31 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
             return undefined;
         }
   
+}
+
+import type { LoggerInterface } from './clearButton';
+
+export async function updateLog(data: Array<string[]> ) : Promise<Boolean>{
+
+    const path = `${window.location.origin}/log`;
+    const method = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': '' TBD
+        },
+        body: JSON.stringify(data)
+    };
+
+    try {
+        const response = await fetch(path, method);
+        if (!response.ok) {
+            throw new Error("Log Put Failed");
+        }
+        return true; 
+    }catch {
+        return false;;
+    }
 }
 
 

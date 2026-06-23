@@ -43,12 +43,11 @@
 
 .leader_cls {
 
-    display: grid;
-
+    
     grid-column: 20 / span 30;
     
     grid-row: 20 / span 65;
-
+    
     border: 0.5px solid black; 
     
     /* Adds a scrollbar only when content overflows */
@@ -56,10 +55,10 @@
     
     /* Hides horizontal scroll and cuts off extra content */
     overflow-x: hidden; 
-
-       
+    
+    
     /* height: inherit;
-     */
+    */
     width: inherit; 
     /* max-width: 100%; */
     /* max-height: 800px; */
@@ -71,6 +70,14 @@
     /* prevent blow up of thiscontainer */
      min-width: 0;
     min-height: 0;    
+
+    display: flex;
+    min-width: 0;
+    min-height: 0;    
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-direction: column;
+    
 
 }
 
@@ -102,6 +109,7 @@
     left: 45%;
     top: 40%;
 }
+
 
 .dashboard_1_cls {
 

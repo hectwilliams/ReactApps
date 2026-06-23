@@ -80,10 +80,15 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
     // console.log(request.params)
     // const {value} = request.params;
 
-    // csvReadStream.destroy();
+    // clear current stream buffers
+    csvReadStream.destroy();
 
+    csvReadStream.close();
+
+    // recreate 
     csvReadStream  = fs.createReadStream(filePath);
     
+
     // csvReadStream.resume();
     //  = fs.createReadStream(filePath);
     // if (csvReadStream.pending) {
@@ -95,11 +100,10 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
         obj = Object.assign({}, obj); // coonvert null prototype to normal object 
     }
 
-        let numPlayers = 100;
-
-
+    let numPlayers = 100;
 
     let players : PlayerFields[] = new Array(numPlayers).fill("");
+
     let players_index = 0;
     
     let pageNumberZeroIndex = parseInt(obj.pg);
@@ -109,50 +113,54 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
         pageNumberZeroIndex -= 1;
     }
 
-
     const effectivePageNumber = Math.floor(numberPages)
-
 
     const startPos = pageNumberZeroIndex * Math.floor(playerPerPage) ;
 
-    console.log('DEBUG', obj.pg, pageNumberZeroIndex, effectivePageNumber, startPos, players_index);
+    console.log('DEBUG', obj.pg, pageNumberZeroIndex, effectivePageNumber, startPos, players_index, numberPages);
     
     if (pageNumberZeroIndex != effectivePageNumber   ) {
     } else {
+        console.log(numberCsvLines);
         numPlayers = numberCsvLines - startPos ;
+        console.log(numPlayers);
         players.length = numPlayers;
     }
 
     csvReadStream
     .pipe(
 
-    parse ({ 
-        delimiter: ',',
-        from_line: (startPos + 1),
-        to_line: (startPos +1) + numPlayers,
-        columns: true,
-    }))  /* class instance */
-    
+        parse ({ 
+            // delimiter: ',',
+            from_line: (startPos + 1),
+            to_line: (startPos +1) + numPlayers,
+            columns:['Player', 'Tm'], 
+            relax_column_count: true,
+        }))  /* class instance */
+        
     .on('data', ( row )=>{
+        if (row.Player == 'Player')
+            return;
 
-        console.log(row.Player);
         players[players_index] = {name: row.Player, img: CATIMAGE} ;
         players_index++;
+
     })
 
     .on('end', ()=>{
+
+        // truncate if player list less than number-players-per-list
+        players.length = players_index;
+
         reply
         .type('application/json')
         .send({
             page: ( pageNumberZeroIndex + 1), 
-            start: numberPages * (pageNumberZeroIndex + 1), 
+            start: numberPages * (pageNumberZeroIndex), 
             numPages:effectivePageNumber + 1 ,
             players : players, 
             ing: CATIMAGE, 
         });
-        
-        players_index = 0;
-        players.length = 0;
         
     })
 
