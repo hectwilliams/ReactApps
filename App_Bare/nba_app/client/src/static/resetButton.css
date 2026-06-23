@@ -2,6 +2,8 @@
     grid-column: 5/ span 5;
     grid-row: 60 / span 10;
     border: 1px dotted brown;
+        border-radius: 3px;
+
 }
 
 reset_button_cls:disabled {

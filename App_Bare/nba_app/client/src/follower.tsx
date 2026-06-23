@@ -50,7 +50,7 @@ export function setDashboardObjects(node: HTMLDivElement){
     
     let label2 = document.createElement('label');
     label2.className = logname_cls;
-    label2.innerText = "Log";
+    label2.innerText = "LOG";
     
     let log = document.createElement('ul');
     log.className = logger_cls;
@@ -58,7 +58,7 @@ export function setDashboardObjects(node: HTMLDivElement){
     
     let bin_log_label = document.createElement('label');
     bin_log_label.className = binlog_label_clas;
-    bin_log_label.innerText = "Blocked Requests";
+    bin_log_label.innerText = "BLOCKED REQUESTS";
 
     let bin_log = document.createElement('div');
     bin_log.className = binlog_cls  ;
