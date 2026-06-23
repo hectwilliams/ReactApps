@@ -42,10 +42,9 @@ export function writeLog(id:number, record: LogInterface) {
     liElement.textContent = `Time: [${record.date}] Message: [${record.message}]`;
     
     let node = record.dashboard?.children[2] as HTMLElement; 
-    console.log(node);
     node.append(liElement);
     
-    // animation condition 
+    // animation condition for GUI write log 
     liElement.dataset.noop = "1";
     setTimeout(()=>{
         liElement.dataset.noop = "0";
@@ -71,9 +70,6 @@ export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, d
                 }
             }
         })) as HTMLElement; // find returns a HTML ELEMENT
-    
-    
-    
     return returnNode;
 }
 
@@ -109,10 +105,7 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
         } catch {
             return undefined;
         }
-  
 }
-
-import type { LoggerInterface } from './clearButton';
 
 export async function updateLog(data: Array<string> ) : Promise<Boolean>{
 
@@ -140,7 +133,7 @@ export async function updateLog(data: Array<string> ) : Promise<Boolean>{
 export async function fetchBinny(): Promise<Array<Number> | undefined> {
     
     const portBinny = 50216;
-    const path = `http://127.0.0.1:${portBinny}/binny`;
+    const path = `http://127.0.0.1:${portBinny}/binny`; // Binny server :) 
 
     try {
         const response = await fetch(path);
