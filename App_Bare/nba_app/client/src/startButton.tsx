@@ -1,6 +1,6 @@
 
 
-import dashboards from './followers';
+import dashboard from './followers';
 import {start_button_cls} from './static/startButton.css'
 import { writeLog } from './handlers';
 import type { LogInterface } from './followers';
@@ -57,7 +57,7 @@ button.onclick = (event: MouseEvent)=>{
     const logRecord : LogInterface = {
         date: (new Date()).toLocaleString(),
         message: "\t Starting DB",
-        dashboard: dashboards.dashboard_1
+        dashboard: dashboard
     }
     console.log('starting db');
     // confirm db is running 

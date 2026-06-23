@@ -6,14 +6,25 @@ import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import { fileURLToPath } from 'url';
 import type {FastifyRequest, FastifyReply } from 'fastify';
-
-
+import {stat} from 'node:fs/promises';
 import fs from 'fs';
-
 import {parse} from 'csv-parse';
-import { stderr } from 'node:process';
-import { start } from 'node:repl';
+import { createWriteStream, mkdir } from 'node:fs';
 
+
+async function createlogDir() {             
+    let effPath = `${LOGDIR}/dashboards`;                                                                                                                                                                                                                                                                                                                                                                        
+    try {
+        const stats = await fs.promises.stat(effPath);
+    } catch(error:any) {
+        if (error.code == 'ENOENT') {
+            
+            const response =  await fs.promises.mkdir( effPath, {recursive: true});
+            console.log(response, 'log dir created');
+            
+        }
+    }
+}
 // import 
 
 interface PlayerFields {
@@ -21,10 +32,13 @@ interface PlayerFields {
     img: string;
 };
 
+
 // const __filename = fileURLToPath(import.meta.url);
 
 // const __dirname = path.dirname(__filename);
 
+const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
+const LOCALHOST = '127.0.0.1'; // safe 
 const workDir = process.cwd();
 
 // // instantiate server framework 
@@ -34,8 +48,12 @@ const filePath = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'st
 
 const CATIMAGE = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'images', 'faces', 'img.png' );
 
+const LOGDIR = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'logs' );
 
 var csvReadStream = fs.createReadStream(filePath) as fs.ReadStream;
+
+
+
 
 // Register static file plugin 
 fastify.register(fastifyStatic, {
@@ -74,7 +92,7 @@ fastify.get('/', (request:FastifyRequest, reply:FastifyReply) => {
         .sendFile('index.html');
 });
 
-// send data to requestor
+/* Get player list page  */
 fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
     // console.log(request.body);
     // console.log(request.params)
@@ -87,12 +105,6 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 
     // recreate 
     csvReadStream  = fs.createReadStream(filePath);
-    
-
-    // csvReadStream.resume();
-    //  = fs.createReadStream(filePath);
-    // if (csvReadStream.pending) {
-    // }
 
     let obj = request.params  as any;
 
@@ -166,12 +178,56 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 
 });
 
+/*  Append Log  */
+fastify.put('/log', (request, reply)=>{
+
+    if(!request.body)
+        return;
+    
+    // check log files 
+    Object.values(request.body).forEach((logValues : Array<string>, index: number) =>{
+        if (logValues.length == 0)
+                return;
+
+        let effIndex = index + 1; // 1-index
+        let path = `${LOGDIR}/dashboards`;
+        let date = (new Date).toISOString().replace(/[:.]/g, '').replace('T', '_'); // remove  colon and dot, replace T, truncate)   e.g. "2026-06-22T23:03:40.537Z"  --> e.g., "20260622_190000" <year><month><day><hour><min><second>
+        let logFilePath = path + '/' +'D' + date  + 'ID' + effIndex;
+        const logStream = createWriteStream(logFilePath, {flags: 'a', encoding: 'utf-8'});
+        logValues.forEach(lines=> {
+            logStream.write(lines + '\n');
+        });
+    });
+
+
+    try {
+        // request.body.array.forEach(element => {
+            
+        // });
+        // if (request.body){
+
+        //     console.log(JSON.parse());
+
+        //     // for(let i =1; i <= request.body.length; i++) {
+                
+        //     // }
+        // }
+
+
+        reply
+            .status(200);
+
+    }catch(err) {
+        reply
+            .status(404); // cannot access directories to append logs 
+    }
+    
+})
 // run server 
 try {
-    // IIFE is an async operation  
-    ( async () => {
-        await fastify.listen({port: 3000})
-    })();
+    let method = {port: 50215, host : '::' } // ':: bind to listen on both IP4 and IP6 loopback '
+    await createlogDir();
+    await fastify.listen(method);
 } catch(err) {
     fastify.log.error(err);
     process.exit();

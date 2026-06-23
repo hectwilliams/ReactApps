@@ -1,6 +1,6 @@
 import {power_button_cls} from './static/powerButton.css';
 import type { LogInterface } from './followers';
-import dashboards from './followers';
+import dashboard from './followers';
 import { writeLog } from './handlers';
 import optionNode from './options';
 import { readyStatus } from './selectraw';
@@ -28,13 +28,16 @@ button.onclick = (event: MouseEvent) => {
     }
 
     if (button.dataset.isOn == "0") {
+
+        //request server 
+
         button.dataset.isOn = "1";
         
         console.log('starting db...');
          const logRecord : LogInterface = {
         date: (new Date()).toLocaleString(),
         message: "-\t Starting DB",
-        dashboard: dashboards.dashboard_1
+        dashboard: dashboard
         }
         writeLog(0, logRecord);
         readyStatus.dataset.dbready ='1';
@@ -45,7 +48,7 @@ button.onclick = (event: MouseEvent) => {
            const logRecord : LogInterface = {
         date: (new Date()).toLocaleString(),
         message: "-\t Shutting Down DB",
-        dashboard: dashboards.dashboard_1
+        dashboard: dashboard
         }
         writeLog(0, logRecord);
         console.log('turn off database');

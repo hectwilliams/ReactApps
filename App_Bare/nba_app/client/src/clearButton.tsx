@@ -3,7 +3,7 @@ import {clear_button_cls} from './static/clearButton.css'
 import { findNodeByDataset, updateLog } from './handlers';
 import { start_button } from './startButton';
 import { powerButton } from './powerButton';
-import dashboards from './followers';
+import dashboard from './followers';
 import { activePlayerList } from './main';
 import { fetchPages } from './handlers';
 import { loadPlayerData } from './handlers';
@@ -66,30 +66,43 @@ button.onclick = (event: MouseEvent) => {
     const logRecord : LogInterface = {
         date: (new Date()).toLocaleString(),
         message: `Cleared list`,
-        dashboard: dashboards.dashboard_1
+        dashboard: dashboard
     }
     writeLog(0, logRecord);
 
     // POST dashboard data to http webserver 
-    let data :  Array<string[]> = [];
+    let data :  Array<string> = [];
     let clearableEle = [] as Element[];
-    Object.entries(dashboards).forEach( (entry, index) =>{
-        let db = entry[1];
-        let key = entry[0];
-        let arr = db.children[2];
-        if (arr) {
-            clearableEle.push(arr);
-            data.push(Array.from(arr.children).map((x)=>{
-                return x.textContent;
-            }))    
-        }    
-    });    
-    updateLog(data);
 
-    clearableEle[0]?.replaceChildren();
-    clearableEle[1]?.replaceChildren();
-    clearableEle[2]?.replaceChildren();
-    clearableEle[3]?.replaceChildren();
+    let arr = dashboard.children[2];
+
+    if (arr) {
+        
+        clearableEle.push(arr);
+        data = Array.from(arr.children).map((x)=>{
+            return x.textContent;
+        })
+        updateLog(data);
+    
+    }
+
+    setTimeout(()=>{
+        arr?.replaceChildren();
+    }, 3000);
+
+    // Object.entries(dashboards).forEach( (entry, index) =>{
+    //     let db = entry[1];
+    //     let key = entry[0];
+    //     let arr = db.children[2];
+    //     if (arr) {
+             
+    //     }    
+    // });    
+
+    // clearableEle[0]?.replaceChildren();
+    // clearableEle[1]?.replaceChildren();
+    // clearableEle[2]?.replaceChildren();
+    // clearableEle[3]?.replaceChildren();
 
     
 }

@@ -1,6 +1,6 @@
 
 import type { SimplePlayerProfileInterface } from './player';
-import dashboards from './followers';
+import  dashboard from './followers';
 import { PlayerCard } from './player';
 import { activePlayerList } from './main';
 
@@ -17,7 +17,7 @@ export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
             const logRecord : LogInterface = {
                 date: (new Date()).toLocaleString(),
                 message: `Write/Add ${record.name} `,
-                dashboard: dashboards.dashboard_1
+                dashboard: dashboard
             }
 
             // pass profile object to player card
@@ -27,7 +27,7 @@ export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
             if (activePlayerList) {
                 activePlayerList.append(node);
                 // send to log
-                let log: Element | null =  dashboards.dashboard_1.children.item(2);
+                let log: Element | null =  dashboard.children.item(2);
                 writeLog(0, logRecord);
             }
     
@@ -114,7 +114,7 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
 
 import type { LoggerInterface } from './clearButton';
 
-export async function updateLog(data: Array<string[]> ) : Promise<Boolean>{
+export async function updateLog(data: Array<string> ) : Promise<Boolean>{
 
     const path = `${window.location.origin}/log`;
     const method = {
@@ -137,4 +137,21 @@ export async function updateLog(data: Array<string[]> ) : Promise<Boolean>{
     }
 }
 
+export async function fetchBinny(): Promise<Array<Number> | undefined> {
+    
+    const portBinny = 50216;
+    const path = `http://127.0.0.1:${portBinny}/binny`;
 
+    try {
+        const response = await fetch(path);
+        if (!response.ok) {
+            throw new Error("Cannot reach Binny");
+        }
+        const data  = await response.json() as Array<Number>;
+        return data;
+    }catch {
+        return undefined;
+    }
+   
+  
+}

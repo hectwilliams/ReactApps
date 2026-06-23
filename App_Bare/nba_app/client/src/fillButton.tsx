@@ -1,7 +1,7 @@
 import {fill_button_cls} from './static/fillButton.css';
 import type { SimplePlayerProfileInterface } from './player';
 import { PlayerCard } from './player';
-import { findNodeByDataset } from './handlers';
+import { fetchBinny, findNodeByDataset } from './handlers';
 import { writeLog } from './handlers';
 import dashboards from './followers';
 import type { LogInterface } from './followers';
@@ -30,7 +30,34 @@ rootDiv.append(button);
 // }, 10);
 // playerListNode = activePlayerList;
 
+export interface SimpleCaptureBins {
+    date: string;
+    size: number; 
+};
+
 button.onclick = (event: MouseEvent) => {
+
+    // TODO change gas button to staircase button 
+    fetchBinny()
+    .then(x=>{
+        console.log(x);
+    })
+    .catch(err=>{
+        console.log('Request to Binny failed');
+    })
+
+    // if (response !=undefined){
+    //     console.log(response)
+    // }
+    // try {
+    //     if (!response) {
+    //         throw new Error("Unable to ");
+    //     }
+    //     c
+    // }catch {
+    // }
+    
+
     // async event 
 
     // if (powerButton.dataset.isOn == '0') {

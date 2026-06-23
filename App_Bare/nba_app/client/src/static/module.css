@@ -113,16 +113,16 @@
 
 .dashboard_1_cls {
 
-    grid-column: 52 / span 30;
+    grid-column: 52 / span 40;
     
-    grid-row: 10 / span 21;
+    grid-row: 30 / span 60;
 
     border: 1px solid black; 
     
     height: inherit;
     width: inherit; 
     max-width: 100%;
-    height: 20vh;
+    height: 50vh;
     
     /* prevent blow up of thiscontainer */
     min-width: 0;
@@ -135,7 +135,7 @@
     background-color: lightcyan;
 
 }
-
+/* 
 .dashboard_2_cls {
 
     grid-column: 52 / span 30;
@@ -147,7 +147,6 @@
     width: 100%;
     height: 100%;
 
-    /* prevent blow up of thiscontainer */
     min-width: 0;
     min-height: 0; 
 
@@ -159,8 +158,8 @@
     background-color: lightcyan;
 
 
-}
-
+} */
+/* 
 .dashboard_3_cls {
 
     grid-column: 52 / span 30;
@@ -174,7 +173,6 @@
     width: 100%;
     height: 20vh;
 
-    /* prevent blow up of thiscontainer */
     min-width: 0;
     min-height: 0;   
 
@@ -184,8 +182,8 @@
     background-color: lightcyan;
 
 
-}
-
+} */
+/* 
 .dashboard_4_cls {
 
     grid-column: 52 / span 30;
@@ -199,7 +197,6 @@
     width: 100%;
     height: 20vh;
 
-    /* prevent blow up of thiscontainer */
     min-width: 0;
     min-height: 0;   
 
@@ -208,4 +205,4 @@
     grid-template-rows: repeat(100, 1%);
     background-color: lightcyan;
 
-}
+} */
