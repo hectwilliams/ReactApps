@@ -21,7 +21,7 @@ interface ClientRequest {
     amplitude: number
 };
 
-const fastify = Fastify({logger: false /* verbose*/ });
+const fastify = Fastify({logger: true /* verbose*/ });
 const bins = [] as Array<SimpleCapture>;
 
 /*

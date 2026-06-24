@@ -1,0 +1,41 @@
+
+.player_card_cls {
+    /* list-style-type: none; /* Removes the bullets */
+    /* margin: 0;    */
+    /* padding-left: 0px;   */
+    display: grid;
+    width: 100%;
+    height: 100%;
+    min-height: 5vh;
+    max-height: 5vh;
+    border: 2px solid pink;    
+    grid-template-columns: 20% 80%;
+    grid-template-rows: 100%;
+}
+
+/* padding: 0; Removes default left indentation */
+.player_card_cls > div:nth-child(1)  {
+    /* border : 3px solid read; */
+    /* height: ; */
+    display: grid;
+    border : 1px solid green;
+    grid-column: 1 / span 1;
+    grid-row: 1/ span 1;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../images/faces/img.png");
+    background-size:contain;
+    background-position: center; 
+    background-repeat: no-repeat;
+}
+
+.player_card_cls > div:nth-child(2) {
+    display: grid;
+    border : 1px solid orange;
+    grid-column: 2 / span 1;
+
+    grid-row: 1/ span 1;
+     width: 100%;
+    height: 100%;
+}
