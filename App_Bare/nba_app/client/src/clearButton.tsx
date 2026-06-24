@@ -1,5 +1,5 @@
 
-import {clear_button_cls} from './static/clearButton.css'
+import {clear_button_cls} from './static/css/clearButton.css'
 import { findNodeByDataset, updateLog } from './handlers';
 import { start_button } from './startButton';
 import { powerButton } from './powerButton';

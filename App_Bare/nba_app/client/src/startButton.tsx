@@ -1,7 +1,7 @@
 
 
 import dashboard from './followers';
-import {start_button_cls} from './static/startButton.css'
+import {start_button_cls} from './static/css/startButton.css'
 import { writeLog } from './handlers';
 import type { LogInterface } from './followers';
 import { powerButton } from './powerButton';

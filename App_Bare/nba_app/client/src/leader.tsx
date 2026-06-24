@@ -1,7 +1,7 @@
 import  {
     ul_cls,
     leader_cls, 
-} from './static/module.css'; 
+} from './static/css/module.css'; 
 
 const rootDiv = document.getElementById('root');
 const leader = document.createElement('div');

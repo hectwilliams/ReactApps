@@ -4,11 +4,11 @@ import  {
     dashboard_1_cls
 
 
-} from './static/module.css'; 
+} from './static/css/module.css'; 
 
 import { setDashboardObjects  } from './follower';
 
-import {dbclone1_cls, dbclone2_cls} from './static/follower.css';
+import {dbclone1_cls, dbclone2_cls} from './static/css/follower.css';
 
 export interface LogInterface {
     date:string;

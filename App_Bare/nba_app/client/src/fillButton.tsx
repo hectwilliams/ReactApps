@@ -1,26 +1,16 @@
-import {fill_button_cls} from './static/fillButton.css';
-import type { SimplePlayerProfileInterface } from './player';
-import { PlayerCard } from './player';
+import {fill_button_cls} from './static/css/fillButton.css';
 import { fetchBinny, findNodeByDataset } from './handlers';
-import { writeLog } from './handlers';
 import dashboard from './followers';
-import type { LogInterface } from './followers';
-import { powerButton } from './powerButton';
-import { activePlayerList } from './main';
-// const img = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/img.png";
 import { BINSIZE, runBun } from './follower';
-// binButton
 
-var playerListNode: HTMLElement | undefined;
-
-const img = './static/images/img.png';
-const name = "Bob Lazar";
 const button = document.createElement('button');
 const rootDiv = document.getElementById('root');
+
 while(rootDiv == null) {}
+
 button.className = fill_button_cls;
 
-//set toggle variable 
+// set toggle variable 
 button.dataset.isfull = "0";
 button.dataset.running = "0";
 

@@ -1,4 +1,4 @@
-import {buttons_cls, storage_status_cls, arrow_right_cls, arrow_left_cls, ready_status_cls} from './static/selectRaw.css';
+import {buttons_cls, storage_status_cls, arrow_right_cls, arrow_left_cls, ready_status_cls} from './static/css/selectRaw.css';
 import { powerButton } from './powerButton';
 import {  folio } from './selectraw';
 import { fetchPages } from './handlers';

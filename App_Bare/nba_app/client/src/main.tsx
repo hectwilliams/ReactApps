@@ -2,7 +2,7 @@
 import  {
     body_cls, 
     root_container_cls,
-} from './static/module.css'; 
+} from './static/css/module.css'; 
 import { findNodeByDataset } from './handlers';
 
 // add buttons to board 

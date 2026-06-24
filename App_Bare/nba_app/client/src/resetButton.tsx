@@ -1,4 +1,4 @@
-import {reset_button_cls} from './static/resetButton.css'
+import {reset_button_cls} from './static/css/resetButton.css'
 import { findNodeByDataset } from './handlers';
 import { clearDB } from './clearButton';
 import { start_button } from './startButton';

@@ -1,7 +1,7 @@
 import {
     player_card_cls
 
-} from './static/player.css';
+} from './static/css/player.css';
 
 interface Leader {
     dnode: HTMLDivElement;

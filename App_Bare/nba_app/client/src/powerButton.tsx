@@ -1,4 +1,4 @@
-import {power_button_cls} from './static/powerButton.css';
+import {power_button_cls} from './static/css/powerButton.css';
 import type { LogInterface } from './followers';
 import dashboard from './followers';
 import { writeLog } from './handlers';

@@ -1,4 +1,4 @@
-import {rand_button_cls} from './static/randButton.css';
+import {rand_button_cls} from './static/css/randButton.css';
 
 const button = document.createElement('button');
 
