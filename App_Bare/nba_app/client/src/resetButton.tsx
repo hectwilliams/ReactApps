@@ -1,26 +1,26 @@
 import {reset_button_cls} from './static/css/resetButton.css'
 import { findNodeByDataset } from './handlers';
-import { clearDB } from './clearButton';
-import { start_button } from './startButton';
+// import { clearDB } from './clearButton';
+// import { start_button } from './startButton';
 import dashboards from './followers';
-import { powerButton } from './powerButton';
+// import { powerButton } from './powerButton';
 
-const button = document.createElement('button');
-button.className = reset_button_cls;
-button.innerHTML = "<p> RESET DB </p>"
-button.dataset.name = "reset_button";
+// const button = document.createElement('button');
+// button.className = reset_button_cls;
+// button.innerHTML = "<p> RESET DB </p>"
+// button.dataset.name = "reset_button";
 
-// block for rootDiv
-const rootDiv = document.getElementById('root');
-while(rootDiv== null){}
+// // block for rootDiv
+// const rootDiv = document.getElementById('root');
+// while(rootDiv== null){}
 //add to browser canvas 
 // rootDiv.append(button);
 
 // disable button for now
-button.disabled = true;
+// button.disabled = true;
 
 // set handlers 
-button.onclick = (event: MouseEvent) => {
+// button.onclick = (event: MouseEvent) => {
 
     // restart database 
 
@@ -53,4 +53,4 @@ button.onclick = (event: MouseEvent) => {
     //         }
     //     }
     // }
-}
+// }

@@ -1,9 +1,9 @@
 import {buttons_cls, storage_status_cls, arrow_right_cls, arrow_left_cls, ready_status_cls} from './static/css/selectRaw.css';
-import { powerButton } from './powerButton';
-import {  folio } from './selectraw';
+// import { powerButton } from './powerButton';
+// import {  folio } from './selectraw';
 import { fetchPages } from './handlers';
-import { loadPlayerData } from './handlers';
-import { activePlayerList } from './main';
+// import { loadPlayerData } from './handlers';
+// import { activePlayerList } from './main';
 
 const rootDiv = document.getElementById('root');
 
@@ -39,83 +39,83 @@ readyStatus.dataset.dbready = "0";
     selectRawNode.append(element);
 });
 
-// handlers for left button 
+// // handlers for left button 
 
-leftButton.onclick = (event:MouseEvent) => {
+// leftButton.onclick = (event:MouseEvent) => {
 
-    if (messageNode.innerText === "...") {
+//     if (messageNode.innerText === "...") {
 
-        return;
+//         return;
         
-    } else if (powerButton.dataset.isOn == "1") {
-        let s = messageNode.innerText.trim().split(' ')[0];
-        if (s) {
-            let num = parseInt(s) as number;
-            if (num - 1 <=0 ) {
-                return;
-            }
-            fetchPages(num - 1).then ((data)=>{
-                if (!data)
-                    return;
-                folio.innerText = `${data.page} of ${data.numPages}`;
+//     } else if (powerButton.dataset.isOn == "1") {
+//         let s = messageNode.innerText.trim().split(' ')[0];
+//         if (s) {
+//             let num = parseInt(s) as number;
+//             if (num - 1 <=0 ) {
+//                 return;
+//             }
+//             fetchPages(num - 1).then ((data)=>{
+//                 if (!data)
+//                     return;
+//                 folio.innerText = `${data.page} of ${data.numPages}`;
                 
-                // clear player list 
-                activePlayerList.replaceChildren();
+//                 // clear player list 
+//                 activePlayerList.replaceChildren();
 
-                // load new block
-                loadPlayerData(data.players);
-            });
+//                 // load new block
+//                 loadPlayerData(data.players);
+//             });
             
-        }
+//         }
             
-    } else {
-        console.log('system is off');
-    }
-}
-// handler for right button
-rightButton.onclick = (event:MouseEvent) => {
+//     } else {
+//         console.log('system is off');
+//     }
+// }
+// // handler for right button
+// rightButton.onclick = (event:MouseEvent) => {
 
-    if (messageNode.innerText === "...") {
+//     if (messageNode.innerText === "...") {
 
-        return;
+//         return;
         
-    }else if (powerButton.dataset.isOn == "1") {
-        let arr = messageNode.innerText.trim().split(' ') as Array<string>;
-        console.log(arr);
-        let s = arr[0];
-        let e = arr[2];
+//     }else if (powerButton.dataset.isOn == "1") {
+//         let arr = messageNode.innerText.trim().split(' ') as Array<string>;
+//         console.log(arr);
+//         let s = arr[0];
+//         let e = arr[2];
 
-        console.log()
-        if (s && e) {
-            let num = parseInt(s) as number;
-            let numE = parseInt(e) as number;
-            if (num + 1 > numE) {
-                return;
-            }
-            fetchPages(num + 1).then ((data)=>{
-                if (!data)
-                    return;
-                folio.innerText = `${data.page} of ${data.numPages}`;
+//         console.log()
+//         if (s && e) {
+//             let num = parseInt(s) as number;
+//             let numE = parseInt(e) as number;
+//             if (num + 1 > numE) {
+//                 return;
+//             }
+//             fetchPages(num + 1).then ((data)=>{
+//                 if (!data)
+//                     return;
+//                 folio.innerText = `${data.page} of ${data.numPages}`;
                 
-                // clear player list 
-                activePlayerList.replaceChildren();
+//                 // clear player list 
+//                 activePlayerList.replaceChildren();
 
-                // load new block
-                loadPlayerData(data.players);
+//                 // load new block
+//                 loadPlayerData(data.players);
 
-            });
+//             });
             
-        }
+//         }
             
-    } else {
-        console.log('system is off');
-    }
-}
-// view data change on click 
+//     } else {
+//         console.log('system is off');
+//     }
+// }
+// // view data change on click 
 
-// handler for status of database (storage)
+// // handler for status of database (storage)
 
 
-// export default selectRawNode;
-export  {readyStatus as readyStatus};
-export  {messageNode as folio };
+// // export default selectRawNode;
+// export  {readyStatus as readyStatus};
+// export  {messageNode as folio };

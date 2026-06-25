@@ -2,17 +2,18 @@ import dashboard from './followers';
 import {start_button_cls} from './static/css/startButton.css'
 import { writeLog } from './handlers';
 import type { LogInterface } from './followers';
-import { powerButton } from './powerButton';
-import { readyStatus, folio } from './selectraw';
+import { setPowerSwitch ,statusCircleGrandParent} from './powerButton';
+// import { readyStatus, folio } from './selectraw';
 import { fetchPages } from './handlers';
 // import { json } from 'node:stream/consumers';
-import { activePlayerList } from './main';
-import { loadPlayerData } from './handlers';
+// import { activePlayerList } from './main';
+// import { loadPlayerData } from './handlers';
 import { viewButton } from './handlers';
 import {
     services_card_container_cls,
     services_cls, services_cls_header,
-    viewer_grid_item__cls
+    viewer_grid_item__cls,
+    services_power_cls
 } from './static/css/services.css';
 import { moreViewSymbol, setEventMoreViewSymbol } from './viewButton';
 
@@ -42,7 +43,25 @@ async function loadServices () : Promise<Array<string>>  {
 
 }
 
-function loadServicesDom(services: Array<string>, container: HTMLElement) {
+function servicesSwitchClick(event: MouseEvent) {
+    let node = event.currentTarget as HTMLSpanElement;
+    let s = node.dataset.status as string;
+    
+    if (s == 'off') {
+        
+        node.dataset.status = 'on';
+
+    } else {
+        
+        node.dataset.status = 'off';
+    
+    } 
+        
+        
+
+}
+
+function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
     services.forEach(serviceName => {
         // TODO restrict name size 
         
@@ -55,11 +74,35 @@ function loadServicesDom(services: Array<string>, container: HTMLElement) {
         let cardName = document.createElement('span');
         cardName.innerHTML = `<p> ${serviceName} </p>`;
         
-        let clone = moreViewSymbol.cloneNode(true) as HTMLSpanElement;
-        setEventMoreViewSymbol(clone);
+        // let statusCircleGrandParent = document.createElement('span');
+        // statusCircleGrandParent.className = services_power_cls;
+        // let statusCircleParent = document.createElement('span');
+        // let statusCircleGrandChild = document.createElement('span');
+
+        // statusCircleGrandParent.append(statusCircleParent);
+        // statusCircleParent.append(statusCircleGrandChild);
+        // statusCircleGrandParent.onclick = servicesSwitchClick;
+
+        let clonePowerSwitch = statusCircleGrandParent.cloneNode(true) as HTMLSpanElement;
+
+        if (serviceName == 'monitor') {
+            
+            clonePowerSwitch.dataset.status='on1';
+
+        } else {
+            
+            clonePowerSwitch.dataset.status='off';
+
+        }
+        setPowerSwitch(clonePowerSwitch);
+
+
+        let cloneMoreViewSymbol = moreViewSymbol.cloneNode(true) as HTMLSpanElement;
+        setEventMoreViewSymbol(cloneMoreViewSymbol);
 
         subContainer.append(cardName);
-        subContainer.append(clone);
+        subContainer.append(cloneMoreViewSymbol);
+        subContainer.append(clonePowerSwitch);
 
         container.append(cardContainer);
     });
@@ -69,16 +112,17 @@ function loadServicesDom(services: Array<string>, container: HTMLElement) {
 // const services
 const cardBody = document.createElement('div');
 cardBody.className = services_cls;
-
+// cardBody.dataset.ready='0';
 const cardHeader = document.createElement('div');
 cardHeader.className = services_cls_header;
 
 // block for rootDiv
 const rootDiv = document.getElementById('root');
-while(rootDiv== null){}
-
-rootDiv.append(cardHeader);
-rootDiv.append(cardBody);
+// while(rootDiv== null){}
+if (rootDiv) {
+    rootDiv.append(cardHeader);
+    rootDiv.append(cardBody);
+}
 
 const response = await loadServices()
 loadServicesDom(response, cardBody);
@@ -91,3 +135,4 @@ headerName.innerText = "Services"
 
 cardHeader.append(headerIcon);
 cardHeader.append(headerName);
+// cardBody.dataset.ready='1';

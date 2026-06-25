@@ -1,13 +1,13 @@
 
 import {clear_button_cls} from './static/css/clearButton.css'
 import { findNodeByDataset, updateLog } from './handlers';
-import { start_button } from './startButton';
-import { powerButton } from './powerButton';
+// import { start_button } from './startButton';
+// import { powerButton } from './powerButton';
 import dashboard from './followers';
-import { activePlayerList } from './main';
+// import { activePlayerList } from './main';
 import { fetchPages } from './handlers';
-import { loadPlayerData } from './handlers';
-import {  folio } from './selectraw';
+// import { loadPlayerData } from './handlers';
+// import {  folio } from './selectraw';
 import type { LogInterface } from "./followers";
 import { writeLog } from './handlers';
 
@@ -20,21 +20,21 @@ while(rootDiv== null){}
 // function scopes variables (free bee)
 var playerListNode = findNodeByDataset(rootDiv, 'name','leader') as HTMLElement;
 
-export const clearDB = () => {
+// export const clearDB = () => {
     
-    // send request to server (or local system) to clear
-    // let dbClearSuccess = true;
+//     // send request to server (or local system) to clear
+//     // let dbClearSuccess = true;
 
-    // clear gui players list
-    if (activePlayerList.childElementCount) {
-        // let playerListNode = findNodeByDataset(rootDiv, 'name','leader') as HTMLElement;
-        activePlayerList.replaceChildren(); // memory clean up 
-        // cleared ram of database data
-    } else {
-        console.log('no data to delete ');
-    }
+//     // clear gui players list
+//     if (activePlayerList.childElementCount) {
+//         // let playerListNode = findNodeByDataset(rootDiv, 'name','leader') as HTMLElement;
+//         activePlayerList.replaceChildren(); // memory clean up 
+//         // cleared ram of database data
+//     } else {
+//         console.log('no data to delete ');
+//     }
     
-}
+// }
 
 export interface LoggerInterface {
     dashboard_1: string[];

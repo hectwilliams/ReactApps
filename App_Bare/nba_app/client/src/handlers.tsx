@@ -2,37 +2,37 @@
 import type { SimplePlayerProfileInterface } from './player';
 import  dashboard from './followers';
 import { PlayerCard } from './player';
-import { activePlayerList } from './main';
+// import { activePlayerList } from './main';
 
-export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
+// export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
 
-    list.forEach((record)=>{
-           // // set Profile 
-            const profile :  SimplePlayerProfileInterface = {
-                img: record.img,
-                name: record.name
-            }
+//     list.forEach((record)=>{
+//            // // set Profile 
+//             const profile :  SimplePlayerProfileInterface = {
+//                 img: record.img,
+//                 name: record.name
+//             }
 
-            // set log message 
-            const logRecord : LogInterface = {
-                date: (new Date()).toLocaleString(),
-                message: `Write/Add ${record.name} `,
-                dashboard: dashboard
-            }
+//             // set log message 
+//             const logRecord : LogInterface = {
+//                 date: (new Date()).toLocaleString(),
+//                 message: `Write/Add ${record.name} `,
+//                 dashboard: dashboard
+//             }
 
-            // pass profile object to player card
-            const node =  PlayerCard(profile);
+//             // pass profile object to player card
+//             const node =  PlayerCard(profile);
 
-            // append to leader list 
-            if (activePlayerList) {
-                activePlayerList.append(node);
-                // send to log
-                let log: Element | null =  dashboard.children.item(2);
-                writeLog(0, logRecord);
-            }
+//             // append to leader list 
+//             if (activePlayerList) {
+//                 activePlayerList.append(node);
+//                 // send to log
+//                 let log: Element | null =  dashboard.children.item(2);
+//                 writeLog(0, logRecord);
+//             }
     
-        });
-}
+//         });
+// }
 
 
 import type { LogInterface } from "./followers";
@@ -180,3 +180,6 @@ export function viewButton(node: HTMLSpanElement) {
         }
     })
 }
+
+
+
