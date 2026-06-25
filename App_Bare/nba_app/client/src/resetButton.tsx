@@ -14,7 +14,7 @@ button.dataset.name = "reset_button";
 const rootDiv = document.getElementById('root');
 while(rootDiv== null){}
 //add to browser canvas 
-rootDiv.append(button);
+// rootDiv.append(button);
 
 // disable button for now
 button.disabled = true;

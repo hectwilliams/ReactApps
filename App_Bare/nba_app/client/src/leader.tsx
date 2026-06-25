@@ -12,7 +12,7 @@ leader.dataset.name = "leader";
 // block for rootDiv
 while(rootDiv== null){}
 
-rootDiv.append(leader);
+// rootDiv.append(leader);
 
 // import 
 // import {Accumulator} from './player';

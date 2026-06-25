@@ -28,7 +28,7 @@ interface Ports {
 const fastify = Fastify({logger: true});
 const workDir = process.cwd();
 let json : Monitor;
-
+const activeServer =[] as Array<string> ;
 // Register static file plugin 
 fastify.register(fastifyStatic, {
     // root directory to serve from
@@ -51,7 +51,13 @@ fastify.get('/', (req, res)=>{
             let out = json_tmp.map((obj)=>{
                 return Object.keys(obj);
             })[0]; // notice indexed 
-            out = out?.filter((x)=> x != 'monitor');
+            out = out?.filter((x)=> {
+                if (x != 'monitor') {
+                    activeServer.push(x);
+                    return true;
+                }
+                return false; 
+            });
             // output raw html            
             res
             .type('text/html')
@@ -59,6 +65,10 @@ fastify.get('/', (req, res)=>{
         }
     });
     
+});
+
+fastify.get('/services', (req, res)=>{
+    res.send(json);
 });
 
 fastify.get('/turn_on_nba', (req, res)=>{

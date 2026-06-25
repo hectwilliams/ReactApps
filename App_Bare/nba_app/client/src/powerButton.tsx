@@ -16,7 +16,7 @@ button.className = power_button_cls;
 //set toggle variable 
 button.dataset.isOn = "0";
 // add button 
-rootDiv.append(button);
+// rootDiv.append(button);
 
 //set handlers 
 button.onclick = (event: MouseEvent) => {

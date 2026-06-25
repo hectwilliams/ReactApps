@@ -15,7 +15,7 @@ button.dataset.isfull = "0";
 button.dataset.running = "0";
 
 // add button to DOM 
-rootDiv.append(button);
+// rootDiv.append(button);
 
 // meets async imports of main.tsx 
 // setTimeout(()=>{

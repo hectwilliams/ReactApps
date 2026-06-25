@@ -25,6 +25,14 @@ import './options';
 // turn on selectraw board 
 import './selectraw';
 
+// services stack card 
+import './services';
+
+import './viewButton';
+
+// dashboard 
+import './dashboard';
+
 // block for rootDiv
 const rootDiv = document.getElementById('root');
 while(rootDiv== null){}

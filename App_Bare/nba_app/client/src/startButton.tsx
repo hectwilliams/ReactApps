@@ -20,7 +20,7 @@ button.dataset.name = "start_button";
 // block for rootDiv
 const rootDiv = document.getElementById('root');
 while(rootDiv== null){}
-rootDiv.append(button);
+// rootDiv.append(button);
 
 // wait for button
 while(button == null){}

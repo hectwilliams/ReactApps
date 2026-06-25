@@ -40,7 +40,7 @@ items.forEach((record, index) => {
 });
 
 if (rootDiv) {
-    rootDiv.prepend(optionNode)
+    // rootDiv.prepend(optionNode)
 }
 
 console.log(optionNode);

@@ -34,7 +34,7 @@ dashboard.classList.add(dashboard_1_cls, ul_cls);
 dashboard.dataset.name = "dashboard";
 
 // check if there are three 
-rootDiv.append(dashboard);
+// rootDiv.append(dashboard);
 
 // apply child objects to dashboard
 setDashboardObjects(dashboard);

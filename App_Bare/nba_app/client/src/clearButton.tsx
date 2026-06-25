@@ -49,7 +49,7 @@ button.innerHTML = "<p> CLEAR DASHBOARDS </p>"
 button.dataset.name = "clear_button";
 
 //add to browser canvas 
-rootDiv.append(button);
+// rootDiv.append(button);
 
 // handler 
 button.onclick = (event: MouseEvent) => {

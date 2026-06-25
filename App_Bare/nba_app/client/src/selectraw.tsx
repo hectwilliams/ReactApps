@@ -14,7 +14,7 @@ const selectRawNode = document.createElement('div');
 selectRawNode.className = storage_status_cls;
 
 // add grid-child root list 
-rootDiv?.prepend(selectRawNode);
+// rootDiv?.prepend(selectRawNode);
 
 // create selectRawNode children 
 const readyStatus = document.createElement('div');

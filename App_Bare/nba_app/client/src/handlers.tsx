@@ -148,3 +148,35 @@ export async function fetchBinny(): Promise<Array<Number> | undefined> {
    
   
 }
+
+export async function enableService(address:string, port: number) {
+    if (!address) {
+        address = "127.0.0.1"; // loop back
+    }
+    const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
+
+    try {
+        const response = await fetch(path);
+        if (!response.ok) {
+            throw new Error("Unable to request service");
+        }
+        console.log(response.json);
+    }catch(err) {
+        console.log(err);
+    }
+}
+
+export function viewButton(node: HTMLSpanElement) {
+    let rows = [2, 5, 9] as Array<number>;
+    rows.forEach((r, index)=>{
+        let v = rows[3 - 1 - index];
+        if (v) {
+            console.log(v);
+            for (let i = 0; i < v; i++) {
+                let pos = 10 * r + i; 
+                let ele = node.children[pos] as HTMLSpanElement;
+                ele.style.backgroundColor="white";
+            }
+        }
+    })
+}
