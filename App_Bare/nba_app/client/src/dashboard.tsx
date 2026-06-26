@@ -25,10 +25,7 @@ function  setHeaderFilerButton( node : HTMLSpanElement) {
             let nodeTest = node.children[index * 10 + c ] as HTMLSpanElement;
             nodeTest.style.backgroundColor = "white";
         }
-        
     });
-
-
 }
 
 // block for rootDiv

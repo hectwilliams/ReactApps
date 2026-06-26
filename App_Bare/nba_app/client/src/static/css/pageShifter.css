@@ -1,0 +1,95 @@
+.page_shifer_cls {
+
+    width: 100%;
+    height: 100%;
+    grid-row: 93 / span 6;
+    grid-column: 94 / span 6;
+    border: black 2px solid;;
+
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);
+    grid-template-rows: repeat(100, 1fr);
+    position:sticky ;
+    bottom: 0;
+    top: 78vh;
+
+}
+
+.page_shifer_cls[data-on="0"] {
+    /* pointer-events: none; */
+    visibility: collapse;
+}
+
+.page_shifer_cls[data-on="1"] {
+    /* pointer-events:auto; */
+    visibility:visible;
+}
+
+.page_number_cls {
+    grid-row: 1 / span 40;;
+    grid-column: 1 / span 99;;
+    width: 100%;
+    height: 100%;
+    
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    border-radius: 3px;
+    font-size: medium;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.arrows_cls {
+    grid-row: 45 / span 45;
+    grid-column: 1 / span 99;
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);
+    grid-template-rows: repeat(100,1fr);
+}
+
+.arrow_right_cls {
+    /* grid-row: 45 / span 45; */
+    grid-row: 1 / span 99;
+    grid-column: 62 / span 90;
+
+    width: 80%;
+    height: 80%;
+    /* // #3b82f6; */
+    background-color: black; 
+    /* Creates a block that ends in a right-pointing triangle */
+    clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);
+    /* grid-column: 4 / span 2; */
+    min-width: 0;
+}
+
+.arrow_left_cls {
+
+    grid-row: 1 / span 99;
+    grid-column: 5 / span 39;
+
+    width: 80%;
+    height: 80%;
+
+    /* // #3b82f6; */
+    background-color: black; 
+    /* Creates a block that ends in a right-pointing triangle */
+    clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);
+    /* grid-column: 4 / span 2;     */
+    transform: rotate(180deg);
+    min-width: 0;
+
+}
+
+.arrow_right_cls:hover,
+.arrow_left_cls:hover {
+    background-color: silver;
+}
+
+.arrow_right_cls:active,
+.arrow_left_cls:active {
+    background-color: gray;
+}
+

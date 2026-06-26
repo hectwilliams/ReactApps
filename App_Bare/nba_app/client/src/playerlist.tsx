@@ -86,7 +86,7 @@ import type {ServerRecordInterface} from './handlers';
     // const imgPath = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/faces/img.png"
 const imgPath = "./client/src/static/images/faces/img.png";
 
-function getPlayerDiv() {
+async function getPlayerDiv() {
 
     let mainElement = document.createElement('div');
     mainElement.className = player_container_cls;
@@ -179,8 +179,10 @@ export async function processData (data: ServerRecordInterface) {
     // create list 
     data.players.forEach((record) => {
         if (k ==0) {
-            getPlayerDiv();
-            console.log("hello world");
+            getPlayerDiv()
+            .then(() => {
+                
+            })
         }
 
         k += 1;

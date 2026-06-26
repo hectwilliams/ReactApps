@@ -87,35 +87,46 @@ import optionNode from './options';
 //     let node = document.createElement('span');
 //     moreViewSymbol.append(node);
 // }
-export const statusCircleGrandParent = document.createElement('span');
-for (let i = 0; i < 1; i++) {
-    let node = document.createElement('span');
-        statusCircleGrandParent.append(node);
-}
 
+export const statusCircleGrandParent = document.createElement('span');
+let node = document.createElement('span');
+statusCircleGrandParent.append(node);
+
+/* 
+    Sets parameters for single circle power switch  
+*/
 export const setPowerSwitch = (node: HTMLSpanElement)=>{
-    let prev: string | null; // closure 
+    let prev: string | null; // closure caches previous state
+    let v_pres : HTMLElement | null; // cache view button element
+
     // click event 
     node.addEventListener( 'click', (event:MouseEvent) => {
         let nodeTest = event.currentTarget as HTMLSpanElement;
         let status = nodeTest.dataset.status as string;
+        let v : HTMLElement;
+        
+        if (!v_pres) {
+            v_pres = nodeTest.parentElement;
+        }
+        v = v_pres?.childNodes[1] as HTMLElement; 
+
         if (status == 'off') {
             if (prev) {
                 nodeTest.dataset.status = prev;
             } else {
                 nodeTest.dataset.status = "on";
             }
+            v.dataset.on = "1"; // enable viewwe button
         } else {
             if (prev == null) {
                 // store on state
                 prev = status;
             }
             nodeTest.dataset.status = "off";
+            v.dataset.on = "0"; // disable viewwe button
         }
+    
     });
-
 }
 
-// export { button as powerButton };
-
-setPowerSwitch(statusCircleGrandParent); // does this sync init ? 
+setPowerSwitch(statusCircleGrandParent);

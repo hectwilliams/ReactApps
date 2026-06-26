@@ -70,6 +70,9 @@
     rgb(13, 6, 47) 100%    /* Perfectly matches body background at the bottom */
     );
 
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height:  90vh;
 }
 
 .dashboard_name_cls {
@@ -164,3 +167,6 @@
 
         /* z-index: 2; */
 }
+
+
+/* page shitfer */

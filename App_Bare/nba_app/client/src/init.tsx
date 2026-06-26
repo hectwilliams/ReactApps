@@ -7,6 +7,8 @@ import './powerButton';
 
 import './viewButton';
 
+import './pageShifter';
+
 // turn on leader board 
 // import './leader';
 

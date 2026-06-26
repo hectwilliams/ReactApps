@@ -85,25 +85,31 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
         // statusCircleGrandParent.onclick = servicesSwitchClick;
 
         let clonePowerSwitch = statusCircleGrandParent.cloneNode(true) as HTMLSpanElement;
+        let cloneMoreViewSymbol = moreViewSymbol.cloneNode(true) as HTMLSpanElement;
+        
+        cloneMoreViewSymbol.dataset.name = serviceName;
 
         if (serviceName == 'monitor') {
             
             clonePowerSwitch.dataset.status='on1';
+            cloneMoreViewSymbol.dataset.on="1";
 
         } else {
             
             clonePowerSwitch.dataset.status='off';
+            cloneMoreViewSymbol.dataset.on="0";
 
         }
         setPowerSwitch(clonePowerSwitch);
-
-
-        let cloneMoreViewSymbol = moreViewSymbol.cloneNode(true) as HTMLSpanElement;
-        cloneMoreViewSymbol.dataset.name = serviceName;
         setEventMoreViewSymbol(cloneMoreViewSymbol);
         
+        // if (serviceName == 'monitor') {
+        //     cloneMoreViewSymbol.dataset.on="1";
+        // } else {
+        //     cloneMoreViewSymbol.dataset.on="0";
+        // }
 
-
+        /* order matters */
         subContainer.append(cardName);
         subContainer.append(cloneMoreViewSymbol);
         subContainer.append(clonePowerSwitch);
