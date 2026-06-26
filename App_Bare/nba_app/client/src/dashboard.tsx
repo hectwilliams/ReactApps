@@ -36,7 +36,7 @@ const rootDiv = document.getElementById('root');
 while(rootDiv== null){}
 
 // dashboard header 
-const dashboard = document.createElement('div');
+export const dashboard = document.createElement('div');
 dashboard.className = dashboard_cls;
 
 // dashboard body 

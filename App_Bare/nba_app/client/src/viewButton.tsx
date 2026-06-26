@@ -1,3 +1,8 @@
+import { dashboard } from "./dashboard";
+import { playerlist, processData } from "./playerlist";
+import { fetchPages } from "./handlers";
+import type {ServerRecordInterface} from './handlers';
+import type { SimplePlayerProfileInterface } from './player';
 
 export function viewButton(node: HTMLSpanElement) {
     let rows = [2, 5, 9] as Array<number>;
@@ -22,8 +27,29 @@ for (let i = 0; i < 100; i++) {
 
 export const setEventMoreViewSymbol = (node: HTMLSpanElement)=>{
     // click event 
+    const name = node.dataset.name as string;
+    
     node.addEventListener( 'click', (event:MouseEvent) => {
-        console.log(event);
+
+       fetchPages()
+
+        .then( (data) => {
+            if (data)
+                processData(data); 
+        })
+        .catch( (err)=>{
+            console.log("err", err);
+        })
+    
+        // console.log(data);
+        dashboard.innerHTML = '';
+        switch(name) {
+            case "nba": 
+                dashboard.append(playerlist);
+            default:
+                ;
+        }
+
     });
 
 }

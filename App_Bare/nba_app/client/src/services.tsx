@@ -1,7 +1,7 @@
-import dashboard from './followers';
+// import dashboard from './followers';
 import {start_button_cls} from './static/css/startButton.css'
-import { writeLog } from './handlers';
-import type { LogInterface } from './followers';
+// import { writeLog } from './handlers';
+// import type { LogInterface } from './followers';
 import { setPowerSwitch ,statusCircleGrandParent} from './powerButton';
 // import { readyStatus, folio } from './selectraw';
 import { fetchPages } from './handlers';
@@ -16,6 +16,7 @@ import {
     services_power_cls
 } from './static/css/services.css';
 import { moreViewSymbol, setEventMoreViewSymbol } from './viewButton';
+import { dashboard } from './dashboard';
 
 interface ServiceResponse {
     services: Array<string>
@@ -98,7 +99,10 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
 
 
         let cloneMoreViewSymbol = moreViewSymbol.cloneNode(true) as HTMLSpanElement;
+        cloneMoreViewSymbol.dataset.name = serviceName;
         setEventMoreViewSymbol(cloneMoreViewSymbol);
+        
+
 
         subContainer.append(cardName);
         subContainer.append(cloneMoreViewSymbol);

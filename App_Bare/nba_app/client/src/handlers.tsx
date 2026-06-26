@@ -1,6 +1,6 @@
 
 import type { SimplePlayerProfileInterface } from './player';
-import  dashboard from './followers';
+// import  dashboard from './followers';
 import { PlayerCard } from './player';
 // import { activePlayerList } from './main';
 
@@ -35,22 +35,22 @@ import { PlayerCard } from './player';
 // }
 
 
-import type { LogInterface } from "./followers";
-export function writeLog(id:number, record: LogInterface) {
-    var liElement = document.createElement('li');
-    // // set animation dataset 
-    liElement.textContent = `Time: [${record.date}] Message: [${record.message}]`;
+// import type { LogInterface } from "./followers";
+// export function writeLog(id:number, record: LogInterface) {
+//     var liElement = document.createElement('li');
+//     // // set animation dataset 
+//     liElement.textContent = `Time: [${record.date}] Message: [${record.message}]`;
     
-    let node = record.dashboard?.children[2] as HTMLElement; 
-    node.append(liElement);
+//     let node = record.dashboard?.children[2] as HTMLElement; 
+//     node.append(liElement);
     
-    // animation condition for GUI write log 
-    liElement.dataset.noop = "1";
-    setTimeout(()=>{
-        liElement.dataset.noop = "0";
-    }, 1000);
+//     // animation condition for GUI write log 
+//     liElement.dataset.noop = "1";
+//     setTimeout(()=>{
+//         liElement.dataset.noop = "0";
+//     }, 1000);
 
-}
+// }
 
 export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, datasetName: string) : HTMLElement | undefined {
     // let returnNode = undefined;

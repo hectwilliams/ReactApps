@@ -1,6 +1,6 @@
 .dashboard_header_cls {
     grid-row: 6 / span 4;
-    grid-column: 21 / span 80;
+    grid-column: 20 / span 80;
 
     width: 100%;
     height: 100%;
@@ -40,7 +40,7 @@
 
 .dashboard_cls {
     grid-row: 10/ span 87;
-    grid-column: 21/ span 80;
+    grid-column: 20/ span 80;
 
      width: 100%;
     height: 100%;
@@ -49,7 +49,7 @@
   /* border-radius: 8px; */
   font-size: 0.9rem;
   color: #1f2937;
-  cursor: pointer;
+  /* cursor: pointer; */
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   /* border: 1px solid #e5e7eb; */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
