@@ -137,6 +137,8 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
         pageNumberZeroIndex -= 1;
     }
 
+    console.log(players);
+
     const effectivePageNumber = Math.floor(numberPages)
 
     const startPos = pageNumberZeroIndex * Math.floor(playerPerPage) ;
@@ -144,6 +146,8 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
     console.log('DEBUG', obj.pg, pageNumberZeroIndex, effectivePageNumber, startPos, players_index, numberPages);
     
     if (pageNumberZeroIndex != effectivePageNumber   ) {
+
+        console.log(pageNumberZeroIndex, effectivePageNumber)
     } else {
         console.log(numberCsvLines);
         numPlayers = numberCsvLines - startPos ;

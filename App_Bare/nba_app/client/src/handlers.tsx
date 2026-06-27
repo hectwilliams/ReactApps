@@ -7,6 +7,7 @@ import { dashboard } from './dashboard';
 import { bookletInst } from "./pageShifter";
 // export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
 import { playerlist, processData } from "./playerlist";
+import { storeInst } from './store';
 
 //     list.forEach((record)=>{
 //            // // set Profile 
@@ -53,6 +54,9 @@ import { playerlist, processData } from "./playerlist";
 //     }, 1000);
 
 // }
+
+
+
 
 export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, datasetName: string) : HTMLElement | undefined {
     // let returnNode = undefined;
@@ -108,6 +112,100 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
         } catch {
             return undefined;
         }
+}
+
+export async function fetchPagesHelper( name: string, page?: number) : Promise<boolean>{
+
+    try {
+
+        let data = await fetchPages(page)
+
+         if (data) {
+            
+            switch(name) {
+                
+                case "monitor":
+                    
+                    throw new Error("do nothing, monitor metrics not available yet");
+
+                case "nba": 
+                    processData(data) // loadiing playerlist variable 
+                    .then( () =>{
+                        
+                        // players list in memory; load to dashboard 
+                        dashboard.prepend(playerlist);
+
+                        // csave succesful page
+                        storeInst.load(name, data);
+
+                    }).catch((err)=>{
+                        console.log(err, "Process data failed ");
+                    })
+                    // non empty list rcvd from server
+
+                    return true;
+
+                default:
+
+                    return false; 
+            }
+            
+        } else {
+            throw new Error("");
+        }
+
+        
+    } catch(err) {
+        return false
+
+    }
+
+    
+    // fetchPages()
+    
+    // .then( (data) => {
+        
+    //     if (data) {
+            
+    //         console.log(data)
+            
+    //         switch(name) {
+                
+    //             case "monitor":
+                    
+    //                 console.log('do nothing, monitor metrics not available ye') ;
+    //                 break;
+                    
+    //             case "nba": 
+    //                 processData(data) // loadiing playerlist variable 
+    //                 .then( () =>{
+    //                     // players list in memory; load to dashboard 
+    //                     dashboard.prepend(playerlist);
+
+    //                     // csave succesful page
+    //                     storeInst.load(name, data);
+
+    //                 }).catch((err)=>{
+    //                     console.log(err, "Process data failed ");
+    //                 })
+    //                 // non empty list rcvd from server
+
+    //                 break;
+
+    //             default:
+
+    //                 return; 
+    //         }
+            
+    //     }
+
+    // })
+    
+    // .catch( (err)=>{
+        
+    //     console.log("err", err);
+        
+    // })
 }
 
 export async function updateLog(data: Array<string> ) : Promise<Boolean>{

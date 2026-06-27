@@ -105,11 +105,7 @@ const imgPath = "./client/src/static/images/faces/img.png";
 
         let numbers = record.plots[i] as number[];
         
-        console.log(numbers, node)
-
         qplot.setPlot(numbers);
-
-        console.log(node.childNodes)
 
         let c = node.className;
         void node.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)

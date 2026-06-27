@@ -7,9 +7,15 @@ import {
     page_number_cls
 } from './static/css/pageShifter.css';
 
-import { viewButtonnInst } from './viewButton';
+import { viewButtonnInst, getServiceName } from './viewButton';
 
 import { dashboard } from "./dashboard";
+
+import { storeInst } from './store';
+
+import type { StoreDictionary } from './store';
+import type { ServerRecordInterface,  } from "./handlers";
+import  { fetchPagesHelper } from "./handlers";
 
 export const addBookletToDashboard  = async (booklet:HTMLDivElement) => {
     const refBooklet = booklet;
@@ -56,14 +62,73 @@ class Booklet {
 
         this.left_arrow.onclick = () => {
             
-            // viewButtonnInst
-            console.log(' left');
+            if (this.pageNumbersMsg.innerText  == '...' ) {
+                return;
+            }
 
+            let name = getServiceName(viewButtonnInst.prev);
+            
+            if (name) {
+                /* nothing is deleted out the store, so if name exist then we are safe to continue */
+                let record = storeInst.get(name) as ServerRecordInterface;
+                
+                    
+                  let num = record.page;
+
+                    if (num - 1 <=0 ) {
+                        return;
+                    }
+
+                    try {
+
+                        fetchPagesHelper(name, num-1);
+
+                        console.log('arrow click  request, successful');
+
+                    } catch(err) {
+                        
+                        console.log('arrow click request, unsuccessful');
+
+                    }
+
+            }
          }
 
           this.right_arrow.onclick = () => {
+        
+            if (this.pageNumbersMsg.innerText  == '...' ) {
+                return;
+            }
+
             
-            console.log('right');
+            let name = getServiceName(viewButtonnInst.prev);
+            
+            if (name) {
+                /* nothing is deleted out the store, so if name exist then we are safe to continue */
+                let record = storeInst.get(name) as ServerRecordInterface;
+                
+                    
+                  let num = record.page;
+
+                    if (num +  1 >= parseInt(record.numPages) + 1 ) {
+                        return;
+                    }
+
+                    try {
+
+                        fetchPagesHelper(name, num+1);
+
+                        console.log('arrow click  request, successful');
+
+                    } catch(err) {
+                        
+                        console.log('arrow click request, unsuccessful');
+
+                    }
+
+
+            }
+            
 
          }
 

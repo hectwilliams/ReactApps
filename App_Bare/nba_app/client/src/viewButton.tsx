@@ -4,8 +4,12 @@ import { fetchPages } from "./handlers";
 import type { SimplePlayerProfileInterface } from './player';
 import {view_button_on} from './static/css/viewButton.css';
 import { bookletInst } from "./pageShifter";
+import { fetchPagesHelper } from "./handlers";
 
-function getServiceName(node: HTMLSpanElement) {
+export function getServiceName(node: HTMLSpanElement) {
+    if (!node) {
+        return;
+    }
     let parentNode = node.parentElement as HTMLDivElement;
     let targetParent = parentNode.childNodes[0] as HTMLSpanElement;
     let target = targetParent.childNodes[0] as HTMLParagraphElement; 
@@ -41,55 +45,23 @@ class  ViewButtonn {
                 // repeated clicks 
                 return;
             } else {
-                
+                        /* nothing is deleted out the store, so if name exist then we are safe to continue */
+        
                 let name = getServiceName(currentNode);
 
-                fetchPages()
-                
-                .then( (data) => {
-                    
-                    if (data) {
-                        
-                        
-                        switch(name) {
-                            
-                            case "monitor":
-                                
-                                console.log('do nothing, monitor metrics not available ye') ;
-                                break;
-                                
-                            case "nba": 
-                                processData(data) // loadiing playerlist variable 
-                                .then( () =>{
-                                    // players list in memory; load to dashboard 
-                                    dashboard.prepend(playerlist);
+                if (name) {
 
-                                }).catch((err)=>{
-                                    console.log(err, "Process data failed ");
-                                })
-                                // non empty list rcvd from server
+                    try {
 
-                                break;
+                        fetchPagesHelper(name);
 
-                            default:
+                        console.log('successful request');
 
-                                return; 
-                        }
-                        
+                    } catch(err) {
+                        console.log('unsuccessful request');
+
                     }
-
-                })
-                
-                .catch( (err)=>{
-                    
-                    console.log("err", err);
-                    
-                })
-
-
-
-                // update dashboarrd TODO
-                console.log('load')
+                }
             }
 
             this.prev = currentNode;
