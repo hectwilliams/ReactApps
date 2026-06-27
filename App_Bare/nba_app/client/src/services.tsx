@@ -15,8 +15,8 @@ import {
     viewer_grid_item__cls,
     services_power_cls
 } from './static/css/services.css';
-import { moreViewSymbol, setEventMoreViewSymbol } from './viewButton';
 import { dashboard } from './dashboard';
+import { viewButtonnInst } from './viewButton';
 
 interface ServiceResponse {
     services: Array<string>
@@ -74,18 +74,9 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
 
         let cardName = document.createElement('span');
         cardName.innerHTML = `<p> ${serviceName} </p>`;
-        
-        // let statusCircleGrandParent = document.createElement('span');
-        // statusCircleGrandParent.className = services_power_cls;
-        // let statusCircleParent = document.createElement('span');
-        // let statusCircleGrandChild = document.createElement('span');
-
-        // statusCircleGrandParent.append(statusCircleParent);
-        // statusCircleParent.append(statusCircleGrandChild);
-        // statusCircleGrandParent.onclick = servicesSwitchClick;
 
         let clonePowerSwitch = statusCircleGrandParent.cloneNode(true) as HTMLSpanElement;
-        let cloneMoreViewSymbol = moreViewSymbol.cloneNode(true) as HTMLSpanElement;
+        let cloneMoreViewSymbol = viewButtonnInst.moreViewSymbol.cloneNode(true) as HTMLSpanElement;
         
         cloneMoreViewSymbol.dataset.name = serviceName;
 
@@ -100,15 +91,10 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
             cloneMoreViewSymbol.dataset.on="0";
 
         }
-        setPowerSwitch(clonePowerSwitch);
-        setEventMoreViewSymbol(cloneMoreViewSymbol);
-        
-        // if (serviceName == 'monitor') {
-        //     cloneMoreViewSymbol.dataset.on="1";
-        // } else {
-        //     cloneMoreViewSymbol.dataset.on="0";
-        // }
 
+        setPowerSwitch(clonePowerSwitch); // copies of power switches 
+        viewButtonnInst.setEventMoreViewSymbol(cloneMoreViewSymbol); // copies of view symbols 
+    
         /* order matters */
         subContainer.append(cardName);
         subContainer.append(cloneMoreViewSymbol);

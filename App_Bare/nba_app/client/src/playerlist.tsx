@@ -1,25 +1,20 @@
 import {top_level_list_container_container_cls, 
     player_container_cls, 
     player_container_plot_cls,
-    player_container_meta_cls,
-    playerDataContainer2_cls,
-    playerDataContainer2_child_cls,
     meta_name_cls,
     meta_team_cls,
-    playerDataContainer2_child_wrapper_cls,
     playerChainContainer_cls,
     wrapperPlayerChainContainer, 
     playerDataContainer_cls, 
     img_cls
-    
-    
 } from './static/css/playerlist.css';
+
 import type {ServerRecordInterface} from './handlers';
-
-
-// const playerExample = document.createElement('div');
-// const pic = document.createElement('div');
-// const playerDataContainer = document.createElement('div');
+import type { SimplePlayerProfileInterface } from './player';
+import { dashboard } from './dashboard';
+import { bookletInst } from "./pageShifter";
+import { QuickPlot , } from './quickPlot';
+import { binlog_container_cls } from './static/css/quickPlot.css';
 
 /*
     - PlayerCardContainer -> player_container_cls
@@ -31,62 +26,17 @@ import type {ServerRecordInterface} from './handlers';
                 - plotsChainContainer  -> playerDataContainer2_child_cls
                     - name  -> meta_name_cls
                     - tean  -> meta_team_cls
-
-
-
-
 */
-// playerExample.className = player_container_cls;
-// playerExample.append(pic);
-// playerExample.append(playerDataContainer);
-// playerlist.append(playerExample);
 
+export const playerlist = document.createElement('div');
+playerlist.className = top_level_list_container_container_cls;
 
-// const playerExample2 = document.createElement('div');
-// const pic2 = document.createElement('div');
-// const playerDataContainer2 = document.createElement('div');
-// playerDataContainer2.className = playerDataContainer_cls;
-
-// const wrapper_player2data = document.createElement('div');
-// wrapper_player2data.className = wrapperPlayerChainContainer;
-
-// const player2data = document.createElement('div');
-// player2data.className = playerChainContainer_cls;
-// wrapper_player2data.append(player2data); 
-
-// playerExample2.className = player_container_cls;
-// playerExample2.append(pic2);
-// playerExample2.append(playerDataContainer2);
-// pic2.src =
-// 
-
-// // meta to top level 
-// const nameElement = document.createElement('div');
-// nameElement.innerHTML= `<p>Nikola Tesla</p>`;
-// nameElement.className = meta_name_cls;
-// const teamElement = document.createElement('div');
-// teamElement.innerHTML= `<p>Department of  Defense</p>`;
-// teamElement.className = meta_team_cls;
-
-// playerDataContainer2.append(nameElement);
-// playerDataContainer2.append(teamElement);
-// playerDataContainer2.append(wrapper_player2data);
-
-// // add 10 grapgs 
-// for (let i = 0; i < 3; i++) {
-    //     let node = document.createElement('div');
-    //     node.className = player_container_plot_cls;
-    //     player2data.append(node);
-    // }
-    // playerlist.append(playerExample2);
-    
-    export const playerlist = document.createElement('div');
-    playerlist.className = top_level_list_container_container_cls;
-    
-    // const imgPath = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/faces/img.png"
+// const imgPath = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/faces/img.png"
 const imgPath = "./client/src/static/images/faces/img.png";
 
-async function getPlayerDiv() {
+
+
+ function getPlayerDiv(record: SimplePlayerProfileInterface) {
 
     let mainElement = document.createElement('div');
     mainElement.className = player_container_cls;
@@ -94,8 +44,9 @@ async function getPlayerDiv() {
     // add pic container 
     let picContainer = document.createElement('div');
     let picContainer_child = document.createElement('img');
-    let src ="http://127.0.0.1:50215/src/static/images/faces/img.png" as string;
-    picContainer_child.src= src;
+    let src = "http://127.0.0.1:50215/src/static/images/faces/img.png" as string; //* 
+    
+    picContainer_child.src = src;
     picContainer_child.className = img_cls;
     picContainer.append(picContainer_child);
     // add plot container 
@@ -109,8 +60,6 @@ async function getPlayerDiv() {
     let wrapper_plotsData = document.createElement('div');
     wrapper_plotsData.className = wrapperPlayerChainContainer;
 
-    
-
     let plotsChainContainer = document.createElement('div'); 
     
     plotsChainContainer.className = playerChainContainer_cls;
@@ -122,74 +71,74 @@ async function getPlayerDiv() {
     mainElement.append(plotsContainer);
 
     const nameElement = document.createElement('div');
-    nameElement.innerHTML= `<p>Nikola Tesla</p>`;
+    nameElement.innerHTML= `<p> ${record.name} </p>`;
     nameElement.className = meta_name_cls;
     const teamElement = document.createElement('div');
-    teamElement.innerHTML= `<p>Department of  Defense</p>`;
+    teamElement.innerHTML= `<p>National Basketball Association</p>`;
     teamElement.className = meta_team_cls;
 
+    
     plotsContainer.append(nameElement);
     plotsContainer.append(teamElement);
     plotsContainer.append(wrapper_plotsData);
+    
+    
+    // add 10 grapgs 
+    // for (let i = 0; i < 1; i++) {
+        
+    let barrierNode = document.createElement('div');
+    let node = document.createElement('div');
+    let childNode = document.createElement('div');
 
-        // add 10 grapgs 
-    for (let i = 0; i < 3; i++) {
-        let node = document.createElement('div');
-        node.className = player_container_plot_cls;
-        plotsChainContainer.append(node);
-    }
+    node.className = binlog_container_cls;
+
+    barrierNode.className = player_container_plot_cls;
+    barrierNode.append(node);
+    plotsChainContainer.append(barrierNode);
+
+    let qplot =  new QuickPlot(node);
+
+        // if(record.plots) {
+        //     let numbers = record.plots[0] as number[];
+        //     qplot.setPlot(numbers);
+        //     let node = qplot.getPlot();
+        //     barrierNode.append(node);
+        // }
+
+    // }
 
     playerlist.append(mainElement);
 
-
-
-    // plot data 
-    // let plotsDataContainer = document.createElement('div');
-
-    // wrapper_plotsData.append(plotsDataContainer); 
-
-    // plotsDataContainer.className = playerDataContainer2_child_cls;
-    // // playerCardContainer.className = player_container_cls;
-    
-    // // // append pic container and plot data container  to card 
-    // // playerCardContainer.append(picContainer);
-    // // playerCardContainer.append(plotsContainer);
-
-
-    // // add wrapper plots container
-    // plotsContainer.append(wrapper_plotsData);  // plot container - > wrapper-plot-data   ->  plotsDataContainer
-
-    // // pic2.src ="/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/faces/img.png";
-
-    // return {forPlotNodes: plotsDataContainer, forDivPlots: plotsContainer   };
-
-    
-
-
-
-
-    // playerCardContainer.append()
-    
 }
 
-export async function processData (data: ServerRecordInterface) {
+/* Reads data served from server and loads dashboard */
+export async function processData (data: ServerRecordInterface): Promise<boolean>  {
     
-    // update index ( pages select button;;;;TBD) 
-    let k = 0;
-    // create list 
-    data.players.forEach((record) => {
-        if (k ==0) {
-            getPlayerDiv()
-            .then(() => {
-                
-            })
+    try {
+        // parse data from server 
+        data.players.forEach((record, index) => {
+            getPlayerDiv(record); // add value to list
+            
+        });
+
+        if (data.players.length) {
+
+            // update booket 
+            
+            bookletInst.enable();
+
+            bookletInst.setFeed(data.page, data.numPages);
+            
+            return true;
+
+        } else {
+
+            throw new Error(""); 
         }
+    
+    } catch(err) {
 
-        k += 1;
-    });
+        return false
 
-    // for (let i = 0; i < data.players.length; i++)
-
-
-
+    }
 }

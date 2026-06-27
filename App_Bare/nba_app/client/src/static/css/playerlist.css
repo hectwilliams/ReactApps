@@ -1,3 +1,10 @@
+ /* 
+    Plane of canvas 
+        z-index = 1 
+ 
+ */
+ 
+ 
  /* top level div */
 .top_level_list_container_container_cls {
     grid-row: 1 / span 100;
@@ -9,7 +16,7 @@
     height: 100%;    
     padding-top: 5px;
         row-gap: 7vh;
-    z-index: 2;
+    z-index: 1;
 
 }
 
@@ -18,7 +25,7 @@
 /* playerlist */
 .player_container_cls {
     width: 100%;
-    border: 1px yellow dotted;
+    /* border: 1px yellow dotted; */
     flex-direction: column;
     flex-wrap: nowrap;
     /* height: 100%; */
@@ -26,6 +33,9 @@
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
     height: 17vh;
+    border-bottom: 1px silver solid;;
+     margin: 0;
+    padding:0;
 }
 
 /* player pic */
@@ -45,10 +55,12 @@
     /* background-repeat: no-repeat; */
     /* background-image: url('../images/faces/img.png'); */
     /* Optional: Makes it easier to center */
-    z-index: 3; 
+    z-index: 1; 
       display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
+     margin: 0;
+    padding:0;
 }
 
 .player_container_cls > div:nth-child(1) > img,
@@ -66,7 +78,9 @@
     /* background-image: url('../images/faces/img.png'); */
     border-radius: 50%;
     /* Optional: Makes it easier to center */
-    z-index: 3; 
+    z-index: 1; 
+     margin: 0;
+    padding:0;
 }
 
 
@@ -83,6 +97,8 @@
     display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
+     margin: 0;
+    padding:0;
 }
 
 .meta_name_cls {
@@ -96,6 +112,8 @@
     background-color: black;
         border-radius: 2px;
  overflow: hidden;  
+  margin: 0;
+    padding:0;
 }
 
 .meta_team_cls {
@@ -110,11 +128,13 @@
     padding: 0;
     display: flex;
     overflow: hidden;  
+     margin: 0;
+    padding:0;
 }
 
 .meta_team_cls > p,
 .meta_name_cls > p {
-    z-index: 3;
+    z-index: 1;
     color: white;
     border-radius: 4px;
     min-width: 0; /* Prevents the child from forcing its layout width */
@@ -130,13 +150,15 @@
     cursor: pointer;
     overflow: visible;        /* Un-hide the overflowing text */
     white-space: normal;      /* Allow text to wrap to multiple lines */
-    z-index: 5;
+    z-index: 1;
     background-color: transparent;
     width: auto;
     height: 10%;
     position:relative;
     width: 300%;
     border: none;
+     margin: 0;
+    padding:0;
 }
 
 .wrapperPlayerChainContainer {
@@ -150,6 +172,8 @@
       display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
+     margin: 0;
+    padding:0;
 
 }
 
@@ -167,15 +191,20 @@
     overflow-x: auto;    /* Displays horizontal scrollbar when needed */
     column-gap: 4px;    
     align-content: flex-end;
+     margin: 0;
+    padding:0;
 }
 
 .player_container_plot_cls {
     border: 1px dotted skyblue;
     width: 15vh;
     height: 9vh;
-    background-color: chartreuse;
+    background-color: whitesmoke;
     flex-shrink: 0;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
     column-gap: 3px;
+     margin: 0;
+    padding:0;
+    
 }

@@ -1,6 +1,6 @@
 .services_cls_header {
 
-    grid-row: 6 / span 4;
+    grid-row: 1 / span 4;
     grid-column: 2 / span 18;
 
     min-height: 100%;
@@ -86,7 +86,7 @@
 .services_cls {
 
     grid-column: 2 / span 18;
-    grid-row: 10/ span 87;
+    grid-row: 5/ span 85;
 
     width: 100%;
     height: 100%;

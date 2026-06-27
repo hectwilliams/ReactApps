@@ -14,6 +14,7 @@ interface PlayerElement {
 export interface SimplePlayerProfileInterface {
     img: string;
     name: string;
+    plots?: Array<Array<number>>
 }
 
 /* 

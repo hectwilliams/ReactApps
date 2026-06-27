@@ -3,8 +3,10 @@ import type { SimplePlayerProfileInterface } from './player';
 // import  dashboard from './followers';
 import { PlayerCard } from './player';
 // import { activePlayerList } from './main';
-
+import { dashboard } from './dashboard';
+import { bookletInst } from "./pageShifter";
 // export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
+import { playerlist, processData } from "./playerlist";
 
 //     list.forEach((record)=>{
 //            // // set Profile 
@@ -79,6 +81,7 @@ export interface ServerRecordInterface {
     numPages: string;
     players: Array<SimplePlayerProfileInterface>;
     img: string; 
+    plots?: Array< Array<number> >;
 }
 
 export async function fetchPages(page?:number): Promise<ServerRecordInterface | undefined> {
@@ -181,5 +184,68 @@ export function viewButton(node: HTMLSpanElement) {
     })
 }
 
+/* 
+    Global closure used to capture every called instance of viewClick.
 
+    Note: Don't run too many services, many instances will exist in memory 
+*/
+const globalViewVlick = (node: HTMLSpanElement) => {
+    let ref = node;
+    return () => {
+        console.log('new node', node);
+        return ref;
+    }
+}
 
+/* common handler for viewing of all services  */
+export const viewClick = (  node: HTMLSpanElement ) => {
+
+    // console.log(n);
+    let globalFunc = globalViewVlick(node);
+
+    let cacheNode = document.createElement('span');
+    
+        return ( event:MouseEvent )=> {
+
+            let node = event.currentTarget as HTMLSpanElement;
+            
+            // prevent debounce and loops 
+            if (cacheNode === node) {
+                console.log('repeat click operation');
+                return;
+            } else {
+                cacheNode = document.createElement('span'); // this resets state 
+            }
+            
+            let parentNode = node.parentElement as HTMLDivElement;
+            let targetParent = parentNode.childNodes[0] as HTMLSpanElement;
+            let target = targetParent.childNodes[0] as HTMLParagraphElement; 
+            let name = target.innerText;
+            
+            // dashboard.replaceChildren();
+            
+            
+
+            console.log(dashboard);
+            // reloadBooklet(dashboard);
+            
+            // update node catch 
+            cacheNode = node; 
+            
+            // let len = dashboard.childElementCount as number;
+            // let dumb = document.createElement('span');
+            // dumb.style.width = "0";
+            // dumb.style.height = "0";
+            // dashboard.append(dumb);
+            // void 
+            // console.log(dashboard)
+            // let c = booklet.className;
+            // void booklet.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
+            // booklet.className = c;
+            // reflow 
+            // das
+        }
+
+    }
+
+    

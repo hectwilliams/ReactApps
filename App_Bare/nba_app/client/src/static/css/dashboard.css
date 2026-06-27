@@ -1,5 +1,5 @@
 .dashboard_header_cls {
-    grid-row: 6 / span 4;
+    grid-row: 1 / span 4;
     grid-column: 20 / span 80;
 
     width: 100%;
@@ -10,17 +10,17 @@
   font-size: 0.9rem;
   color: #1f2937;
   /* cursor: pointer; */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); */
   /* border: 1px solid #e5e7eb; */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
 
 
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 
   display: grid;
-  grid-template-columns: repeat(100, 1%) ;
-  grid-template-rows: repeat(100, 1%) ;
+  grid-template-columns: repeat(100, 1fr) ;
+  grid-template-rows: repeat(100, 1fr) ;
   
   background: linear-gradient(
     to right,
@@ -34,12 +34,13 @@
     border-left-color: silver;
     border-top-color: silver;
 
-   
+        z-index: 1;
 
 }
 
 .dashboard_cls {
-    grid-row: 10/ span 87;
+    z-index: 3;
+    grid-row: 5/ span 85;
     grid-column: 20/ span 80;
 
      width: 100%;
@@ -52,7 +53,7 @@
   /* cursor: pointer; */
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   /* border: 1px solid #e5e7eb; */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
 
   border: 0.5px silver solid;
 
@@ -71,8 +72,15 @@
     );
 
     overflow-y: auto;
-    overflow-x: hidden;
-    max-height:  90vh;
+    overflow-x: none;
+    max-height:  98vh;
+
+      scrollbar-width: thin; /* Options: auto | thin | none */
+
+
+    margin: 0;
+    padding: 0;
+    z-index: 1;
 }
 
 .dashboard_name_cls {
@@ -152,21 +160,21 @@
     width:1px;
     border-radius: 50%;
     border: 0.5px white solid;
+        z-index: 1;
+
 }
 
 .dashboard_more_cls:hover {
     background-color: gray;
         border-radius: 5px;
 
-        /* z-index: 2; */
+        z-index: 1;
 }
 
 .dashboard_more_cls:active {
     background-color: rgb(78, 59, 59);
         border-radius: 5px;
 
-        /* z-index: 2; */
+        z-index: 1;
 }
 
-
-/* page shitfer */

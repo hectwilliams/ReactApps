@@ -1,0 +1,32 @@
+
+
+.services_card_container_cls > span:nth-child(1) {
+    grid-row: 30 / span 40;
+    grid-column: 10 / span 60;
+    border: 1px silver solid;
+      /* border-bottom-left-radius: 6px; */
+  /* border-bottom-right-radius: 6px; */
+  border-radius: 2px;
+  color: white;
+  
+  display: flex;
+  flex-direction: column; /* Stacks elements vertically */
+  justify-content: center;
+}
+
+.services_card_container_cls > span:nth-child(1) > p {
+/* justify-content: center; */
+  justify-content: center;  /* Center content along the vertical axis */
+  text-align: left;       /* Optional: Center the text lines horizontally */
+  padding-left: 3px;
+}
+
+
+.services_card_container_cls > span:nth-child(2) {
+    grid-row: 30 / span 35;
+    grid-column: 80 / span 10;
+    border: 1px silver solid;
+      /* border-bottom-left-radius: 6px; */
+  /* border-bottom-right-radius: 6px; */
+    border-radius: 2px;
+}

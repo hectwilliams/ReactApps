@@ -7,6 +7,8 @@ import {
     page_number_cls
 } from './static/css/pageShifter.css';
 
+import { viewButtonnInst } from './viewButton';
+
 import { dashboard } from "./dashboard";
 
 export const addBookletToDashboard  = async (booklet:HTMLDivElement) => {
@@ -17,24 +19,82 @@ export const addBookletToDashboard  = async (booklet:HTMLDivElement) => {
     } 
 }
 
-export const booklet = document.createElement('div'); 
-booklet.className = page_shifer_cls;
-booklet.dataset.on = "0";
+/*  Booklet on bottom right corner   */
 
-export const pageNumbers = document.createElement('div');
-export const arrows = document.createElement('div');
-export const left_arrow = document.createElement('div');
-export const right_arrow = document.createElement('div');
+class Booklet {
 
-arrows.className = arrows_cls;
-pageNumbers.className = page_number_cls;
-pageNumbers.innerText = "1 of 238";
-left_arrow.className = arrow_left_cls;
-right_arrow.className = arrow_right_cls;
-arrows.append(left_arrow, right_arrow);
-booklet.append(pageNumbers);
-booklet.append(arrows);
+    booklet: HTMLDivElement;
+    pageNumbersMsg: HTMLDivElement;
+    arrows: HTMLDivElement;
+    left_arrow: HTMLDivElement;
+    right_arrow: HTMLDivElement;
+    prevPage: number;
+    pages: number;
 
-export const reloadBooklet = await addBookletToDashboard(booklet);
+    constructor() {
 
- reloadBooklet(dashboard);
+       this.booklet = document.createElement('div'); 
+       this.pageNumbersMsg = document.createElement('div');
+       this.arrows = document.createElement('div');
+       this.left_arrow = document.createElement('div');
+       this.right_arrow = document.createElement('div');
+
+        this.arrows.className = arrows_cls;
+        this.pageNumbersMsg.className = page_number_cls;
+        this.pageNumbersMsg.innerText = "...";
+        this.left_arrow.className = arrow_left_cls;
+        this.right_arrow.className = arrow_right_cls;
+        this.arrows.append(this.left_arrow);
+        this.arrows.append(this.right_arrow);
+        this.booklet.append(this.pageNumbersMsg);
+        this.booklet.append(this.arrows);
+        this.booklet.className = page_shifer_cls;
+        this.booklet.dataset.on = "0";
+        
+        this.prevPage = -1;
+        this.pages = -1;
+
+        this.left_arrow.onclick = () => {
+            
+            // viewButtonnInst
+            console.log(' left');
+
+         }
+
+          this.right_arrow.onclick = () => {
+            
+            console.log('right');
+
+         }
+
+    }
+
+    getBooklet() {
+
+        return this.booklet;
+
+    }
+
+    enable() {
+        
+        this.booklet.dataset.on = "1";
+
+    }
+
+    disable() {
+        
+        this.booklet.dataset.on = "0";
+
+    }
+
+    setFeed(currPage:number, pages: string) {
+
+        this.pageNumbersMsg.innerText = `${currPage} of ${pages}`;
+
+    }
+}
+
+export const bookletInst = new Booklet();
+
+dashboard.append(bookletInst.getBooklet())
+

@@ -3,6 +3,9 @@
 // import './clearButton';
 // import './fillButton';
 // import './randButton';
+
+import './static/css/variables.css';
+
 import './powerButton';
 
 import './viewButton';

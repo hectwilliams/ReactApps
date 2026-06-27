@@ -1,86 +1,132 @@
 import { dashboard } from "./dashboard";
 import { playerlist, processData } from "./playerlist";
 import { fetchPages } from "./handlers";
-import type {ServerRecordInterface} from './handlers';
 import type { SimplePlayerProfileInterface } from './player';
-import { booklet, pageNumbers, reloadBooklet  } from "./pageShifter";
 import {view_button_on} from './static/css/viewButton.css';
+import { bookletInst } from "./pageShifter";
 
-/* creates view button right adjacent to power button */
-export function viewButton(node: HTMLSpanElement) {
+function getServiceName(node: HTMLSpanElement) {
+    let parentNode = node.parentElement as HTMLDivElement;
+    let targetParent = parentNode.childNodes[0] as HTMLSpanElement;
+    let target = targetParent.childNodes[0] as HTMLParagraphElement; 
+    let name = target.innerText;
+    return name; 
+}
+/* Blueprint for view button object  */
+class  ViewButtonn {  
+
+    prev: HTMLSpanElement;
+    moreViewSymbol : HTMLSpanElement;
+    //  document.createElement('span');
+
+    constructor() {
+
+        this.prev = document.createElement('span');
+        this.moreViewSymbol = document.createElement('span');
+        
+        this.viewButton(this.moreViewSymbol);
+
+        this.moreViewSymbol.dataset.on = "1";
+        this.moreViewSymbol.className = view_button_on;
+    }
+
+    /* handler for view button clicks  */
+
+    viewClick(node: HTMLSpanElement): any {
+        let cacheNode = node;
+        return (event: MouseEvent) => {
+            let currentNode = event.currentTarget as HTMLSpanElement;
+
+            if ( this.prev == currentNode) {
+                // repeated clicks 
+                return;
+            } else {
+                
+                let name = getServiceName(currentNode);
+
+                fetchPages()
+                
+                .then( (data) => {
+                    
+                    if (data) {
+                        
+                        
+                        switch(name) {
+                            
+                            case "monitor":
+                                
+                                console.log('do nothing, monitor metrics not available ye') ;
+                                break;
+                                
+                            case "nba": 
+                                processData(data) // loadiing playerlist variable 
+                                .then( () =>{
+                                    // players list in memory; load to dashboard 
+                                    dashboard.prepend(playerlist);
+
+                                }).catch((err)=>{
+                                    console.log(err, "Process data failed ");
+                                })
+                                // non empty list rcvd from server
+
+                                break;
+
+                            default:
+
+                                return; 
+                        }
+                        
+                    }
+
+                })
+                
+                .catch( (err)=>{
+                    
+                    console.log("err", err);
+                    
+                })
+
+
+
+                // update dashboarrd TODO
+                console.log('load')
+            }
+
+            this.prev = currentNode;
+        }
+    }
+
+    /* bind listeners to view button objects  */    
+
+    setEventMoreViewSymbol(node: HTMLSpanElement){
+        node.addEventListener( 'click' ,  this.viewClick(node) , );
+        
+    }
+
+    /* creates view button right adjacent to power button */
+    viewButton(node: HTMLSpanElement) {
 
 
     for (let i = 0; i < 100; i++) {
         let viewButtonPixel = document.createElement('span');
-        moreViewSymbol.append(viewButtonPixel);
+        this.moreViewSymbol.append(viewButtonPixel);
     }
 
 
     let rows = [2, 5, 9] as Array<number>;
-    rows.forEach((r, index)=>{
-        let v = rows[3 - 1 - index];
-        if (v) {
-            console.log(v);
-            for (let i = 0; i < v; i++) {
-                let pos = 10 * r + i; 
-                let ele = node.children[pos] as HTMLSpanElement;
-                ele.style.backgroundColor="white";
-            }
-        }
-    })
-}
-
-/* Handle clicking event of a view button */
-export const setEventMoreViewSymbol = (node: HTMLSpanElement)=>{
-    // click event 
-    const name = node.dataset.name as string;
-    
-    node.addEventListener( 'click', (event:MouseEvent) => {
-        
-       fetchPages()
-
-        .then( (data) => {
-
-            if (data) {
-
-                dashboard.innerHTML = "";
-
-                processData(data);
-
-                switch(name) {
-
-                case "nba": 
-                    dashboard.append(playerlist);
-                    break;
-
-                default:
-                    return; 
-                
-                }
-                
-                reloadBooklet(dashboard);
-
-                if (dashboard.childElementCount) {
-                    // non empty list rcvd from server
-                    booklet.dataset.on = "1";
+        rows.forEach((r, index)=>{
+            let v = rows[3 - 1 - index];
+            if (v) {
+                console.log(v);
+                for (let i = 0; i < v; i++) {
+                    let pos = 10 * r + i; 
+                    let ele = node.children[pos] as HTMLSpanElement;
+                    ele.style.backgroundColor="white";
                 }
             }
         })
-
-        .catch( (err)=>{
-
-            console.log("err", err);
-
-        })
-
-    });
+    }
 
 }
 
-export const moreViewSymbol = document.createElement('span');
-
-// datasets 
-moreViewSymbol.dataset.on = "0";
-moreViewSymbol.className = view_button_on;
-
-viewButton(moreViewSymbol);
+export const viewButtonnInst = new ViewButtonn(); 

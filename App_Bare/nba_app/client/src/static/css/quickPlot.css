@@ -1,0 +1,103 @@
+@import "variables.css"; 
+
+
+.binlog_container_cls   {
+    grid-column: 1/ span 98;
+    grid-row: 1/ span 98;
+    width: 100%;
+    height: 100%;
+    border: 1px red solid;
+    padding: 0;
+    margin:0 ;
+    
+    /* grid required for 2d pts */
+    display: grid;
+    grid-template-rows: repeat(var(--BINSIZE), 1fr);
+    grid-template-columns: repeat(var(--BINSIZE), 1fr);
+
+    background-color: skyblue
+}
+.binlog_container_cls > *,
+.binlog_cls > * {
+    width: 1fr;
+    height: 1fr;
+    /* border: 0.2px rgb(149, 142, 169) solid; */
+    min-width: 0; /* Allows the item to shrink past its content size */
+    min-height: 0;
+    overflow: hidden;
+    border: 1px oramge solid;
+
+}
+
+.binlog_cell_cls {
+    width:100%;
+    height:100%;
+}
+
+@keyframes fadeIn {
+  from { background-color: red; }
+  to { background-color: lightcyan; }
+}
+
+.binlog_cell_cls[data-on="1"] {
+
+    /* animation: fadeIn 1s; */
+     background-color: red; 
+}
+
+.binlog_cell_cls[data-on="0"] {
+    /* animation: fadeIn 1s; */
+    background-color: lightcyan
+}
+
+.dbclone1_cls {
+    grid-column: 54/ span 7;
+    grid-row: 5/ span 5;
+    border: 1px dotted rgb(251, 0, 255);
+    width:100%;
+    height: 100%;
+    border-radius: 3px;
+
+}
+
+.dbclone2_cls {
+    grid-column: 63 / span  7;
+    grid-row: 5/ span 5;
+    border: 1px dotted black;
+    width:100%;
+    height: 100%;
+    border-radius: 3px;
+}
+
+.dbclone1_cls[data-status="undefined"],
+.dbclone2_cls[data-status="undefined"] {
+
+    background-size:10px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("../images/icons/undefined.png");
+    height: 100%;
+
+}
+
+.dbclone1_label_cls {
+    grid-column: 54/ span 7;
+    grid-row: 3/ span 3;
+    border: 1px dotted blue;
+    width:100%;
+    height: 100%;
+    font-size: xx-small;
+    background: linear-gradient(135deg, #1e8570, #978aa9, #678eb5);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.dbclone2_label_cls {
+    grid-column: 63 / span  7;
+    grid-row: 3/ span 3;
+    border: 1px dotted black;
+    width:100%;
+    height: 100%;
+    font-size: xx-small;
+    background: linear-gradient(135deg, #1e8570, #978aa9, #678eb5);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}

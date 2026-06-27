@@ -3,6 +3,8 @@ import {power_button_cls} from './static/css/powerButton.css';
 // import dashboard from './followers';
 // import { writeLog } from './handlers';
 import optionNode from './options';
+import { bookletInst } from "./pageShifter";
+import { dashboard } from './dashboard';
 // import { readyStatus } from './selectraw';
 // import { activePlayerList } from './main';
 
@@ -111,21 +113,36 @@ export const setPowerSwitch = (node: HTMLSpanElement)=>{
         v = v_pres?.childNodes[1] as HTMLElement; 
 
         if (status == 'off') {
+
             if (prev) {
                 nodeTest.dataset.status = prev;
             } else {
                 nodeTest.dataset.status = "on";
             }
+
             v.dataset.on = "1"; // enable viewwe button
+
+            if (dashboard.childElementCount) {
+                // players in dashboard s
+                bookletInst.enable();
+            }
+
+            
+            
         } else {
+            
             if (prev == null) {
                 // store on state
                 prev = status;
             }
             nodeTest.dataset.status = "off";
             v.dataset.on = "0"; // disable viewwe button
+            bookletInst.disable();
+
         }
-    
+        
+        
+
     });
 }
 
