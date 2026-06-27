@@ -99,7 +99,7 @@
 .leader_cls:empty::after {
     content: ""; /* Required: Must be present (even if empty) to render */
     position:relative;
-    background-image: url("./images/icons/waiting.png");
+    background-image: url("../images/icons/waiting.png");
     background-size: contain;
     background-position: center; 
     background-repeat: no-repeat;

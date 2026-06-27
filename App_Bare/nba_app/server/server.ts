@@ -11,6 +11,20 @@ import fs from 'fs';
 import {parse} from 'csv-parse';
 import { createWriteStream, mkdir } from 'node:fs';
 
+function setDummyPlots(plots: Array<Array<number>>) {
+    for (let i = 0;i < 5; i++) {
+        plots.push([]);
+        let buffer = plots[i] as Array<number>;
+        for (let i = 0; i < 10; i++) {
+            buffer.push(rrand());
+        }
+    }
+}
+const rrand = ()=>{
+
+    return Math.floor(Math.random() * 10) + 1; // 1 to 100 
+
+} 
 
 async function createlogDir() {             
     let effPath = `${LOGDIR}/dashboards`;                                                                                                                                                                                                                                                                                                                                                                        
@@ -25,18 +39,15 @@ async function createlogDir() {
         }
     }
 }
+
 // import 
 
 interface PlayerFields {
     name: string;
     img: string;
+    plots?: Array<Array<number>>
+
 };
-
-
-// const __filename = fileURLToPath(import.meta.url);
-
-// const __dirname = path.dirname(__filename);
-
 const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
 const LOCALHOST = '127.0.0.1'; // safe 
 const workDir = process.cwd();
@@ -52,8 +63,9 @@ const LOGDIR = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'stat
 
 var csvReadStream = fs.createReadStream(filePath) as fs.ReadStream;
 
+const plots : Array<Array<number>> = [];
 
-
+setDummyPlots(plots);
 
 // Register static file plugin 
 fastify.register(fastifyStatic, {
@@ -67,7 +79,7 @@ fastify.register(fastifyStatic, {
 
 let numberCsvLines: number;
 let numberPages: number;
-let playerPerPage = 100 as number;
+let playerPerPage = 20 as number;
 
 // system call to get number of lines in csv files 
 exec(`wc -l ${filePath}`, (err, stdout, stderr) => {
@@ -112,7 +124,7 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
         obj = Object.assign({}, obj); // coonvert null prototype to normal object 
     }
 
-    let numPlayers = 100;
+    let numPlayers = playerPerPage;
 
     let players : PlayerFields[] = new Array(numPlayers).fill("");
 
@@ -154,7 +166,7 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
         if (row.Player == 'Player')
             return;
 
-        players[players_index] = {name: row.Player, img: CATIMAGE} ;
+        players[players_index] = {name: row.Player, img: CATIMAGE, plots:plots } ;
         players_index++;
 
     })
@@ -171,7 +183,7 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
             start: numberPages * (pageNumberZeroIndex), 
             numPages:effectivePageNumber + 1 ,
             players : players, 
-            ing: CATIMAGE, 
+            ing: CATIMAGE,
         });
         
     })

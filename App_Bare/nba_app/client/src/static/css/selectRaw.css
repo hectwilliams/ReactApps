@@ -42,12 +42,12 @@
 }
 .ready_status_cls[data-dbready="0"]
 {
-    background-image: url("./images/icons/not_ready.png");
+    background-image: url("../images/icons/not_ready.png");
 }
 
 .ready_status_cls[data-dbready="1"]
 {
-    background-image: url("./images/icons/on.png");
+    background-image: url("../images/icons/on.png");
 }
 
 .storage_status_cls > p {

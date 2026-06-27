@@ -1,4 +1,4 @@
-import {rand_button_cls} from './static/randButton.css';
+import {rand_button_cls} from './static/css/randButton.css';
 
 const button = document.createElement('button');
 
@@ -10,7 +10,7 @@ button.className = rand_button_cls;
 //set toggle variable 
 // button.dataset. = "0";
 // add button 
-rootDiv.append(button);
+// rootDiv.append(button);
 
 //set handlers 
 button.onclick = (event: MouseEvent) => {

@@ -9,8 +9,8 @@ import {
 dbclone2_label_cls,
 binlog_cell_cls,
 binlog_label_clas
-} from './static/follower.css';
-import './static/variables.css';
+} from './static/css/follower.css';
+import './static/css/variables.css';
 
 type Allowed = 1 | 2 | 3 | 4;
 export const rootstyles = window.getComputedStyle(document.documentElement);

@@ -1,0 +1,8 @@
+.view_button_on[data-on="1"] {
+    pointer-events: auto;
+}
+
+.view_button_on[data-on="0"] {
+    pointer-events: none;
+    opacity: 0.3;
+}

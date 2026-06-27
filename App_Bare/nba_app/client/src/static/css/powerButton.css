@@ -3,7 +3,7 @@
     grid-column: 6 / span 1;
     grid-row: 30 / span 2;
     border: 1px dotted purple;
-    background-image: url("./images/icons/switch.png");
+    background-image: url("../images/icons/switch.png");
     background-size: contain;
     background-position: center; 
     background-repeat: no-repeat;

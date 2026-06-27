@@ -1,0 +1,210 @@
+ /* 
+    Plane of canvas 
+        z-index = 1 
+ 
+ */
+ 
+ 
+ /* top level div */
+.top_level_list_container_container_cls {
+    grid-row: 1 / span 100;
+    grid-column: 1 / span 100;
+    /* background-color: pink; */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;    
+    padding-top: 5px;
+        row-gap: 7vh;
+    z-index: 1;
+
+}
+
+ 
+/* main  */
+/* playerlist */
+.player_container_cls {
+    width: 100%;
+    /* border: 1px yellow dotted; */
+    flex-direction: column;
+    flex-wrap: nowrap;
+    /* height: 100%; */
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+    height: 17vh;
+    border-bottom: 1px silver solid;;
+     margin: 0;
+    padding:0;
+}
+
+/* player pic */
+/* .player_plots_container, */
+
+.player_container_cls > div:nth-child(1),
+.img_cls {
+    width: 100%;
+    height: 100%;
+    /* height: 100%; */
+    /* border: 1px blue dotted; */
+     grid-row: 1 / span 99; 
+    grid-column: 1/ span 99;
+    /* background-size:cover; */
+    /* background-position: center; */
+    /* background-repeat: no-repeat;; */
+    /* background-repeat: no-repeat; */
+    /* background-image: url('../images/faces/img.png'); */
+    /* Optional: Makes it easier to center */
+    z-index: 1; 
+      display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+     margin: 0;
+    padding:0;
+}
+
+.player_container_cls > div:nth-child(1) > img,
+.img_cls {
+    width: 100%;
+    height: 17vh;
+    /* height: 100%; */
+    /* border: 1px blue dotted; */
+     grid-row: 1 / span 30; 
+    grid-column: 2/ span 10;
+    /* background-size:cover; */
+    /* background-position: center; */
+    /* background-repeat: no-repeat;; */
+    /* background-repeat: no-repeat; */
+    /* background-image: url('../images/faces/img.png'); */
+    border-radius: 50%;
+    /* Optional: Makes it easier to center */
+    z-index: 1; 
+     margin: 0;
+    padding:0;
+}
+
+
+/* player data container */
+.playerDataContainer_cls
+/* .player_container_cls > div:nth-child(2) */
+{
+    /* border: 5px blue dotted; */
+    grid-row: 1 / span 30;
+    grid-column: 14 / span 65;
+    height: 14vh;
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+     margin: 0;
+    padding:0;
+}
+
+.meta_name_cls {
+    display: flex;
+    flex-shrink: 1;
+    grid-row: 1 / span 10;
+    grid-column: 2 / span 7;
+    width: 100%;
+    height: 100%;
+        border: 1px silver solid;
+    background-color: black;
+        border-radius: 2px;
+ overflow: hidden;  
+  margin: 0;
+    padding:0;
+}
+
+.meta_team_cls {
+    grid-row: 2 / span 10;
+    grid-column: 12 / span 7;
+    width: 100%;
+    height: 100%;
+    border: 1px silver solid;
+    border-radius: 2px;
+    background-color: black;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    overflow: hidden;  
+     margin: 0;
+    padding:0;
+}
+
+.meta_team_cls > p,
+.meta_name_cls > p {
+    z-index: 1;
+    color: white;
+    border-radius: 4px;
+    min-width: 0; /* Prevents the child from forcing its layout width */
+    flex-shrink: 1; /* Allows the child to shrink below its content size */
+    margin: 0;
+    padding: 0;
+    text-overflow: ellipsis;  /* Add the "..." dots */
+}   
+
+.meta_name_cls:hover,
+.meta_team_cls:hover
+{
+    cursor: pointer;
+    overflow: visible;        /* Un-hide the overflowing text */
+    white-space: normal;      /* Allow text to wrap to multiple lines */
+    z-index: 1;
+    background-color: transparent;
+    width: auto;
+    height: 10%;
+    position:relative;
+    width: 300%;
+    border: none;
+     margin: 0;
+    padding:0;
+}
+
+.wrapperPlayerChainContainer {
+     /* border: 1px silver solid; */
+    grid-row: 1 / span 99;
+    grid-column: 1 / span 99;
+      width: 100%;
+    height: 100%;
+    /* padding-left: 0.5px; */
+    margin: 0;
+      display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+     margin: 0;
+    padding:0;
+
+}
+
+/* / graphs section */
+.playerChainContainer_cls
+{
+    /* border: 1px silver solid; */
+    grid-row: 25 / span 80;
+    grid-column: 2 / span 99;
+    display: flex;
+    /* grid-template-columns: repeat(100, 1fr);   */
+    /* grid-template-rows: repeat(100, 1fr);   */
+    flex-direction: row; /* Default value, establishes horizontal flow */
+    flex-wrap: nowrap;   /* Forces all items to stay on a single line */
+    overflow-x: auto;    /* Displays horizontal scrollbar when needed */
+    column-gap: 10px;    
+    align-content: flex-end;
+     margin: 0;
+    padding:0;
+}
+
+.player_container_plot_cls {
+    border: 1px dotted skyblue;
+    width: 15vh;
+    height: 9vh;
+    background-color: white;
+    flex-shrink: 0;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    column-gap: 6px;
+     margin: 0;
+    padding:0;
+    
+}

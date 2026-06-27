@@ -28,18 +28,18 @@
 }
 
 .option_button_cls[data-status="0"] {
-    background-image: url("./images/icons/date_added.png");
+    background-image: url("../images/icons/date_added.png");
 }
 
 .option_button_cls[data-status="1"] {
-    background-image: url("./images/icons/first_name.png");
+    background-image: url("../images/icons/first_name.png");
 }
 
 .option_button_cls[data-status="2"] {
-    background-image: url("./images/icons/last_name.png");
+    background-image: url("../images/icons/last_name.png");
 }
 
 .option_button_cls[data-status="3"] {
-    background-image: url("./images/icons/full_name.png");
+    background-image: url("../images/icons/full_name.png");
 }
 
