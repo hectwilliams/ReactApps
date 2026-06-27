@@ -22,7 +22,7 @@ function setDummyPlots(plots: Array<Array<number>>) {
 }
 const rrand = ()=>{
 
-    return Math.floor(Math.random() * 100) + 1; // 1 to 100 
+    return Math.floor(Math.random() * 10) + 1; // 1 to 100 
 
 } 
 

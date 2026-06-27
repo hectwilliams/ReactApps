@@ -36,7 +36,7 @@ const imgPath = "./client/src/static/images/faces/img.png";
 
 
 
- function getPlayerDiv(record: SimplePlayerProfileInterface) {
+ async function getPlayerDiv(record: SimplePlayerProfileInterface) {
 
     let mainElement = document.createElement('div');
     mainElement.className = player_container_cls;
@@ -82,30 +82,43 @@ const imgPath = "./client/src/static/images/faces/img.png";
     plotsContainer.append(teamElement);
     plotsContainer.append(wrapper_plotsData);
     
-    
+    if (!record.plots)
+        return;
+
+    if (record.plots?.length == 0) {
+        return; 
+    }
     // add 10 grapgs 
-    // for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < record.plots.length; i++) {
+
+        let barrierNode = document.createElement('div');
+        let node = document.createElement('div');
+
+        node.className = binlog_container_cls;
+
+        barrierNode.className = player_container_plot_cls;
+        barrierNode.append(node);
+
+        plotsChainContainer.append(barrierNode);
+
+        let qplot =  new QuickPlot(node);
+
+        let numbers = record.plots[i] as number[];
         
-    let barrierNode = document.createElement('div');
-    let node = document.createElement('div');
-    let childNode = document.createElement('div');
+        console.log(numbers, node)
 
-    node.className = binlog_container_cls;
+        qplot.setPlot(numbers);
 
-    barrierNode.className = player_container_plot_cls;
-    barrierNode.append(node);
-    plotsChainContainer.append(barrierNode);
+        console.log(node.childNodes)
 
-    let qplot =  new QuickPlot(node);
+        let c = node.className;
+        void node.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
+        node.className = c;
+        
+        let new_node = qplot.getPlot();
+        // barrierNode.append(new_node);
 
-        // if(record.plots) {
-        //     let numbers = record.plots[0] as number[];
-        //     qplot.setPlot(numbers);
-        //     let node = qplot.getPlot();
-        //     barrierNode.append(node);
-        // }
-
-    // }
+    }
 
     playerlist.append(mainElement);
 

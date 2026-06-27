@@ -11,6 +11,7 @@ export class QuickPlot {
     constructor(wrapper :HTMLDivElement) {
         this.bin_log = wrapper;
 
+        
         // load empty cells 
         for(let n = 0; n < BINSIZE**2; n++) {
             // console.log(n);
@@ -35,12 +36,13 @@ export class QuickPlot {
         
         numbers.forEach( (r, c) => { 
         //flip r 
-            r = BINSIZE**2 -  r * BINSIZE;
-            r = Math.floor( r/ BINSIZE) ;
+            // r = BINSIZE**2 -  r * BINSIZE;
+            // r = Math.floor( r/ BINSIZE) ;
+            r = BINSIZE - r;
             while (r < BINSIZE) {
                 let pos = r * BINSIZE + c;
-                let binCell = this.bin_log.children[pos] as HTMLSpanElement;
-                binCell.dataset.on = '1';
+                let binCell = this.bin_log.childNodes[pos] as HTMLSpanElement;
+                // binCell.dataset.on = '1';
                 cells.push(binCell);
                 r++;
             }
@@ -53,7 +55,7 @@ export class QuickPlot {
             void b.offsetWidth; 
             b.className = classname;
             // turn element state off 
-            b.dataset.on = '0';
+            b.dataset.on = '1';
 
         })
     }

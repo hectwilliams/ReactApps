@@ -189,7 +189,7 @@
     flex-direction: row; /* Default value, establishes horizontal flow */
     flex-wrap: nowrap;   /* Forces all items to stay on a single line */
     overflow-x: auto;    /* Displays horizontal scrollbar when needed */
-    column-gap: 4px;    
+    column-gap: 10px;    
     align-content: flex-end;
      margin: 0;
     padding:0;
@@ -199,11 +199,11 @@
     border: 1px dotted skyblue;
     width: 15vh;
     height: 9vh;
-    background-color: whitesmoke;
+    background-color: white;
     flex-shrink: 0;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
-    column-gap: 3px;
+    column-gap: 6px;
      margin: 0;
     padding:0;
     

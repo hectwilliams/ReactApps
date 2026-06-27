@@ -2,8 +2,8 @@
 
 
 .binlog_container_cls   {
-    grid-column: 1/ span 98;
-    grid-row: 1/ span 98;
+    grid-column: 1/ span 99;
+    grid-row: 1/ span 99;
     width: 100%;
     height: 100%;
     border: 1px red solid;
@@ -14,8 +14,7 @@
     display: grid;
     grid-template-rows: repeat(var(--BINSIZE), 1fr);
     grid-template-columns: repeat(var(--BINSIZE), 1fr);
-
-    background-color: skyblue
+    /* background-color: skyblue */
 }
 .binlog_container_cls > *,
 .binlog_cls > * {
@@ -25,19 +24,16 @@
     min-width: 0; /* Allows the item to shrink past its content size */
     min-height: 0;
     overflow: hidden;
-    border: 1px oramge solid;
 
 }
 
-.binlog_cell_cls {
-    width:100%;
-    height:100%;
+
+.binlog_cell_cls[data-on="0"] {
+
+    /* animation: fadeIn 1s; */
+     background-color: white; 
 }
 
-@keyframes fadeIn {
-  from { background-color: red; }
-  to { background-color: lightcyan; }
-}
 
 .binlog_cell_cls[data-on="1"] {
 
@@ -45,10 +41,28 @@
      background-color: red; 
 }
 
-.binlog_cell_cls[data-on="0"] {
-    /* animation: fadeIn 1s; */
-    background-color: lightcyan
+.binlog_cell_cls {
+    width:100%;
+    height:100%;
+         background-color: white; 
+
 }
+
+@keyframes fadeIn {
+  from { background-color: red; }
+  to { background-color: lightcyan; }
+}
+
+/* .binlog_cell_cls[data-on="1"] { */
+
+    /* background-color: red;  */
+/* } */
+/* animation: fadeIn 1s; */
+
+/* animation: fadeIn 1s; */
+/* .binlog_cell_cls[data-on="0"] { */
+    /* background-color: lightcyan */
+/* } */
 
 .dbclone1_cls {
     grid-column: 54/ span 7;
