@@ -45,7 +45,11 @@ class  ViewButtonn {
                 // repeated clicks 
                 return;
             } else {
-                        /* nothing is deleted out the store, so if name exist then we are safe to continue */
+
+                // clear dashboard 
+
+                
+                /* nothing is deleted out the store, so if name exist then we are safe to continue */
         
                 let name = getServiceName(currentNode);
 
@@ -53,11 +57,15 @@ class  ViewButtonn {
 
                     try {
 
-                        fetchPagesHelper(name);
+                        let status = fetchPagesHelper(name);
 
-                        console.log('successful request');
+                        if (!status) {
+
+                            throw new Error("fetch to server failed")
+                        } 
 
                     } catch(err) {
+
                         console.log('unsuccessful request');
 
                     }

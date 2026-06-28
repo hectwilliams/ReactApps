@@ -15,6 +15,8 @@ import { dashboard } from './dashboard';
 import { bookletInst } from "./pageShifter";
 import { QuickPlot , } from './quickPlot';
 import { binlog_container_cls } from './static/css/quickPlot.css';
+import { storeInst } from './store';
+import { quickHash } from './algo';
 
 /*
     - PlayerCardContainer -> player_container_cls
@@ -124,6 +126,21 @@ const imgPath = "./client/src/static/images/faces/img.png";
 export async function processData (data: ServerRecordInterface): Promise<boolean>  {
     
     try {
+
+        let stringArray = String(data?.players).toString()  + storeInst.service; // convert array to string 
+        let newHash = quickHash(stringArray) as string;
+        let code = String(data.players);
+
+         if (storeInst.players === code) {
+            console.log('request does not change gui state');
+            throw new Error(""); 
+        }  
+
+        // clear list 
+        dashboard.replaceChildren();
+        playerlist.replaceChildren();
+
+
         // parse data from server 
         data.players.forEach((record, index) => {
             getPlayerDiv(record); // add value to list
@@ -131,12 +148,16 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
         });
 
         if (data.players.length) {
+            
+            storeInst.hash = newHash;
 
             // update booket 
             
             bookletInst.enable();
 
             bookletInst.setFeed(data.page, data.numPages);
+
+            storeInst.players = code;
             
             return true;
 

@@ -1,11 +1,7 @@
 
 import type { SimplePlayerProfileInterface } from './player';
-// import  dashboard from './followers';
-import { PlayerCard } from './player';
-// import { activePlayerList } from './main';
 import { dashboard } from './dashboard';
 import { bookletInst } from "./pageShifter";
-// export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
 import { playerlist, processData } from "./playerlist";
 import { storeInst } from './store';
 
@@ -62,20 +58,18 @@ export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, d
     // let returnNode = undefined;
     
     let arr = Array.from(parentNode.childNodes.entries());
-  
-
     let returnNode = (parentNode.childNodes.values().find((some_node)=>{
-            if( some_node instanceof HTMLElement) {
-                    // console.log(some_node);
-                if ( datasetKey in some_node.dataset) {
-                        // console.log(datasetKey);
+        if( some_node instanceof HTMLElement) {
+                // console.log(some_node);
+            if ( datasetKey in some_node.dataset) {
+                    // console.log(datasetKey);
 
-                    if (some_node.dataset.name == datasetName) {
-                        return true;
-                    }
+                if (some_node.dataset.name == datasetName) {
+                    return true;
                 }
             }
-        })) as HTMLElement; // find returns a HTML ELEMENT
+        }
+    })) as HTMLElement; // find returns a HTML ELEMENT
     return returnNode;
 }
 
@@ -117,95 +111,71 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
 export async function fetchPagesHelper( name: string, page?: number) : Promise<boolean>{
 
     try {
-
-        let data = await fetchPages(page)
-
-         if (data) {
+        
+        switch(name) {
             
-            switch(name) {
+            case "monitor":
                 
-                case "monitor":
-                    
-                    throw new Error("do nothing, monitor metrics not available yet");
+                throw new Error("do nothing, monitor metrics not available yet");
+                
+            case "nba": 
+                
+                let data = await fetchPages(page);
 
-                case "nba": 
-                    processData(data) // loadiing playerlist variable 
-                    .then( () =>{
-                        
-                        // players list in memory; load to dashboard 
-                        dashboard.prepend(playerlist);
+                // one way functioon test (ensure new data loaded to website )
 
-                        // csave succesful page
-                        storeInst.load(name, data);
+                // clear 
+                
+                // set hash 
+                
+                if (!data) 
+                    return false;
+                
+                processData(data) // loadiing playerlist variable 
+                
+                .then( () =>{
 
-                    }).catch((err)=>{
-                        console.log(err, "Process data failed ");
-                    })
-                    // non empty list rcvd from server
+                    // dashboard.replaceChildren();
 
-                    return true;
+                    // players list in memory; load to dashboard 
+                    dashboard.prepend(playerlist);
 
-                default:
+                    // csave succesful page
+                    storeInst.load(name, data);
 
-                    return false; 
-            }
+                    // add booklet 
+                    bookletInst.load();
+
+                    // save name 
+                     storeInst.service = name;
+                     
+
+                }).catch((err)=>{
+
+                    console.log(err, "Process data failed ");
+
+                })
+
+                // non empty list rcvd from server
+
+                return true;
             
-        } else {
-            throw new Error("");
-        }
+            case "binny":
 
+                console.log('binny');
+
+                return false; 
+
+            default:
+
+                return false; 
+        }
         
     } catch(err) {
+
         return false
 
     }
-
-    
-    // fetchPages()
-    
-    // .then( (data) => {
-        
-    //     if (data) {
-            
-    //         console.log(data)
-            
-    //         switch(name) {
-                
-    //             case "monitor":
-                    
-    //                 console.log('do nothing, monitor metrics not available ye') ;
-    //                 break;
-                    
-    //             case "nba": 
-    //                 processData(data) // loadiing playerlist variable 
-    //                 .then( () =>{
-    //                     // players list in memory; load to dashboard 
-    //                     dashboard.prepend(playerlist);
-
-    //                     // csave succesful page
-    //                     storeInst.load(name, data);
-
-    //                 }).catch((err)=>{
-    //                     console.log(err, "Process data failed ");
-    //                 })
-    //                 // non empty list rcvd from server
-
-    //                 break;
-
-    //             default:
-
-    //                 return; 
-    //         }
-            
-    //     }
-
-    // })
-    
-    // .catch( (err)=>{
-        
-    //     console.log("err", err);
-        
-    // })
 }
 
 export async function updateLog(data: Array<string> ) : Promise<Boolean>{
@@ -294,56 +264,3 @@ const globalViewVlick = (node: HTMLSpanElement) => {
         return ref;
     }
 }
-
-/* common handler for viewing of all services  */
-export const viewClick = (  node: HTMLSpanElement ) => {
-
-    // console.log(n);
-    let globalFunc = globalViewVlick(node);
-
-    let cacheNode = document.createElement('span');
-    
-        return ( event:MouseEvent )=> {
-
-            let node = event.currentTarget as HTMLSpanElement;
-            
-            // prevent debounce and loops 
-            if (cacheNode === node) {
-                console.log('repeat click operation');
-                return;
-            } else {
-                cacheNode = document.createElement('span'); // this resets state 
-            }
-            
-            let parentNode = node.parentElement as HTMLDivElement;
-            let targetParent = parentNode.childNodes[0] as HTMLSpanElement;
-            let target = targetParent.childNodes[0] as HTMLParagraphElement; 
-            let name = target.innerText;
-            
-            // dashboard.replaceChildren();
-            
-            
-
-            console.log(dashboard);
-            // reloadBooklet(dashboard);
-            
-            // update node catch 
-            cacheNode = node; 
-            
-            // let len = dashboard.childElementCount as number;
-            // let dumb = document.createElement('span');
-            // dumb.style.width = "0";
-            // dumb.style.height = "0";
-            // dashboard.append(dumb);
-            // void 
-            // console.log(dashboard)
-            // let c = booklet.className;
-            // void booklet.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
-            // booklet.className = c;
-            // reflow 
-            // das
-        }
-
-    }
-
-    

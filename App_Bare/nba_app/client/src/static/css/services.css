@@ -1,45 +1,36 @@
 .services_cls_header {
-
     grid-row: 1 / span 4;
     grid-column: 2 / span 18;
 
     min-height: 100%;
     max-height: 100%;
-    /* min-width: 100%;
-    max-width: 100%; */
 
     width: 100%;
     height: 100%;
     background-color: #ffffff;
-  /* padding: 12px; */
-  /* border-radius: 8px; */
-  font-size: 0.9rem;
-  color: #1f2937;
-  cursor: pointer;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  /* border: 1px solid #e5e7eb; */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 0.9rem;
+    color: #1f2937;
+    cursor: pointer;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    /* border: 1px solid #e5e7eb; */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  border: 0.5px silver solid;
+    border: 0.5px silver solid;
 
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 
-  display: grid;
-  grid-template-columns: repeat(100, 1%) ;
-  grid-template-rows: repeat(100, 1%) ;
-  
-  background: linear-gradient(
+    display: grid;
+    grid-template-columns: repeat(100, 1%) ;
+    grid-template-rows: repeat(100, 1%) ;
+
+    background: linear-gradient(
     to right,
     rgba(11, 9, 44, 0.7) 0%,    /* Completely clear at the top */
     rgba(13, 6, 44, 0.7) 50%,  /* Slight tint in the middle */
     rgb(13, 6, 47) 100%    /* Perfectly matches body background at the bottom */
     );
-    
-
-
 }
-
 
 .services_cls_header > span:nth-child(1) {
     grid-row: 20 / span 50;
@@ -47,7 +38,6 @@
     /* border: 1px silver solid; */
     width: 100%;
     height: 100%;
-
     background-image: url("../images/icons/services.png");
     background-size: contain;
     background-position: center; 
@@ -77,11 +67,7 @@
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: larger;
     letter-spacing: 3px;
-
 }
-
-
-
 
 .services_cls {
 
@@ -90,37 +76,23 @@
 
     width: 100%;
     height: 100%;
-/* background-color: #ffffff;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: #1f2937;
-  cursor: pointer;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  transition: transform 0.2s ease, box-shadow 0.2s ease; */
 
-  border: 0.5px silver solid ;
-  /* border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px; */
-  
-  background: linear-gradient(
+    border: 0.5px silver solid ;
+
+    background: linear-gradient(
     to top,
-    rgba(11, 8, 65, 0) 0%,    /* Completely clear at the top */
-    rgba(39, 20, 123, 0.7) 50%,  /* Slight tint in the middle */
-    rgb(28, 11, 104) 100%    /* Perfectly matches body background at the bottom */
+        rgba(11, 8, 65, 0) 0%,    /* Completely clear at the top */
+        rgba(39, 20, 123, 0.7) 50%,  /* Slight tint in the middle */
+        rgb(28, 11, 104) 100%    /* Perfectly matches body background at the bottom */
     );
 
   display: flex;
   flex-direction: column;
-
 }
 
 .services_card_container_cls {
     width: 100%;
     height: 4%;
-    /* border: 1px solid silver; */
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -139,11 +111,12 @@
     letter-spacing: 2px;
     border-radius: 6px;
     padding-left: 2px;
-    
     display: grid;
     grid-template-columns: repeat(100, 1%);
     grid-template-rows: repeat(100, 1%);
 }
+
+/* // service name container */
 .services_card_container_cls > div  > span:nth-child(1) {
     grid-row: 30 / span 40;
     grid-column: 10 / span 40;
@@ -158,6 +131,8 @@
   justify-content: center;
 }
 
+/* // service name */
+
 .services_card_container_cls > div > span:nth-child(1) > p {
     
     /* justify-content: center; */
@@ -171,20 +146,15 @@
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: larger;
     letter-spacing: 2px;
-          /* border: 1px silver solid; */
-
+    /* border: 1px silver solid; */
 }
+
+/* // service view button ( pwview button at index 2 ) */
 
 .services_card_container_cls > div > span:nth-child(2) > div {
     grid-row: 30 / span 30;
     grid-column: 80 / span 10;
     border: 1px silver solid;
-    /* border-bottom-left-radius: 6px */
-    /* border-bottom-right-radius: 6px */
-    /* border-radius: 2px */
-    /* width:100%  */
-    /* height:100% */
-
 }  
 
 
@@ -192,53 +162,35 @@
     grid-row: 30 / span 50;
     grid-column: 80 / span 5;
     border: 1px silver solid;
-    /* border-bottom-left-radius: 6px */
-    /* border-bottom-right-radius: 6px */
-    /* border-radius: 2px */
-    /* width:100%  */
-    /* height:100% */
     width: 100%;
     height:100%;
-        
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
-    /* z-index: 2; */
-
 }  
 
 .services_card_container_cls > div > span:nth-child(2):hover {
     background-color: gray;
-        /* z-index: 2; */
 }
 
 .services_card_container_cls > div > span:nth-child(2):active {
     background-color: rgb(78, 59, 59);
-        /* z-index: 2; */
 }
 
 
+
+/* // service power button ( pwr toggle at index 3 ) */
 
 .services_card_container_cls > div > span:nth-child(3) {
     grid-row: 30 / span 50;
     grid-column: 70 / span 5;
     border: 1px silver solid;
     /* border-radius: 50%; */
-      width: 100%;
+    width: 100%;
     height:100%;
-    /* background-color: transparent; */
-    /* display: flex;
-    /* grid-template-columns: repeat(10, 1fr); */
-    /* grid-template-rows: repeat(10, 1fr); */
-
     justify-content: center;
-     align-items: center; 
-
-           
+    align-items: center; 
     display: flex;
-    /* grid-template-columns: repeat(10, 1fr); */
-    /* grid-template-rows: repeat(10, 1fr); */
-
     margin: 0;
     padding: 0;
     border-radius: 5px; 
@@ -288,24 +240,24 @@
     background-color: red;
 
 }  
-
-/*  */
-
-/* 
-.services_card_container_cls > div > span:nth-child(2) > span:nth-child(2n)  {
-    background-color: 1px red solid;
-     width: 100%;
-    height:100%;
-        
-}     
-
-.services_card_container_cls > div > span:nth-child(2n)  {
-    background-color: 1px red solid;
-
+/* hide power button and show view 
+    - view[2] -> pwr[3]
+    * hides view
+    * view is target
+*/
+/* .services_card_container_cls > div >  span:nth-child(2)[data-on="undef"]   + span:nth-child(3)[data-status="on1"]   {
+    opacity: 0;
 } */
 
-/* 
+/* hide power button and show view 
+    - view -> pwr
+    * hides view 
+    * view is target
+*/
+.services_card_container_cls > div >  span:nth-child(2)[data-on="undef"]:has(+ span:nth-child(3)[data-status="on1"])       {
+    opacity: 0;
+}
 
-.services_subcontainer_status_cicle_cls {
-    
-} */
+.services_card_container_cls > div >  span:nth-child(2)[data-on="undef"]:has(+ span:nth-child(3)[data-status="off"])       {
+    opacity: 0;
+}

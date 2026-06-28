@@ -12,9 +12,15 @@ export type StoreDictionary = Record<string, ServerRecordInterface>;
 class  Store  {
 
     dict: StoreDictionary;
+    hash: string; 
+    service: string;
+    players: string;
 
     constructor() {
         this.dict = {};
+        this.hash = "";
+        this.service = "";
+        this.players="";
     }
 
     load(name: string, data: ServerRecordInterface) {

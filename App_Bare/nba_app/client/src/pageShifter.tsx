@@ -36,6 +36,7 @@ class Booklet {
     right_arrow: HTMLDivElement;
     prevPage: number;
     pages: number;
+    exists: boolean;
 
     constructor() {
 
@@ -56,11 +57,11 @@ class Booklet {
         this.booklet.append(this.arrows);
         this.booklet.className = page_shifer_cls;
         this.booklet.dataset.on = "0";
-        
+        this.exists = false;
         this.prevPage = -1;
         this.pages = -1;
 
-        this.left_arrow.onclick = () => {
+        this.left_arrow.onclick =  () => {
             
             if (this.pageNumbersMsg.innerText  == '...' ) {
                 return;
@@ -72,7 +73,6 @@ class Booklet {
                 /* nothing is deleted out the store, so if name exist then we are safe to continue */
                 let record = storeInst.get(name) as ServerRecordInterface;
                 
-                    
                   let num = record.page;
 
                     if (num - 1 <=0 ) {
@@ -81,7 +81,13 @@ class Booklet {
 
                     try {
 
-                        fetchPagesHelper(name, num-1);
+                        let status =  fetchPagesHelper(name, num-1);
+                        
+                        if (!status) {
+                            
+                            throw new Error("");
+
+                        }
 
                         console.log('arrow click  request, successful');
 
@@ -94,41 +100,44 @@ class Booklet {
             }
          }
 
-          this.right_arrow.onclick = () => {
+          this.right_arrow.onclick =  () => {
         
             if (this.pageNumbersMsg.innerText  == '...' ) {
                 return;
             }
-
             
             let name = getServiceName(viewButtonnInst.prev);
             
             if (name) {
+
                 /* nothing is deleted out the store, so if name exist then we are safe to continue */
-                let record = storeInst.get(name) as ServerRecordInterface;
-                
-                    
-                  let num = record.page;
+                let serverRecord = storeInst.get(name) as ServerRecordInterface;
+                                
+                let num = serverRecord.page;
 
-                    if (num +  1 >= parseInt(record.numPages) + 1 ) {
-                        return;
-                    }
+                if (num +  1 >= parseInt(serverRecord.numPages) + 1 ) {
+                    return;
+                }
 
-                    try {
+                try {
 
-                        fetchPagesHelper(name, num+1);
+                    let status =  fetchPagesHelper(name, num + 1);
 
-                        console.log('arrow click  request, successful');
-
-                    } catch(err) {
+                    if (!status) {
                         
-                        console.log('arrow click request, unsuccessful');
+                        throw new Error("");
 
                     }
 
+                    console.log('arrow click  request, successful');
+
+                } catch(err) {
+                    
+                    console.log('arrow click request, unsuccessful');
+
+                }
 
             }
-            
 
          }
 
@@ -157,9 +166,17 @@ class Booklet {
         this.pageNumbersMsg.innerText = `${currPage} of ${pages}`;
 
     }
+
+    load() {
+        
+        /* adds booklet to dashboard */
+        
+        dashboard.append(this.booklet);
+
+    }
+
 }
 
 export const bookletInst = new Booklet();
 
-dashboard.append(bookletInst.getBooklet())
 
