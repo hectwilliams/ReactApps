@@ -140,6 +140,7 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
         dashboard.replaceChildren();
         playerlist.replaceChildren();
 
+        console.log(bookletInst);
 
         // parse data from server 
         data.players.forEach((record, index) => {
@@ -154,6 +155,8 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
             // update booket 
             
             bookletInst.enable();
+            console.log('RETURNED')
+            console.log(data);
 
             bookletInst.setFeed(data.page, data.numPages);
 

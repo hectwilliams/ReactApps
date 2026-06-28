@@ -27,8 +27,15 @@ class  Store  {
         this.dict[name] = data;
     }
 
-    get(namr:string) : ServerRecordInterface | undefined{
-        return this.dict[namr];
+    get(name:string) : ServerRecordInterface | undefined{
+        return this.dict[name];
+    }
+
+    clear() {
+        this.dict = {};
+        this.hash = "";
+        this.service = "";
+        this.players="";
     }
 
 }

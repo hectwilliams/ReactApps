@@ -1,9 +1,4 @@
-import { dashboard } from "./dashboard";
-import { playerlist, processData } from "./playerlist";
-import { fetchPages } from "./handlers";
-import type { SimplePlayerProfileInterface } from './player';
 import {view_button_on} from './static/css/viewButton.css';
-import { bookletInst } from "./pageShifter";
 import { fetchPagesHelper } from "./handlers";
 
 export function getServiceName(node: HTMLSpanElement) {
@@ -16,28 +11,50 @@ export function getServiceName(node: HTMLSpanElement) {
     let name = target.innerText;
     return name; 
 }
+
 /* Blueprint for view button object  */
-class  ViewButtonn {  
+export class  ViewButton {  
 
     prev: HTMLSpanElement;
     moreViewSymbol : HTMLSpanElement;
+    name: string;
     //  document.createElement('span');
 
-    constructor() {
+    constructor(name: string) {
 
         this.prev = document.createElement('span');
         this.moreViewSymbol = document.createElement('span');
         
-        this.viewButton(this.moreViewSymbol);
-
         this.moreViewSymbol.dataset.on = "1";
         this.moreViewSymbol.className = view_button_on;
+        this.name = name;
+        // paint view button 
+        for (let i = 0; i < 100; i++) {
+            let viewButtonPixel = document.createElement('span');
+            this.moreViewSymbol.append(viewButtonPixel);
+        }
+        let rows = [2, 5, 9] as Array<number>;
+        rows.forEach((r, index)=>{
+            let v = rows[3 - 1 - index];
+            if (v) {
+                console.log(v);
+                for (let i = 0; i < v; i++) {
+                    let pos = 10 * r + i; 
+                    let ele = this.moreViewSymbol.children[pos] as HTMLSpanElement;
+                    ele.style.backgroundColor="white";
+                }
+            }
+        })
+
+        // add event listener 
+        this.moreViewSymbol.addEventListener( 'click' ,  this.viewClick()  );
+
     }
 
     /* handler for view button clicks  */
 
-    viewClick(node: HTMLSpanElement): any {
-        let cacheNode = node;
+    viewClick(): any {
+        // let cacheNode = node;
         return (event: MouseEvent) => {
             let currentNode = event.currentTarget as HTMLSpanElement;
 
@@ -46,29 +63,22 @@ class  ViewButtonn {
                 return;
             } else {
 
-                // clear dashboard 
-
-                
-                /* nothing is deleted out the store, so if name exist then we are safe to continue */
-        
                 let name = getServiceName(currentNode);
 
                 if (name) {
+                
+                    fetchPagesHelper(name)
+                    .then( (resp) => {
 
-                    try {
+                        console.log('successful request: ', resp);
 
-                        let status = fetchPagesHelper(name);
-
-                        if (!status) {
-
-                            throw new Error("fetch to server failed")
-                        } 
-
-                    } catch(err) {
+                    })
+                    .catch(()=>{
 
                         console.log('unsuccessful request');
 
-                    }
+                    })
+
                 }
             }
 
@@ -76,37 +86,25 @@ class  ViewButtonn {
         }
     }
 
-    /* bind listeners to view button objects  */    
+    disable() {
+        this.moreViewSymbol.dataset.on = "0";
+    }
 
-    setEventMoreViewSymbol(node: HTMLSpanElement){
-        node.addEventListener( 'click' ,  this.viewClick(node) , );
+    enable () {
+        this.moreViewSymbol.dataset.on = "1";
+    }
+
+    get(): HTMLSpanElement{
         
+        return this.moreViewSymbol;
+
     }
 
-    /* creates view button right adjacent to power button */
-    viewButton(node: HTMLSpanElement) {
-
-
-    for (let i = 0; i < 100; i++) {
-        let viewButtonPixel = document.createElement('span');
-        this.moreViewSymbol.append(viewButtonPixel);
-    }
-
-
-    let rows = [2, 5, 9] as Array<number>;
-        rows.forEach((r, index)=>{
-            let v = rows[3 - 1 - index];
-            if (v) {
-                console.log(v);
-                for (let i = 0; i < v; i++) {
-                    let pos = 10 * r + i; 
-                    let ele = node.children[pos] as HTMLSpanElement;
-                    ele.style.backgroundColor="white";
-                }
-            }
-        })
+    clear() {
+        this.disable();
+        this.prev = document.createElement('span');
     }
 
 }
 
-export const viewButtonnInst = new ViewButtonn(); 
+export const activeViewButtons = [] as Array<ViewButton>;

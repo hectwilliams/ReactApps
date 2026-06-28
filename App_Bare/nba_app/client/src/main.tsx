@@ -19,44 +19,10 @@ export const BINSIZE = parseInt(rootstyles.getPropertyValue('--BINSIZE').trim())
 const body = document.body;
 body.style.backgroundColor = 'gray';
 body.className  = body_cls;
-// document.body.dataset.go='0';
 
 const rootDiv = document.getElementById('root');
 if (rootDiv)
     rootDiv.className  = root_container_cls;
-// set root div using .css declaration 
-// export const activePlayerList = findNodeByDataset(rootDiv, 'name','leader') as HTMLElement;
-
-// // add buttons to board 
-// import './powerButton';
-// import './startButton';
-// import './resetButton';
-// import './clearButton';
-// import './fillButton';
-// import './randButton';
-
-// // turn on leader board 
-// import './leader';
-
-// // turn on follower board 
-// import './followers';
-
-// // turn on option board 
-// import './options';
-
-// // turn on selectraw board 
-// import './selectraw';
-
-// // services stack card 
-// import './services';
-
-// import './viewButton';
-
-// // dashboard 
-// import './dashboard';
-
-
-
 
 
 

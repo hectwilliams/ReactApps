@@ -1,10 +1,10 @@
-import { powerButton} from './powerButton';
+import { PowerButton, activePowerButtons} from './powerButton';
 import {
     services_card_container_cls,
     services_cls, services_cls_header,
 } from './static/css/services.css';
 import { dashboard } from './dashboard';
-import { viewButtonnInst } from './viewButton';
+import {  activeViewButtons,  ViewButton} from './viewButton';
 
 
 interface ServiceResponse {
@@ -63,18 +63,20 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
         let cardName = document.createElement('span');
         cardName.innerHTML = `<p> ${serviceName} </p>`;
 
+        let newPowerButton = new PowerButton(serviceName);
+        activePowerButtons.push(newPowerButton);
+        let clonePowerSwitch = newPowerButton.get(); //= powerSwitchInst.switch.cloneNode(true) as HTMLSpanElement; // create copy of power switch
 
-        let clonePowerSwitch =(new powerButton()).get(); //= powerSwitchInst.switch.cloneNode(true) as HTMLSpanElement; // create copy of power switch
-        let cloneMoreViewSymbol = viewButtonnInst.moreViewSymbol.cloneNode(true) as HTMLSpanElement; // create copy of view object 
+        let newViewButton = new ViewButton(serviceName)
+        activeViewButtons.push(newViewButton);
+        let cloneMoreViewSymbol = newViewButton.get();
         
-        // console.log(clonePowerSwitch.eve)
         cloneMoreViewSymbol.dataset.name = serviceName;
 
 
         if (serviceName == 'monitor') {
             
             clonePowerSwitch.dataset.status='on1';
-            // cloneMoreViewSymbol.dataset.on="1";
             cloneMoreViewSymbol.dataset.on="undef";
 
 
@@ -85,9 +87,6 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
 
         }
 
-        // setPowerSwitch(clonePowerSwitch); // copies of power switches 
-        viewButtonnInst.setEventMoreViewSymbol(cloneMoreViewSymbol); // copies of view symbols 
-    
         /* order matters */
         subContainer.append(cardName);
         subContainer.append(cloneMoreViewSymbol);
@@ -95,7 +94,6 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
 
         container.append(cardContainer);
         
-        console.log(cardContainer);
     });
 };
 

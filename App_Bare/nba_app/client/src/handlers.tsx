@@ -149,6 +149,8 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                     // save name 
                      storeInst.service = name;
                      
+                    // 
+                    bookletInst.enable();
 
                 }).catch((err)=>{
 
@@ -162,7 +164,7 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
             
             case "binny":
 
-                console.log('binny');
+                console.log(name);
 
                 return false; 
 
@@ -237,7 +239,7 @@ export async function enableService(address:string, port: number) {
     }
 }
 
-export function viewButton(node: HTMLSpanElement) {
+ function viewButton(node: HTMLSpanElement) {
     let rows = [2, 5, 9] as Array<number>;
     rows.forEach((r, index)=>{
         let v = rows[3 - 1 - index];
