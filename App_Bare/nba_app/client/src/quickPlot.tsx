@@ -1,6 +1,75 @@
 
-import { binlog_cell_cls } from './static/css/quickPlot.css';
+import { binlog_cell_cls, test_cls  } from './static/css/quickPlot.css';
 import { BINSIZE } from './main';
+
+export function fillUnweightedCell(currentNode: HTMLDivElement, classname: string) {
+  // load empty cells 
+    for(let n = 0; n < BINSIZE**2; n++) {
+        let e = document.createElement('span');
+        e.className = classname;
+        // currentNode.dataset.on="0";
+        currentNode.append(e);
+    }
+}
+
+export function setPeakCells (currentNode: HTMLDivElement, classname: string, numbers: number[]) {
+    let posititons = []
+    numbers.forEach( (amplitude, index) => {
+
+        if (amplitude  <= 0 || amplitude > BINSIZE**2) 
+            return;  
+
+        let pos = ((10 - amplitude)*BINSIZE) + index as number;
+        posititons.push([amplitude, index], pos);
+        if (pos >= 0 && pos < 100) {
+            (currentNode.childNodes[pos] as HTMLSpanElement).dataset.on="1";
+        }
+
+        if (index == numbers.length - 1) {
+            console.log(numbers);
+            console.log(posititons)
+            console.log(currentNode.childNodes)
+        }
+
+    });
+
+}
+
+export function setBarCells (currentNode: HTMLDivElement,  numbers: number[]) {
+    let posititons = []
+    numbers.forEach( (amplitude, index) => {
+        let cells = [] as Array<HTMLSpanElement>;
+
+        if (amplitude  <= 0 || amplitude > BINSIZE**2) 
+            return;  
+
+        numbers.forEach( (r, c) => { 
+        //flip r 
+            // r = BINSIZE**2 -  r * BINSIZE;
+            // r = Math.floor( r/ BINSIZE) ;
+            r = BINSIZE - r;
+            while (r < BINSIZE) {
+                let pos = r * BINSIZE + c;
+                let binCell = currentNode.childNodes[pos] as HTMLSpanElement;
+                // binCell.dataset.on = '1';
+                cells.push(binCell);
+                r++;
+            }
+        });
+
+        cells.forEach( (b)=>{
+            let classname = b.className;
+            // reflow block
+            b.className = "";
+            void b.offsetWidth; 
+            b.className = classname;
+            // turn element state off 
+            b.dataset.on = '1';
+
+        });
+    });
+    
+}
 
 /* Plots bin data  */
 export class QuickPlot {
@@ -10,18 +79,7 @@ export class QuickPlot {
 
     constructor(wrapper :HTMLDivElement) {
         this.bin_log = wrapper;
-
-        
-        // load empty cells 
-        for(let n = 0; n < BINSIZE**2; n++) {
-            // console.log(n);
-            let e = document.createElement('span');
-            e.className = binlog_cell_cls;
-            // this.bin_log.dataset.row="0";
-            // this.bin_log.dataset.col="0";
-            this.bin_log.dataset.on="0";
-            this.bin_log.append(e);
-        }
+        fillUnweightedCell(wrapper, binlog_cell_cls);
     }
 
     // get plot 
@@ -61,4 +119,3 @@ export class QuickPlot {
     }
 
 }
-

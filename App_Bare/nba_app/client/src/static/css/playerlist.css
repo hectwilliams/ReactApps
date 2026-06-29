@@ -4,7 +4,8 @@
  
  */
  
- 
+ @import "variables.css"; 
+
  /* top level div */
 .top_level_list_container_container_cls {
     grid-row: 1 / span 100;
@@ -86,10 +87,10 @@
     height: 17vh;
     /* height: 100%; */
     /* border: 1px blue dotted; */
-     grid-row: 1 / span 30; 
+    grid-row: 1 / span 30; 
     grid-column: 2/ span 10;
-    /* background-size:cover; */
-    /* background-position: center; */
+    background-size:100%;
+    background-position: center;
     /* background-repeat: no-repeat;; */
     /* background-repeat: no-repeat; */
     /* background-image: url('../images/faces/img.png'); */
@@ -98,8 +99,33 @@
     z-index: 1; 
      margin: 0;
     padding:0;
+    border: 0.5px silver solid;
 }
 
+.img_cls:hover {
+    /* background-image: url('../images/faces/0_playerx.png'); */
+    /* background-image: url(); */
+    
+    /* grid-row: 1 / span 99;  */
+    /* grid-column: 2/ span 99; */
+
+    background-image: var(--bg-img, none);
+    
+    background-position:center;
+    background-repeat: no-repeat;
+    
+    /* z-index: 1;  */
+    overflow: hidden;  /* Keeps any unwanted overflow hidden */
+
+    width: 100%;
+    height: 100% ;
+    
+    margin: 0;
+    padding: 0;
+    
+    /* object-fit: cover; */
+
+}
 
 /* player data container */
 .playerDataContainer_cls
@@ -225,6 +251,7 @@
 }
 
 .player_container_plot_cls {
+    
     border: 1px dotted skyblue;
     width: 15vh;
     height: 9vh;
@@ -233,7 +260,26 @@
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
     column-gap: 6px;
-     margin: 0;
+    margin: 0;
     padding:0;
+
+    display: flex;
+    /* grid-template-rows: repeat(var(--BINSIZE), 1fr); */
+    /* grid-template-columns: repeat(var(--BINSIZE), 1fr); */
     
 }
+
+/* .player_container_plot_cls {
+
+    border: 1px dotted skyblue;
+    width: 15vh;
+    height: 9vh;
+    background-color: white;
+    flex-shrink: 0;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    column-gap: 6px;
+    margin: 0;
+    padding:0;
+    
+} */
