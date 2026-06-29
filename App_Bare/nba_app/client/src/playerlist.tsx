@@ -6,7 +6,8 @@ import {top_level_list_container_container_cls,
     playerChainContainer_cls,
     wrapperPlayerChainContainer, 
     playerDataContainer_cls, 
-    img_cls
+    img_cls,
+    player_containerwrapper_cls
 } from './static/css/playerlist.css';
 
 import type {ServerRecordInterface} from './handlers';
@@ -33,15 +34,23 @@ import { quickHash } from './algo';
 export const playerlist = document.createElement('div');
 playerlist.className = top_level_list_container_container_cls;
 
-// const imgPath = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/faces/img.png"
+
+
 const imgPath = "./client/src/static/images/faces/img.png";
+
+// const imgPath = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/faces/img.png"
 
 
 
  async function getPlayerDiv(record: SimplePlayerProfileInterface) {
 
+    let mainElementWrapper = document.createElement('div');
+    mainElementWrapper.className = player_containerwrapper_cls;
+
     let mainElement = document.createElement('div');
     mainElement.className = player_container_cls;
+
+    mainElementWrapper.append(mainElement)
 
     // add pic container 
     let picContainer = document.createElement('div');
@@ -118,7 +127,7 @@ const imgPath = "./client/src/static/images/faces/img.png";
 
     }
 
-    playerlist.append(mainElement);
+    playerlist.append(mainElementWrapper);
 
 }
 
