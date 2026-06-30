@@ -1,8 +1,8 @@
 {
     "services": {
-        "monitor" :{"port": 50214},
-        "nba": {"port": 50215},
-        "binny": {"port": 50216}
+        "monitor" :{"port": 50214, "address": "127.0.0.1"},
+        "nba": {"port": 50215, "address": "127.0.0.1"},
+        "binny": {"port": 50216, "address": "127.0.0.1"}
     }
 
 }

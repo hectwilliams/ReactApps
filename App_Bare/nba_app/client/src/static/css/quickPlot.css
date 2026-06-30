@@ -1,6 +1,57 @@
 @import "variables.css"; 
 
 
+.binlog_overlay__cls   {
+    grid-column: 1/ span 99;
+    grid-row: 1/ span 99;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: repeat(var(--BINSIZE), 1fr);
+    grid-template-columns: repeat(var(--BINSIZE), 1fr);
+    background-color: transparent
+}
+
+
+.test_cls[data-on="1"] {
+      height: 2px;
+      background-color: red ; 
+    z-index: 4;
+}
+
+
+.test_cls[data-on="0"] {
+      height: 2px;
+      border-radius: 50%;
+      background-color: green ; 
+    z-index: 4;
+}
+
+
+/* select cell 22 to 23 (single cell target  TODO */
+/* .test_cls:nth-child(n + 22):nth-child(23) { background-color: #3181ea  } */
+
+
+.binlog2_container_cls   {
+    width: 100%;
+    height: 100%;
+    grid-column: 1/ span 99;
+    grid-row: 1/ span 99;
+    /* grid required for 2d pts */
+    display: grid;
+    grid-template-rows: repeat(var(--BINSIZE), 1fr);
+    grid-template-columns: repeat(var(--BINSIZE), 1fr);
+}
+
+.binlog2_container_cls  > *  {
+
+    width: 1fr;
+    height: 1fr;
+    min-width: 0; /* Allows the item to shrink past its content size */
+    min-height: 0;
+    overflow: hidden;
+}
+
 .binlog_container_cls   {
     grid-column: 1/ span 99;
     grid-row: 1/ span 99;
@@ -9,13 +60,15 @@
     border: 1px red solid;
     padding: 0;
     margin:0 ;
-    
+    z-index: 2;
+        opacity: 0.3;
+
     /* grid required for 2d pts */
     display: grid;
     grid-template-rows: repeat(var(--BINSIZE), 1fr);
     grid-template-columns: repeat(var(--BINSIZE), 1fr);
-    /* background-color: skyblue */
 }
+
 .binlog_container_cls > *,
 .binlog_cls > * {
     width: 1fr;
@@ -29,14 +82,12 @@
 
 
 .binlog_cell_cls[data-on="0"] {
-
     /* animation: fadeIn 1s; */
-     background-color: white; 
+    background-color: white; 
 }
 
 
 .binlog_cell_cls[data-on="1"] {
-
     /* animation: fadeIn 1s; */
      background-color: red; 
 }
@@ -44,13 +95,12 @@
 .binlog_cell_cls {
     width:100%;
     height:100%;
-         background-color: white; 
-
+    background-color: white; 
 }
 
 @keyframes fadeIn {
-  from { background-color: red; }
-  to { background-color: lightcyan; }
+    from { background-color: red; }
+    to { background-color: lightcyan; }
 }
 
 /* .binlog_cell_cls[data-on="1"] { */
@@ -71,7 +121,6 @@
     width:100%;
     height: 100%;
     border-radius: 3px;
-
 }
 
 .dbclone2_cls {
@@ -102,7 +151,7 @@
     height: 100%;
     font-size: xx-small;
     background: linear-gradient(135deg, #1e8570, #978aa9, #678eb5);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .dbclone2_label_cls {
@@ -113,5 +162,5 @@
     height: 100%;
     font-size: xx-small;
     background: linear-gradient(135deg, #1e8570, #978aa9, #678eb5);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }

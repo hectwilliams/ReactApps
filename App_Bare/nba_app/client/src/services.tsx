@@ -1,30 +1,15 @@
-// import dashboard from './followers';
-import {start_button_cls} from './static/css/startButton.css'
-// import { writeLog } from './handlers';
-// import type { LogInterface } from './followers';
-import { setPowerSwitch ,statusCircleGrandParent} from './powerButton';
-// import { readyStatus, folio } from './selectraw';
-import { fetchPages } from './handlers';
-// import { json } from 'node:stream/consumers';
-// import { activePlayerList } from './main';
-// import { loadPlayerData } from './handlers';
-import { viewButton } from './handlers';
+import { PowerButton, activePowerButtons} from './powerButton';
 import {
     services_card_container_cls,
     services_cls, services_cls_header,
-    viewer_grid_item__cls,
-    services_power_cls
 } from './static/css/services.css';
 import { dashboard } from './dashboard';
-import { viewButtonnInst } from './viewButton';
+import {  activeViewButtons,  ViewButton} from './viewButton';
 
-interface ServiceResponse {
-    services: Array<string>
-}
 /*
     Generate a new paramterized card and add to cardBody 
 */
-async function loadServices () : Promise<Array<string>>  {
+async function reqServicesMonitor () : Promise<Array<string>>  {
     
     const path = 'http://127.0.0.1:50214/services';
     
@@ -57,8 +42,6 @@ function servicesSwitchClick(event: MouseEvent) {
         node.dataset.status = 'off';
     
     } 
-        
-        
 
 }
 
@@ -75,15 +58,22 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
         let cardName = document.createElement('span');
         cardName.innerHTML = `<p> ${serviceName} </p>`;
 
-        let clonePowerSwitch = statusCircleGrandParent.cloneNode(true) as HTMLSpanElement;
-        let cloneMoreViewSymbol = viewButtonnInst.moreViewSymbol.cloneNode(true) as HTMLSpanElement;
+        let newPowerButton = new PowerButton(serviceName);
+        activePowerButtons.push(newPowerButton);
+        let clonePowerSwitch = newPowerButton.get(); //= powerSwitchInst.switch.cloneNode(true) as HTMLSpanElement; // create copy of power switch
+
+        let newViewButton = new ViewButton(serviceName)
+        activeViewButtons.push(newViewButton);
+        let cloneMoreViewSymbol = newViewButton.get();
         
         cloneMoreViewSymbol.dataset.name = serviceName;
+
 
         if (serviceName == 'monitor') {
             
             clonePowerSwitch.dataset.status='on1';
-            cloneMoreViewSymbol.dataset.on="1";
+            cloneMoreViewSymbol.dataset.on="undef";
+
 
         } else {
             
@@ -92,43 +82,148 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
 
         }
 
-        setPowerSwitch(clonePowerSwitch); // copies of power switches 
-        viewButtonnInst.setEventMoreViewSymbol(cloneMoreViewSymbol); // copies of view symbols 
-    
         /* order matters */
         subContainer.append(cardName);
         subContainer.append(cloneMoreViewSymbol);
         subContainer.append(clonePowerSwitch);
 
         container.append(cardContainer);
+        
     });
 };
 
+class Services  {
 
-// const services
-const cardBody = document.createElement('div');
-cardBody.className = services_cls;
-// cardBody.dataset.ready='0';
-const cardHeader = document.createElement('div');
-cardHeader.className = services_cls_header;
+    header: HTMLDivElement;
+    body: HTMLDivElement;
+    root: HTMLDivElement;
 
-// block for rootDiv
-const rootDiv = document.getElementById('root');
-// while(rootDiv== null){}
-if (rootDiv) {
-    rootDiv.append(cardHeader);
-    rootDiv.append(cardBody);
+    constructor() {
+        this.body = document.createElement('div');
+        this.body.className = services_cls;
+        
+        this.header = document.createElement('div');
+        this.header.className = services_cls_header;
+        
+        this.root =  document.getElementById('root') as HTMLDivElement;
+        this.root.append(this.header);
+        this.root.append(this.body);
+
+        let headerIcon = document.createElement('span');
+        let headerName = document.createElement('span');
+        headerName.innerText = "Services";
+        
+        this.header.append(headerIcon);
+        this.header.append(headerName);
+
+        try {
+                
+            reqServicesMonitor() // first request waits ( asynchronously )
+            .then( (data) => {
+                loadServicesDom(data, this.body);
+
+            })
+            .catch(()=>{
+
+            })
+
+        } catch(err) {
+
+        }
+    }
+
+    async start(name: string) {
+
+    //     if (!address) {
+    //         address = "127.0.0.1"; // loop back
+    //     }
+    //     const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
+
+    // try {
+    //     const response = await fetch(path);
+    //     if (!response.ok) {
+    //         throw new Error("Unable to request service");
+    //     }
+    //     console.log(response.json);
+    // }catch(err) {
+    //     console.log(err);
+    // }
+
+        const path = `http://127.0.0.1:50214/power`;
+        const method = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                msg: `Turn on ${name} server`,
+                name: name,
+                enable: "1"
+            } 
+        )};
+
+        try {
+
+            const response = await fetch(path, method);
+            
+            if (!response.ok) {
+                throw new Error("HTTP Error!");
+            }
+            
+            const data = await response.json();
+            return true;
+
+
+        } catch {
+
+            return false;
+
+        }
+
+    }
+    
+    async shutdown(name: string): Promise<boolean> { 
+          
+
+        const path = `http://127.0.0.1:50214/power`;
+        
+        const method = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                msg: `Turn off ${name} server`,
+                name: name,
+                enable: "0"
+            } 
+        )};
+        
+        try {
+
+            const response = await fetch(path, method);
+
+            if (!response.ok) {
+                throw new Error("HTTP Error!");
+            }
+
+            const data = await response.json();
+
+            return true;
+
+
+        } catch {
+
+            console.log('failed to shutdown')
+            
+            return false;
+
+        }
+
+    }
+
 }
 
-const response = await loadServices()
-loadServicesDom(response, cardBody);
-
-// header 
-const headerIcon = document.createElement('span');
-const headerName = document.createElement('span');
-headerName.innerText = "Services"
-// const headerMore = document.createElement('span'); // TBD
-
-cardHeader.append(headerIcon);
-cardHeader.append(headerName);
-// cardBody.dataset.ready='1';
+export const servicesInstr = new Services();

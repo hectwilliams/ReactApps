@@ -1,12 +1,9 @@
 
 import type { SimplePlayerProfileInterface } from './player';
-// import  dashboard from './followers';
-import { PlayerCard } from './player';
-// import { activePlayerList } from './main';
 import { dashboard } from './dashboard';
 import { bookletInst } from "./pageShifter";
-// export function loadPlayerData(list:  Array<SimplePlayerProfileInterface>) {
 import { playerlist, processData } from "./playerlist";
+import { storeInst } from './store';
 
 //     list.forEach((record)=>{
 //            // // set Profile 
@@ -54,24 +51,25 @@ import { playerlist, processData } from "./playerlist";
 
 // }
 
+
+
+
 export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, datasetName: string) : HTMLElement | undefined {
     // let returnNode = undefined;
     
     let arr = Array.from(parentNode.childNodes.entries());
-  
-
     let returnNode = (parentNode.childNodes.values().find((some_node)=>{
-            if( some_node instanceof HTMLElement) {
-                    // console.log(some_node);
-                if ( datasetKey in some_node.dataset) {
-                        // console.log(datasetKey);
+        if( some_node instanceof HTMLElement) {
+                // console.log(some_node);
+            if ( datasetKey in some_node.dataset) {
+                    // console.log(datasetKey);
 
-                    if (some_node.dataset.name == datasetName) {
-                        return true;
-                    }
+                if (some_node.dataset.name == datasetName) {
+                    return true;
                 }
             }
-        })) as HTMLElement; // find returns a HTML ELEMENT
+        }
+    })) as HTMLElement; // find returns a HTML ELEMENT
     return returnNode;
 }
 
@@ -91,18 +89,20 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
     }
     
     const params = new URLSearchParams({page: `${page}`});
-
-    const path = `${ window.location.origin}/${params}`;
-
+    
+    const path = `${window.location.origin}/${params}`;
+    // const path = `${window.location.hostname}:50215/${params}`;
+    console.log(path);
     try {
         const response = await fetch( path );
-            // method: "GET", 
-            // headers: {"Content-Type": "application/json"}     ,
-            // body: JSON.stringify({id: page })
+        // method: "GET", 
+        // headers: {"Content-Type": "application/json"}     ,
+        // body: JSON.stringify({id: page })
         
-            if (!response.ok) {
-                throw new Error("HTTP error! ");
-            }
+        if (!response.ok) {
+            throw new Error("HTTP error! ");
+        }
+            console.log("retuned", path);
             const data : ServerRecordInterface = await response.json();
             return data;
         } catch {
@@ -110,66 +110,138 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
         }
 }
 
-export async function updateLog(data: Array<string> ) : Promise<Boolean>{
-
-    const path = `${window.location.origin}/log`;
-    const method = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            // 'Authorization': '' TBD
-        },
-        body: JSON.stringify(data)
-    };
+export async function fetchPagesHelper( name: string, page?: number) : Promise<boolean>{
 
     try {
-        const response = await fetch(path, method);
-        if (!response.ok) {
-            throw new Error("Log Put Failed");
+        
+        switch(name) {
+            
+            case "monitor":
+                
+                throw new Error("do nothing, monitor metrics not available yet");
+                
+            case "nba": 
+                
+                let data = await fetchPages(page);
+
+                // one way functioon test (ensure new data loaded to website )
+
+                // clear 
+                
+                // set hash 
+                
+                if (!data) 
+                    return false;
+                
+                processData(data) // loadiing playerlist variable 
+                
+                .then( () =>{
+
+                    // dashboard.replaceChildren();
+
+                    // players list in memory; load to dashboard 
+                    dashboard.prepend(playerlist);
+
+                    // csave succesful page
+                    storeInst.load(name, data);
+
+                    // add booklet 
+                    bookletInst.load();
+
+                    // save name 
+                     storeInst.service = name;
+                     
+                    // 
+                    bookletInst.enable();
+
+                }).catch((err)=>{
+
+                    console.log(err, "Process data failed ");
+
+                })
+
+                // non empty list rcvd from server
+
+                return true;
+            
+            case "binny":
+
+                console.log(name);
+
+                return false; 
+
+            default:
+
+                return false; 
         }
-        return true; 
-    }catch {
-        return false;;
+        
+    } catch(err) {
+
+        return false
+
     }
 }
 
-export async function fetchBinny(): Promise<Array<Number> | undefined> {
-    
-    const portBinny = 50216;
-    const path = `http://127.0.0.1:${portBinny}/binny`; // Binny server :) 
+// export async function updateLog(data: Array<string> ) : Promise<Boolean>{
 
-    try {
-        const response = await fetch(path);
-        if (!response.ok) {
-            throw new Error("Cannot reach Binny");
-        }
-        const data  = await response.json() as Array<Number>;
-        return data;
-    }catch {
-        return undefined;
-    }
+//     const path = `${window.location.origin}/log`;
+//     const method = {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             // 'Authorization': '' TBD
+//         },
+//         body: JSON.stringify(data)
+//     };
+
+//     try {
+//         const response = await fetch(path, method);
+//         if (!response.ok) {
+//             throw new Error("Log Put Failed");
+//         }
+//         return true; 
+//     }catch {
+//         return false;;
+//     }
+// }
+
+// export async function fetchBinny(): Promise<Array<Number> | undefined> {
+    
+//     const portBinny = 50216;
+//     const path = `http://127.0.0.1:${portBinny}/binny`; // Binny server :) 
+
+//     try {
+//         const response = await fetch(path);
+//         if (!response.ok) {
+//             throw new Error("Cannot reach Binny");
+//         }
+//         const data  = await response.json() as Array<Number>;
+//         return data;
+//     }catch {
+//         return undefined;
+//     }
    
   
-}
+// }
 
-export async function enableService(address:string, port: number) {
-    if (!address) {
-        address = "127.0.0.1"; // loop back
-    }
-    const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
+// export async function enableService(address:string, port: number) {
+//     if (!address) {
+//         address = "127.0.0.1"; // loop back
+//     }
+//     const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
 
-    try {
-        const response = await fetch(path);
-        if (!response.ok) {
-            throw new Error("Unable to request service");
-        }
-        console.log(response.json);
-    }catch(err) {
-        console.log(err);
-    }
-}
+//     try {
+//         const response = await fetch(path);
+//         if (!response.ok) {
+//             throw new Error("Unable to request service");
+//         }
+//         console.log(response.json);
+//     }catch(err) {
+//         console.log(err);
+//     }
+// }
 
-export function viewButton(node: HTMLSpanElement) {
+ function viewButton(node: HTMLSpanElement) {
     let rows = [2, 5, 9] as Array<number>;
     rows.forEach((r, index)=>{
         let v = rows[3 - 1 - index];
@@ -196,56 +268,3 @@ const globalViewVlick = (node: HTMLSpanElement) => {
         return ref;
     }
 }
-
-/* common handler for viewing of all services  */
-export const viewClick = (  node: HTMLSpanElement ) => {
-
-    // console.log(n);
-    let globalFunc = globalViewVlick(node);
-
-    let cacheNode = document.createElement('span');
-    
-        return ( event:MouseEvent )=> {
-
-            let node = event.currentTarget as HTMLSpanElement;
-            
-            // prevent debounce and loops 
-            if (cacheNode === node) {
-                console.log('repeat click operation');
-                return;
-            } else {
-                cacheNode = document.createElement('span'); // this resets state 
-            }
-            
-            let parentNode = node.parentElement as HTMLDivElement;
-            let targetParent = parentNode.childNodes[0] as HTMLSpanElement;
-            let target = targetParent.childNodes[0] as HTMLParagraphElement; 
-            let name = target.innerText;
-            
-            // dashboard.replaceChildren();
-            
-            
-
-            console.log(dashboard);
-            // reloadBooklet(dashboard);
-            
-            // update node catch 
-            cacheNode = node; 
-            
-            // let len = dashboard.childElementCount as number;
-            // let dumb = document.createElement('span');
-            // dumb.style.width = "0";
-            // dumb.style.height = "0";
-            // dashboard.append(dumb);
-            // void 
-            // console.log(dashboard)
-            // let c = booklet.className;
-            // void booklet.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
-            // booklet.className = c;
-            // reflow 
-            // das
-        }
-
-    }
-
-    

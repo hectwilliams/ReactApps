@@ -7,17 +7,21 @@ import {
     page_number_cls
 } from './static/css/pageShifter.css';
 
-import { viewButtonnInst } from './viewButton';
-
 import { dashboard } from "./dashboard";
 
-export const addBookletToDashboard  = async (booklet:HTMLDivElement) => {
-    const refBooklet = booklet;
-    return (dashboard: HTMLDivElement) => {
-        // TODO - check if element exist in amongst dashboard children 
-        dashboard.append(refBooklet);
-    } 
-}
+import { storeInst } from './store';
+
+import type { StoreDictionary } from './store';
+import type { ServerRecordInterface,  } from "./handlers";
+import  { fetchPagesHelper } from "./handlers";
+
+// export const addBookletToDashboard  = async (booklet:HTMLDivElement) => {
+//     const refBooklet = booklet;
+//     return (dashboard: HTMLDivElement) => {
+//         // TODO - check if element exist in amongst dashboard children 
+//         dashboard.append(refBooklet);
+//     } 
+// }
 
 /*  Booklet on bottom right corner   */
 
@@ -30,6 +34,7 @@ class Booklet {
     right_arrow: HTMLDivElement;
     prevPage: number;
     pages: number;
+    exists: boolean;
 
     constructor() {
 
@@ -38,6 +43,8 @@ class Booklet {
        this.arrows = document.createElement('div');
        this.left_arrow = document.createElement('div');
        this.right_arrow = document.createElement('div');
+
+   
 
         this.arrows.className = arrows_cls;
         this.pageNumbersMsg.className = page_number_cls;
@@ -50,20 +57,102 @@ class Booklet {
         this.booklet.append(this.arrows);
         this.booklet.className = page_shifer_cls;
         this.booklet.dataset.on = "0";
-        
+        this.exists = false;
         this.prevPage = -1;
         this.pages = -1;
 
-        this.left_arrow.onclick = () => {
-            
-            // viewButtonnInst
-            console.log(' left');
 
+        // operates on current page  stored in store object 
+        this.left_arrow.onclick =  () => {
+            
+            if (this.pageNumbersMsg.innerText  == '...' ) {
+                return;
+            }
+
+            let name = storeInst.service;
+            
+            // if (name) {
+                /* nothing is deleted out the store, so if name exist then we are safe to continue */
+                let serverRecord = storeInst.get(name) as ServerRecordInterface;
+
+                if (!serverRecord) {
+                    console.log('record lost');
+                    return false;
+
+                }
+                
+                  let num = serverRecord.page;
+
+                    if (num - 1 <=0 ) {
+                        return;
+                    }
+
+                    try {
+
+                        let status =  fetchPagesHelper(name, num-1);
+                        
+                        if (!status) {
+                            
+                            throw new Error("");
+
+                        }
+
+                        console.log('arrow click  request, successful');
+
+                    } catch(err) {
+                        
+                        console.log('arrow click request, unsuccessful');
+
+                    }
+
+            // }
          }
 
-          this.right_arrow.onclick = () => {
+          this.right_arrow.onclick =  () => {
+        
+            if (this.pageNumbersMsg.innerText  == '...' ) {
+                return;
+            }
             
-            console.log('right');
+            let name = storeInst.service;
+            
+            let serverRecord = storeInst.get(name) as ServerRecordInterface;
+
+
+            if (!serverRecord) {
+                console.log('record lost');
+                return false;
+            }
+
+            // if (name) {
+
+            /* nothing is deleted out the store, so if name exist then we are safe to continue */
+
+            let num = serverRecord.page;
+
+            if (num +  1 >= parseInt(serverRecord.numPages) + 1 ) {
+                return;
+            }
+
+            try {
+
+                let status =  fetchPagesHelper(name, num + 1);
+
+                if (!status) {
+                    
+                    throw new Error("");
+
+                }
+
+                console.log('arrow click  request, successful');
+
+            } catch(err) {
+                
+                console.log('arrow click request, unsuccessful');
+
+            }
+
+            // }
 
          }
 
@@ -92,9 +181,26 @@ class Booklet {
         this.pageNumbersMsg.innerText = `${currPage} of ${pages}`;
 
     }
+
+    load() {
+        
+        /* adds booklet to dashboard */
+        
+        dashboard.append(this.booklet);
+
+    }
+
+    clear() {
+
+        this.pageNumbersMsg.innerText = "...";
+        this.exists = false;
+        this.prevPage = -1;
+        this.pages = -1;
+        this.booklet.dataset.on = "0";
+    }
+
 }
 
 export const bookletInst = new Booklet();
 
-dashboard.append(bookletInst.getBooklet())
 

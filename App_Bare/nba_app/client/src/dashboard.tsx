@@ -4,8 +4,15 @@ import {
     dashboard_name_cls,
     dashboard_views_cls,
     dashboard_more_cls,
-    dashboard_filter_cls
+    dashboard_filter_cls,
+    dashboard_trashbin_cls
 } from './static/css/dashboard.css';
+
+import { playerlist } from './playerlist';
+import { storeInst } from './store';
+import { bookletInst } from './pageShifter';
+import { activeViewButtons, ViewButton } from './viewButton';
+import { activePowerButtons, type PowerButton } from './powerButton';
 
 function  setHeaderFilerButton( node : HTMLSpanElement) {
     
@@ -56,11 +63,14 @@ headerMore.className=dashboard_more_cls;
 const headerFilter = document.createElement('span');
 headerFilter.className=dashboard_filter_cls;
 
+export const headerTrash = document.createElement('span') as HTMLSpanElement;
+headerTrash.className=dashboard_trashbin_cls;
+
 headerFilter.addEventListener( 'click', (event: MouseEvent) => {
     console.log(event);
 })
 
-// filter button slices 
+// filter button 'color' slices 
 for( let i = 0; i < 10*10; i++){ headerFilter.append( document.createElement('span') ); }
 setHeaderFilerButton(headerFilter);
 
@@ -70,9 +80,31 @@ headerMore.append(document.createElement('span'));
 headerMore.append(document.createElement('span'));
 
 // append to header 
-dashboardHeader.append(headerName, headerViews, headerMore, headerFilter);
+dashboardHeader.append(headerName, headerViews, headerMore, headerFilter, headerTrash);
 
 // append to root div 
 rootDiv.append(dashboardHeader);
 rootDiv.append(dashboard);
 
+// events 
+headerTrash.onclick = ()=>{
+
+    if (dashboard.childElementCount) {
+        
+        console.log('deleting')
+
+        storeInst.clear();
+        bookletInst.clear();
+        dashboard.replaceChildren();
+        playerlist.replaceChildren();
+
+        for (let i = 0; i < activeViewButtons.length; i++) {
+            (activeViewButtons[i] as ViewButton).clear();
+            (activePowerButtons[i] as PowerButton).clear();
+        }
+
+    } else {
+        console.log('nothing here')
+    }
+
+}

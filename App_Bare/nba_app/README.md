@@ -1,1 +1,2 @@
-![](./snapshots/image0.png)
+Current state of app
+![](./snapshots/image2.png)
