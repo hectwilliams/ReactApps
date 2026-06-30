@@ -43,6 +43,11 @@ fastify.get('/binny', (request, reply) =>{
     .send(bins)
 });
 
+fastify.get('/next', (request, respond)=>{
+    console.log('chicken');
+    respond.send(200);
+})
+
 // run server 
 try {
     let method = {port: 50216, host : '::' } // ':: bind to listen on both IP4 and IP6 loopback '

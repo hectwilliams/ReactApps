@@ -4,14 +4,13 @@ import {exec} from 'child_process';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
-import { fileURLToPath } from 'url';
 import type {FastifyRequest, FastifyReply } from 'fastify';
-import {stat} from 'node:fs/promises';
 import fs from 'fs';
 import {parse} from 'csv-parse';
 import { createWriteStream, mkdir } from 'node:fs';
+// import cors from '@fastify/cors';
 
-interface Monitor {
+interface MonitorInterface {
     services: Service;
 }
 
@@ -25,74 +24,160 @@ interface Ports {
     port: number,   
 }
 
+async function loadServices() :Promise<MonitorInterface> {
+    
+    let  asyncRawJson = await fs.promises.readFile('./server/config.json', 'utf-8');
+    let json =  JSON.parse(asyncRawJson) as MonitorInterface;
+    return json;
+}
+
 const fastify = Fastify({logger: true});
 const workDir = process.cwd();
-let json : Monitor;
-const activeServer =[] as Array<string> ;
+const processList = {pid:{}} as Record< string, Record<string, number>>;
+const floatingProcess = []
+
+// load json to memory 
+const json = await loadServices();  // async on all ops used below
+
 // Register static file plugin 
 fastify.register(fastifyStatic, {
     // root directory to serve from
     root:  path.join( workDir , 'client' , 'public' ), 
     // find entry in directory tree (i.e. root)
-    prefix: '/' 
+    prefix: '/' ,
 });
 
-fastify.get('/', (req, res)=>{
-    // start child process 
-    const child = exec("node -v", (error, stdout, stderr) =>{
-        console.log(json)
-        if ( !json) {
-            return res.code(404);
-        } else {
-            console.log('STDOUT', stdout);
-            console.log(child.pid);
-            // get services (exclude monitor)
-            let json_tmp = Object.values(json) as Array<string>;
-            let out = json_tmp.map((obj)=>{
-                return Object.keys(obj);
-            })[0]; // notice indexed 
-            out = out?.filter((x)=> {
-                if (x != 'monitor') {
-                    activeServer.push(x);
-                    return true;
-                }
-                return false; 
-            });
-            // output raw html            
-            res
-            .type('text/html')
-            .send(`<html> <head><head><body> ${JSON.stringify(out)} </body></head></head></html>`);
-        }
-    });
+// fastify.register(cors, {
+//     origin: "http://127.0.0.1:50214", 
+//     methods: ['GET', 'POST']
+// });
+
+fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
+     let obj = request.params  as any;
+
+    if (obj === Object.prototype /*strict compare; no coercion*/) {
+        obj = Object.assign({}, obj); // coonvert null prototype to normal object 
+    }
+    reply.redirect(`http://127.0.0.1:50215/page=${(obj.pg as string)}`, 301) ; // greeedy 
+});
     
+/* returns available services */
+fastify.get('/', (req, res)=>{
+    res
+    .type('text/html')
+    .sendFile('index.html')
 });
 
+fastify.get('/a', (req, res)=>{
+
+});
 fastify.get('/services', (req, res)=>{
+
     res.send(json);
 });
 
-fastify.get('/turn_on_nba', (req, res)=>{
-
-    // start child process 
-    const child = exec("node -v", (error, stdout, stderr) =>{
-        if (error) {
-            return res.code(404);
-        } else {
-            console.log(stdout);
-            res.sendFile('./index/player.html');
-        }
-    });
-    console.log(child.pid);
+fastify.get('/nbainfo',  (request, response) => {
+    // response.send(json['services']['nba'])
 });
+
+fastify.get('/binnyinfo',  (request, response) => {
+    // response.send(json['services']['binny'])
+});
+
+fastify.get('/nbaoff',  (request, response) => {
+
+});
+
+fastify.post('/power',  async (request, response) => {
+    
+    let name = (request.body as Record<string, string>)['name']; 
+    let enable = (request.body as Record<string, string>)['enable'];
+    let filepath;
+    
+    try {
+        if (enable === "1") {
+            // turn on server 
+
+            if ((name as string) in  (processList['pid'] as Record<string, number>) ) {
+                // server already running
+                return; 
+            }
+            
+            filepath = path.join(process.cwd(), './server/run_servers.sh');
+            
+            exec(` ${filepath} ${name}`, (error, stdout, stderr) =>{ 
+    
+                if(error) {
+                    throw new Error(`${error}`);
+                } else {
+                    let effPID = parseInt(stdout.trim());
+                    floatingProcess.push(effPID); // TODO handle faults / reset and still persists -- needs to be deleted 
+                    (processList['pid'] as Record<string, number>)[(name as string)]= effPID as number;
+                    response.status(200); 
+                }
+            });
+            
+        } else if (enable === "0") {
+            // shutdown server 
+                        
+            let kill_pid :number; 
+
+            filepath = path.join(process.cwd(), './server/stop_servers.sh');
+            
+            if ( (name as string) in (processList['pid']  as Record<string, number>) ) {
+                // kill server already running
+                
+                
+                kill_pid = (processList['pid'] as Record<string, number>)[name as string] as number; 
+
+                exec(` ${filepath} ${name}  ${kill_pid}`, (error, stdout, stderr) =>{ 
+                
+                    if(error) {
+                        throw new Error(`${error}`);
+                    } else {
+                        // delete server process successful 
+                        // console.log(stdout)
+                        let obj = processList['pid'] as Record<string, number>;
+                        delete obj.nba;
+                        response.status(200); 
+                    }
+                });
+            }
+        }
+
+    } catch (err) {
+        response.send({message: 'host failure'}).status(404);
+    }
+
+});
+
+
+// fastify.post('/binnyon',  async (request, response) => {
+//     try {
+//         await fs.promises.access('./server2.ts');
+//         const child = exec("node server.ts", (error, stdout, stderr) =>{ 
+            
+//             if(error) {
+//                 throw new Error(`${error}`);
+//             } else {
+//                 response.send({pid: child.pid}); 
+//                 let num = child.pid as number; 
+//                 (processList['pid'] as Record<string, number>)['nba']= num;
+//             }
+//         });
+
+//     } catch (err) {
+//         response.send({message: 'host failure'}).status(404);
+//     }
+
+// });
+
+
 
 try {
     // read json 
-    const raw = await fs.promises.readFile('./config.json', 'utf-8');
-    json =  JSON.parse(raw) as Monitor;
     const method = {port: json['services']['monitor']['port'] , host : '::' } // ':: bind to listen on both IP4 and IP6 loopback '
-    if (method)
-        await fastify.listen(method);
-    
+    await fastify.listen(method);
 } catch(err) {
     fastify.log.error(err);
     process.exit();

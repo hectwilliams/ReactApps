@@ -1,19 +1,21 @@
 import { bookletInst } from "./pageShifter";
 import { storeInst } from './store';
+import { servicesInstr } from "./services";
 
 export class PowerButton {
     
     switch: HTMLSpanElement;
     configured: boolean;
     name: string; 
+    model: HTMLDivElement;
 
     constructor(name: string) {
         this.switch = document.createElement('span');
         this.configured = false ;        
         this.switch.append(document.createElement('span'));
-        
         this.configure.bind(this)(); // bind floating/lost object to method
         this.name = name;
+        this.model = document.createElement('div');
     }
 
      configure() : void {
@@ -41,7 +43,7 @@ export class PowerButton {
 
             let v : HTMLElement;
 
-            // console.log(powerStatus, viewStatus);
+            console.log(powerStatus, viewStatus);
             
             if (viewStatus === "undef" && name == 'monitor') {
 
@@ -59,31 +61,50 @@ export class PowerButton {
             if (powerStatus === 'on') {
                 
                 // turn off server 
-                nodeTest.dataset.status = "off";
+                servicesInstr.shutdown(name)
+                .then(() => {
+
+                    nodeTest.dataset.status = "off";
+                    
+                    // turn off view 
+                    view.dataset.on = "0";
+    
+    
+                    if (storeInst.service == name) {
+                        // new view request
+                        bookletInst.disable();
+                    }
                 
-                // turn off view 
-                view.dataset.on = "0";
+                })
 
+                .catch(()=>{
 
-                if (storeInst.service == name) {
-                    // new view request
-                    bookletInst.disable();
-                }
-
+                })
+                
+                
 
             } else if (powerStatus == "off") {
                 // view.dataset.on = "0";
 
                 // turn on switch 
-                nodeTest.dataset.status = "on";
+                servicesInstr.start(name)
+                 .then(() => {
+                     
+                    nodeTest.dataset.status = "on";
+                     
+                     // turn on view
+                     view.dataset.on = "1";
+                     if (storeInst.service == name) {
+                         // new view request
+                         bookletInst.enable();
+                     }
 
-                // turn on view
-                view.dataset.on = "1";
+                })
                 
-                   if (storeInst.service == name) {
-                    // new view request
-                    bookletInst.enable();
-                }
+                .catch(()=>{
+                    
+                })
+                
 
             }
 

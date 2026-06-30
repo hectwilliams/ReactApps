@@ -6,11 +6,6 @@ import {
 import { dashboard } from './dashboard';
 import {  activeViewButtons,  ViewButton} from './viewButton';
 
-
-interface ServiceResponse {
-    services: Array<string>
-}
-
 /*
     Generate a new paramterized card and add to cardBody 
 */
@@ -123,9 +118,8 @@ class Services  {
 
         try {
                 
-            reqServicesMonitor()
+            reqServicesMonitor() // first request waits ( asynchronously )
             .then( (data) => {
-
                 loadServicesDom(data, this.body);
 
             })
@@ -138,6 +132,98 @@ class Services  {
         }
     }
 
+    async start(name: string) {
+
+    //     if (!address) {
+    //         address = "127.0.0.1"; // loop back
+    //     }
+    //     const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
+
+    // try {
+    //     const response = await fetch(path);
+    //     if (!response.ok) {
+    //         throw new Error("Unable to request service");
+    //     }
+    //     console.log(response.json);
+    // }catch(err) {
+    //     console.log(err);
+    // }
+
+        const path = `http://127.0.0.1:50214/power`;
+        const method = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                msg: `Turn on ${name} server`,
+                name: name,
+                enable: "1"
+            } 
+        )};
+
+        try {
+
+            const response = await fetch(path, method);
+            
+            if (!response.ok) {
+                throw new Error("HTTP Error!");
+            }
+            
+            const data = await response.json();
+            return true;
+
+
+        } catch {
+
+            return false;
+
+        }
+
+    }
+    
+    async shutdown(name: string): Promise<boolean> { 
+          
+
+        const path = `http://127.0.0.1:50214/power`;
+        
+        const method = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                msg: `Turn off ${name} server`,
+                name: name,
+                enable: "0"
+            } 
+        )};
+        
+        try {
+
+            const response = await fetch(path, method);
+
+            if (!response.ok) {
+                throw new Error("HTTP Error!");
+            }
+
+            const data = await response.json();
+
+            return true;
+
+
+        } catch {
+
+            console.log('failed to shutdown')
+            
+            return false;
+
+        }
+
+    }
+
 }
 
-const servicesInstr = new Services();
+export const servicesInstr = new Services();

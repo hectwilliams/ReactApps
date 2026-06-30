@@ -18,7 +18,7 @@ pid_2=""
 
 echo -e "send request to binny\n"
 
-# GET 
+# GET  SERVICES
 command=" curl  -o temp.txt ${URL} &"
 
 eval $command 

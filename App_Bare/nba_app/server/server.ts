@@ -1,15 +1,40 @@
-// const Fastify = require('fastify');
 import process from 'process';
 import {exec} from 'child_process';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
-import { fileURLToPath } from 'url';
 import type {FastifyRequest, FastifyReply } from 'fastify';
-import {stat} from 'node:fs/promises';
 import fs from 'fs';
 import {parse} from 'csv-parse';
 import { createWriteStream, mkdir } from 'node:fs';
+// import cors from '@fastify/cors';
+
+interface MonitorInterface {
+    services: Service;
+}
+
+interface Service {
+    monitor: Ports,
+    binny: Ports,
+    nba: Ports,
+}
+
+interface Ports {
+    port: number,   
+}
+interface PlayerFields {
+    name: string;
+    img: string;
+    plots?: Array<Array<number>>
+
+};
+
+async function loadServices() :Promise<MonitorInterface> {
+    
+    let  asyncRawJson = await fs.promises.readFile('./server/config.json', 'utf-8');
+    let json =  JSON.parse(asyncRawJson) as MonitorInterface;
+    return json;
+}
 
 function setDummyPlots(plots: Array<Array<number>>) {
     for (let i = 0;i < 5; i++) {
@@ -23,7 +48,6 @@ function setDummyPlots(plots: Array<Array<number>>) {
 const rrand = ()=>{
 
     return Math.floor(Math.random() * 10) + 1; // 1 to 100 
-
 } 
 
 async function createlogDir() {             
@@ -42,12 +66,6 @@ async function createlogDir() {
 
 // import 
 
-interface PlayerFields {
-    name: string;
-    img: string;
-    plots?: Array<Array<number>>
-
-};
 const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
 const LOCALHOST = '127.0.0.1'; // safe 
 const workDir = process.cwd();
@@ -65,6 +83,9 @@ var csvReadStream = fs.createReadStream(filePath) as fs.ReadStream;
 
 const plots : Array<Array<number>> = [];
 
+// load json to memory 
+const json = await loadServices();  // async on all ops used below
+
 setDummyPlots(plots);
 
 // Register static file plugin 
@@ -74,6 +95,13 @@ fastify.register(fastifyStatic, {
     // find entry in directory tree (i.e. root)
     prefix: '/' 
 });
+
+
+// // allow origin from other port 
+// fastify.register(cors, {
+//     origin: "http://127.0.0.1:50214", 
+//     methods: ['GET', 'POST']
+// });
 
 // async function handler(request: FastifyRequest , reply:FastifyReply) {}
 
@@ -96,19 +124,16 @@ exec(`wc -l ${filePath}`, (err, stdout, stderr) => {
     }
 });
 
-// send html/bundle 
-fastify.get('/', (request:FastifyRequest, reply:FastifyReply) => {
-    // console.log(request.headers);
-    return reply
-        .type( 'text/html' )
-        .sendFile('index.html');
-});
 
 /* Get player list page  */
 fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
+
+
     // console.log(request.body);
     // console.log(request.params)
     // const {value} = request.params;
+
+    // return reply.send({msg: 10001}).status(200);
 
     // clear current stream buffers
     csvReadStream.destroy();
@@ -179,6 +204,7 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 
         // truncate if player list less than number-players-per-list
         players.length = players_index;
+        console.log(players)
 
         reply
         .type('application/json')
@@ -215,34 +241,11 @@ fastify.put('/log', (request, reply)=>{
         });
     });
 
-
-    try {
-        // request.body.array.forEach(element => {
-            
-        // });
-        // if (request.body){
-
-        //     console.log(JSON.parse());
-
-        //     // for(let i =1; i <= request.body.length; i++) {
-                
-        //     // }
-        // }
-
-
-        reply
-            .status(200);
-
-    }catch(err) {
-        reply
-            .status(404); // cannot access directories to append logs 
-    }
-    
 })
-// run server 
+
 try {
-    let method = {port: 50215, host : '::' } // ':: bind to listen on both IP4 and IP6 loopback '
-    await createlogDir();
+    // read json 
+    const method = {port: json['services']['nba']['port'] , host : '127.0.0.1' } // ':: bind to listen on both IP4 and IP6 loopback '
     await fastify.listen(method);
 } catch(err) {
     fastify.log.error(err);

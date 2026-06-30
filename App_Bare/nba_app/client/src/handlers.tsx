@@ -89,18 +89,20 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
     }
     
     const params = new URLSearchParams({page: `${page}`});
-
-    const path = `${ window.location.origin}/${params}`;
-
+    
+    const path = `${window.location.origin}/${params}`;
+    // const path = `${window.location.hostname}:50215/${params}`;
+    console.log(path);
     try {
         const response = await fetch( path );
-            // method: "GET", 
-            // headers: {"Content-Type": "application/json"}     ,
-            // body: JSON.stringify({id: page })
+        // method: "GET", 
+        // headers: {"Content-Type": "application/json"}     ,
+        // body: JSON.stringify({id: page })
         
-            if (!response.ok) {
-                throw new Error("HTTP error! ");
-            }
+        if (!response.ok) {
+            throw new Error("HTTP error! ");
+        }
+            console.log("retuned", path);
             const data : ServerRecordInterface = await response.json();
             return data;
         } catch {
@@ -180,64 +182,64 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
     }
 }
 
-export async function updateLog(data: Array<string> ) : Promise<Boolean>{
+// export async function updateLog(data: Array<string> ) : Promise<Boolean>{
 
-    const path = `${window.location.origin}/log`;
-    const method = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            // 'Authorization': '' TBD
-        },
-        body: JSON.stringify(data)
-    };
+//     const path = `${window.location.origin}/log`;
+//     const method = {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             // 'Authorization': '' TBD
+//         },
+//         body: JSON.stringify(data)
+//     };
 
-    try {
-        const response = await fetch(path, method);
-        if (!response.ok) {
-            throw new Error("Log Put Failed");
-        }
-        return true; 
-    }catch {
-        return false;;
-    }
-}
+//     try {
+//         const response = await fetch(path, method);
+//         if (!response.ok) {
+//             throw new Error("Log Put Failed");
+//         }
+//         return true; 
+//     }catch {
+//         return false;;
+//     }
+// }
 
-export async function fetchBinny(): Promise<Array<Number> | undefined> {
+// export async function fetchBinny(): Promise<Array<Number> | undefined> {
     
-    const portBinny = 50216;
-    const path = `http://127.0.0.1:${portBinny}/binny`; // Binny server :) 
+//     const portBinny = 50216;
+//     const path = `http://127.0.0.1:${portBinny}/binny`; // Binny server :) 
 
-    try {
-        const response = await fetch(path);
-        if (!response.ok) {
-            throw new Error("Cannot reach Binny");
-        }
-        const data  = await response.json() as Array<Number>;
-        return data;
-    }catch {
-        return undefined;
-    }
+//     try {
+//         const response = await fetch(path);
+//         if (!response.ok) {
+//             throw new Error("Cannot reach Binny");
+//         }
+//         const data  = await response.json() as Array<Number>;
+//         return data;
+//     }catch {
+//         return undefined;
+//     }
    
   
-}
+// }
 
-export async function enableService(address:string, port: number) {
-    if (!address) {
-        address = "127.0.0.1"; // loop back
-    }
-    const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
+// export async function enableService(address:string, port: number) {
+//     if (!address) {
+//         address = "127.0.0.1"; // loop back
+//     }
+//     const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
 
-    try {
-        const response = await fetch(path);
-        if (!response.ok) {
-            throw new Error("Unable to request service");
-        }
-        console.log(response.json);
-    }catch(err) {
-        console.log(err);
-    }
-}
+//     try {
+//         const response = await fetch(path);
+//         if (!response.ok) {
+//             throw new Error("Unable to request service");
+//         }
+//         console.log(response.json);
+//     }catch(err) {
+//         console.log(err);
+//     }
+// }
 
  function viewButton(node: HTMLSpanElement) {
     let rows = [2, 5, 9] as Array<number>;
