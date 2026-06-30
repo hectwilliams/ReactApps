@@ -1,8 +1,10 @@
 # ReactApps
-Applications built using React (Javascript) and Flask(Python) and SQL (SQLAlchemy)
+Applications built using (React | Javascript | Typescript) --- (Flask | Fastify ) --- SQL (SQLAlchemy)
  
 ## Project Images/Videos 
 
+- NBA View
+![](./App_Bare/nba_app/snapshots/image2.png)
 - Sign in 
 ![](./App_SignIn/miscellaneous/site_state_000.png)
 ![](./App_SignIn/client/src/SignIn/snapshots/snapshot_000.png)

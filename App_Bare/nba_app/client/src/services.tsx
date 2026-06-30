@@ -216,8 +216,6 @@ class Services  {
 
         } catch {
 
-            console.log('failed to shutdown')
-            
             return false;
 
         }
