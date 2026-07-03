@@ -1,0 +1,66 @@
+
+
+.maindiv_log_cls {
+    width: 94%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+    flex-grow: 2;
+
+}
+
+
+.table_row_cls {
+    /* display: flex; */
+    background-color: #e3cfcf;
+    height: 4vh;
+    width: 50%;
+
+}
+
+.table_row_cls > td:nth-child(1) {
+    width: 10vh;
+}
+
+.table_row_cls > td:nth-child(2) {
+    width: 40vh;
+}
+
+
+.table_log_cls {
+  width: 95%;
+    height: 90%;
+    /* border: solid 2px pink; */
+    margin: 0;
+    padding: 0;
+}
+
+.log_header_cls1 {
+    border-color: 2px rgb(83, 184, 224) solid;
+
+}
+
+.log_header_cls2 {
+    border-color: 2px rgb(83, 184, 224) solid;
+
+}
+
+
+.log_message_cls {
+    font-weight: bold;
+    color:black;
+    background-color: white;
+}
+
+.log_message_label_cls {
+    font-weight: bolder;
+    width: 10vh;
+    height: 10vh;
+    color: whitesmoke
+
+}
+.tr_cls > th:nth-child(1) {
+    width: 4vh;
+}

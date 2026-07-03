@@ -4,6 +4,7 @@ import { dashboard } from './dashboard';
 import { bookletInst } from "./pageShifter";
 import { playerlist, processData } from "./playerlist";
 import { storeInst } from './store';
+import { logbookInst } from './logbook';
 
 //     list.forEach((record)=>{
 //            // // set Profile 
@@ -124,20 +125,12 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                 
                 let data = await fetchPages(page);
 
-                // one way functioon test (ensure new data loaded to website )
-
-                // clear 
-                
-                // set hash 
-                
                 if (!data) 
-                    return false;
+                    throw new Error("do nothing, monitor metrics not available yet");
                 
-                processData(data) // loadiing playerlist variable 
+                processData(data) // clears dashboard and loads  playerlist variable 
                 
                 .then( () =>{
-
-                    // dashboard.replaceChildren();
 
                     // players list in memory; load to dashboard 
                     dashboard.prepend(playerlist);
@@ -151,8 +144,11 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                     // save name 
                      storeInst.service = name;
                      
-                    // 
+                    //  resets pages selector 
                     bookletInst.enable();
+
+                    // add logbook to dom 
+                     logbookInst.addTodashoard();
 
                 }).catch((err)=>{
 
@@ -168,11 +164,11 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
 
                 console.log(name);
 
-                return false; 
+                throw new Error("do nothing, monitor metrics not available yet");
 
             default:
 
-                return false; 
+                throw new Error("do nothing, monitor metrics not available yet");
         }
         
     } catch(err) {

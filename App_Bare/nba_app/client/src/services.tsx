@@ -5,6 +5,8 @@ import {
 } from './static/css/services.css';
 import { dashboard } from './dashboard';
 import {  activeViewButtons,  ViewButton} from './viewButton';
+import { logbookInst } from './logbook';
+
 
 /*
     Generate a new paramterized card and add to cardBody 
@@ -87,6 +89,7 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
         subContainer.append(cloneMoreViewSymbol);
         subContainer.append(clonePowerSwitch);
 
+
         container.append(cardContainer);
         
     });
@@ -97,8 +100,9 @@ class Services  {
     header: HTMLDivElement;
     body: HTMLDivElement;
     root: HTMLDivElement;
-
-    constructor() {
+    ready: boolean;
+     constructor () {
+        this.ready  = false;
         this.body = document.createElement('div');
         this.body.className = services_cls;
         
@@ -122,6 +126,7 @@ class Services  {
             .then( (data) => {
                 loadServicesDom(data, this.body);
 
+
             })
             .catch(()=>{
 
@@ -130,6 +135,8 @@ class Services  {
         } catch(err) {
 
         }
+
+
     }
 
     async start(name: string) {
@@ -224,4 +231,7 @@ class Services  {
 
 }
 
+
+
 export const servicesInstr = new Services();
+

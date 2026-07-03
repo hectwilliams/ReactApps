@@ -1,6 +1,7 @@
 import { bookletInst } from "./pageShifter";
 import { storeInst } from './store';
 import { servicesInstr } from "./services";
+import { logbookInst } from './logbook';
 
 export class PowerButton {
     
@@ -68,7 +69,8 @@ export class PowerButton {
                     
                     // turn off view 
                     view.dataset.on = "0";
-    
+                    
+                    logbookInst.add(`Service ${name} shutdown`);
     
                     if (storeInst.service == name) {
                         // new view request
@@ -94,6 +96,9 @@ export class PowerButton {
                      
                      // turn on view
                      view.dataset.on = "1";
+
+                    logbookInst.add(`Service ${name} powered on`);
+
                      if (storeInst.service == name) {
                          // new view request
                          bookletInst.enable();

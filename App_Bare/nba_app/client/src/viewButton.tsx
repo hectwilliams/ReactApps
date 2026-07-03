@@ -1,5 +1,7 @@
 import {view_button_on} from './static/css/viewButton.css';
 import { fetchPagesHelper } from "./handlers";
+import { logbookInst } from './logbook';
+import { dashboard } from './dashboard';
 
 export function getServiceName(node: HTMLSpanElement) {
     if (!node) {
@@ -37,7 +39,7 @@ export class  ViewButton {
         rows.forEach((r, index)=>{
             let v = rows[3 - 1 - index];
             if (v) {
-                console.log(v);
+                // console.log(v);
                 for (let i = 0; i < v; i++) {
                     let pos = 10 * r + i; 
                     let ele = this.moreViewSymbol.children[pos] as HTMLSpanElement;
@@ -70,12 +72,18 @@ export class  ViewButton {
                     fetchPagesHelper(name)
                     .then( (resp) => {
 
-                        console.log('successful request: ', resp);
+                        console.log('successful request: ');
+                            
+                          logbookInst.add(`Requested ${name} successful}`);
 
+                           
+                            
                     })
                     .catch(()=>{
 
                         console.log('unsuccessful request');
+                        
+                        logbookInst.add(`Requested ${name} failed}`);
 
                     })
 
