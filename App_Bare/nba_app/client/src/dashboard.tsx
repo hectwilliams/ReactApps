@@ -5,7 +5,8 @@ import {
     dashboard_views_cls,
     dashboard_more_cls,
     dashboard_filter_cls,
-    dashboard_trashbin_cls
+    dashboard_trashbin_cls, 
+    dashboard_compositionbook_cls
 } from './static/css/dashboard.css';
 
 import { playerlist } from './playerlist';
@@ -13,6 +14,7 @@ import { storeInst } from './store';
 import { bookletInst } from './pageShifter';
 import { activeViewButtons, ViewButton } from './viewButton';
 import { activePowerButtons, type PowerButton } from './powerButton';
+import { logbookInst } from './logbook';
 
 function  setHeaderFilerButton( node : HTMLSpanElement) {
     
@@ -66,6 +68,23 @@ headerFilter.className=dashboard_filter_cls;
 export const headerTrash = document.createElement('span') as HTMLSpanElement;
 headerTrash.className=dashboard_trashbin_cls;
 
+export const headerComposition = document.createElement('span') as HTMLSpanElement;
+headerComposition.className=dashboard_compositionbook_cls;
+dashboard.append(logbookInst.get());
+
+headerComposition.onclick= (event: MouseEvent) => {
+    
+    if (logbookInst.isopen()) {
+        logbookInst.close();
+        headerComposition.dataset.on = "0";
+    } else {
+        logbookInst.open();
+        headerComposition.dataset.on = "1";
+
+    }
+}
+
+
 headerFilter.addEventListener( 'click', (event: MouseEvent) => {
     console.log(event);
 })
@@ -80,7 +99,7 @@ headerMore.append(document.createElement('span'));
 headerMore.append(document.createElement('span'));
 
 // append to header 
-dashboardHeader.append(headerName, headerViews, headerMore, headerFilter, headerTrash);
+dashboardHeader.append(headerName, headerViews, headerMore, headerFilter, headerTrash, headerComposition);
 
 // append to root div 
 rootDiv.append(dashboardHeader);
@@ -103,8 +122,34 @@ headerTrash.onclick = ()=>{
             (activePowerButtons[i] as PowerButton).clear();
         }
 
+        dashboard.append(logbookInst.get());
+
+        if (logbookInst.isopen()) {
+            logbookInst.open();
+        }
+
+        // logbookInst.close();
+
+
     } else {
         console.log('nothing here')
+    }
+
+}
+
+//composition log 
+dashboard.onclick = (event: MouseEvent) => {
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
+    const logRect = logbookInst.rect();
+
+    if (logbookInst.isopen()) {
+        
+        if (mouseX < logRect.left || mouseX > logRect.right || mouseY < logRect.top || mouseY > logRect.bottom ) {
+            logbookInst.close();
+            headerComposition.dataset.on = "0";
+        }
+        
     }
 
 }

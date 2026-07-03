@@ -5,6 +5,7 @@ import {
 } from './static/css/services.css';
 import { dashboard } from './dashboard';
 import {  activeViewButtons,  ViewButton} from './viewButton';
+import { logbookInst } from './logbook';
 
 /*
     Generate a new paramterized card and add to cardBody 
@@ -121,6 +122,7 @@ class Services  {
             reqServicesMonitor() // first request waits ( asynchronously )
             .then( (data) => {
                 loadServicesDom(data, this.body);
+
 
             })
             .catch(()=>{

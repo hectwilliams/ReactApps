@@ -50,10 +50,9 @@
   color: #1f2937;
   /* cursor: pointer; */
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  /* border: 1px solid #e5e7eb; */
   /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
 
-  border: 0.5px silver solid;
+  /* border: 0.5px silver solid; */
 
   /* border-top-left-radius: 10px;
   border-top-right-radius: 10px; */
@@ -192,8 +191,9 @@
     /* transform: rotate(180deg); */
     width: 100%;
     height: 100%;
-    background-color :cornflowerblue;
-    border-radius: px;
+    /* background-color: rgb(120, 112, 112); */
+    border-radius: 5px;
+    /* box-shadow: #ffffff; */
 
 }
 
@@ -205,4 +205,113 @@
 .dashboard_trashbin_cls:active {
     background-color: rgb(78, 59, 59);
     border-radius: 5px;
+}
+
+
+
+.dashboard_compositionbook_cls {
+    grid-row: 35/ span 55;
+    grid-column: 86/ span 2;
+    /* display:grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: (repeat(10, 1fr)); */
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../images/icons/compo.png");
+    background-size: 75%;
+    background-position: center; 
+    background-repeat: no-repeat;
+
+    /* transform: rotate(180deg); */
+    width: 100%;
+    height: 100%;
+    /* background-color: rgb(153, 142, 142); */
+    border-radius: 5px;
+}
+
+.dashboard_compositionbook_cls:hover {
+    background-color: gray;
+    border-radius: 5px;
+}
+
+.dashboard_compositionbook_cls:active {
+    background-color: rgb(143, 141, 141);
+    border-radius: 5px;
+}
+
+.dashboard_compositionbook_cls[data-on="1"]:after  {
+    content: "*";
+    width: 1px;
+    height: 1px;
+    /* background-color:  yellow; */
+    z-index: 4;
+    /* border:2px solid green; */
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    color: yellow;
+}
+
+.dashboard_compositionbook_cls[data-on="0"]:after  {
+    content: "";
+    width: 1px;
+    height: 1px;
+    z-index: 4;
+    border: 2px solid transparent;
+    left: 0;
+    top: 0;
+}
+
+
+/* table */
+
+.logbook_in_dashboad_cls {
+    grid-row: 55/ span 40;
+    grid-column: 40/ span 50;
+    width: 100%;
+    height: 100%;
+     border: 5px silver solid;
+     z-index: 21;
+    display: grid;
+    grid-template-columns: repeat(100, 1fr) ;
+    grid-template-rows: repeat(100, 1fr) ;
+    overflow-y: auto;
+    overflow-x:hidden;
+    scrollbar-width: thin; 
+    margin: 0;
+    padding: 0;
+      box-sizing: border-box; /* Includes padding & borders inside width/height calculations */
+      z-index:  3;
+}
+
+.logbook_in_dashboad_cls::-webkit-scrollbar {
+  width: 1px;  /* Thickness of the vertical scrollbar */
+  height: 1px; /* Thickness of the horizontal scrollbar */
+}
+
+
+.logbook_in_dashboad_cls[data-show="0"] {
+    visibility: collapse;
+}
+
+.logbook_in_dashboad_cls[data-show="1"] {
+    visibility: visible;
+}
+
+
+.logbook_in_dashboad_cls > span {
+    color: black;
+    z-index: 2;
+
+}
+
+.logbook_in_dashboad_cls > div {
+    grid-row: 3 / span 99;
+    grid-column: 3/ span 99;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    opacity: 0.3;
 }
