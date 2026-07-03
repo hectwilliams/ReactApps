@@ -73,14 +73,17 @@ export class  ViewButton {
                     .then( (resp) => {
 
                         console.log('successful request: ');
+                            
+                          logbookInst.add(`Requested ${name} successful}`);
 
-                  
                            
                             
                     })
                     .catch(()=>{
 
                         console.log('unsuccessful request');
+                        
+                        logbookInst.add(`Requested ${name} failed}`);
 
                     })
 

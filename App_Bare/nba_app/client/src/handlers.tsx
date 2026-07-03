@@ -126,7 +126,7 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                 let data = await fetchPages(page);
 
                 if (!data) 
-                    return false;
+                    throw new Error("do nothing, monitor metrics not available yet");
                 
                 processData(data) // clears dashboard and loads  playerlist variable 
                 
@@ -164,11 +164,11 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
 
                 console.log(name);
 
-                return false; 
+                throw new Error("do nothing, monitor metrics not available yet");
 
             default:
 
-                return false; 
+                throw new Error("do nothing, monitor metrics not available yet");
         }
         
     } catch(err) {

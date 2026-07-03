@@ -77,9 +77,12 @@ headerComposition.onclick= (event: MouseEvent) => {
     if (logbookInst.isopen()) {
         logbookInst.close();
         headerComposition.dataset.on = "0";
+        logbookInst.add(`Logger is hidden`);
+
     } else {
         logbookInst.open();
         headerComposition.dataset.on = "1";
+        logbookInst.add(`Logger is visible`);
 
     }
 }
@@ -129,6 +132,9 @@ headerTrash.onclick = ()=>{
         }
 
         // logbookInst.close();
+
+        logbookInst.add(`Trash clicked`);
+
 
 
     } else {
