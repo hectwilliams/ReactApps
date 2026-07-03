@@ -34,6 +34,8 @@ export class PowerButton {
 
             let nodeTest = event.currentTarget as HTMLSpanElement;
             
+            let parent = nodeTest.parentNode as HTMLDivElement;
+            
             let powerStatus = nodeTest.dataset.status as string;
             
             let view = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement);
@@ -61,10 +63,14 @@ export class PowerButton {
             
             if (powerStatus === 'on') {
                 
+                console.log(parent)
+                
+                parent.dataset.loading="1";
+
                 // turn off server 
                 servicesInstr.shutdown(name)
                 .then(() => {
-
+                    
                     nodeTest.dataset.status = "off";
                     
                     // turn off view 
@@ -77,16 +83,21 @@ export class PowerButton {
                         bookletInst.disable();
                     }
                 
+                    parent.dataset.loading="0";
                 })
 
                 .catch(()=>{
+                    
+                    parent.dataset.loading="0";
 
                 })
                 
                 
 
             } else if (powerStatus == "off") {
+                
                 // view.dataset.on = "0";
+                parent.dataset.loading="1";
 
                 // turn on switch 
                 servicesInstr.start(name)
@@ -104,10 +115,12 @@ export class PowerButton {
                          bookletInst.enable();
                      }
 
+                     parent.dataset.loading="0";
                 })
                 
                 .catch(()=>{
-                    
+                    parent.dataset.loading="0";
+
                 })
                 
 

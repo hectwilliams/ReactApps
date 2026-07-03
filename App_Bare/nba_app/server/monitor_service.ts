@@ -1,3 +1,5 @@
+
+
 // const Fastify = require('fastify');
 import process from 'process';
 import {exec} from 'child_process';
@@ -88,6 +90,7 @@ fastify.get('/nbaoff',  (request, response) => {
 
 });
 
+/* Enable webservers */
 fastify.post('/power',  async (request, response) => {
     
     let name = (request.body as Record<string, string>)['name']; 

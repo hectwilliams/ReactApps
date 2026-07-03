@@ -128,13 +128,6 @@ exec(`wc -l ${filePath}`, (err, stdout, stderr) => {
 /* Get player list page  */
 fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 
-
-    // console.log(request.body);
-    // console.log(request.params)
-    // const {value} = request.params;
-
-    // return reply.send({msg: 10001}).status(200);
-
     // clear current stream buffers
     csvReadStream.destroy();
 
@@ -161,8 +154,6 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
         // change to zero index
         pageNumberZeroIndex -= 1;
     }
-
-    console.log(players);
 
     const effectivePageNumber = Math.floor(numberPages)
 
@@ -220,28 +211,28 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 
 });
 
-/*  Append Log  */
-fastify.put('/log', (request, reply)=>{
+// /*  Append Log  */
+// fastify.put('/log', (request, reply)=>{
 
-    if(!request.body)
-        return;
+//     if(!request.body)
+//         return;
     
-    // check log files 
-    Object.values(request.body).forEach((logValues : Array<string>, index: number) =>{
-        if (logValues.length == 0)
-                return;
+//     // check log files 
+//     Object.values(request.body).forEach((logValues : Array<string>, index: number) =>{
+//         if (logValues.length == 0)
+//                 return;
 
-        let effIndex = index + 1; // 1-index
-        let path = `${LOGDIR}/dashboards`;
-        let date = (new Date).toISOString().replace(/[:.]/g, '').replace('T', '_'); // remove  colon and dot, replace T, truncate)   e.g. "2026-06-22T23:03:40.537Z"  --> e.g., "20260622_190000" <year><month><day><hour><min><second>
-        let logFilePath = path + '/' +'D' + date  + 'ID' + effIndex;
-        const logStream = createWriteStream(logFilePath, {flags: 'a', encoding: 'utf-8'});
-        logValues.forEach(lines=> {
-            logStream.write(lines + '\n');
-        });
-    });
+//         let effIndex = index + 1; // 1-index
+//         let path = `${LOGDIR}/dashboards`;
+//         let date = (new Date).toISOString().replace(/[:.]/g, '').replace('T', '_'); // remove  colon and dot, replace T, truncate)   e.g. "2026-06-22T23:03:40.537Z"  --> e.g., "20260622_190000" <year><month><day><hour><min><second>
+//         let logFilePath = path + '/' +'D' + date  + 'ID' + effIndex;
+//         const logStream = createWriteStream(logFilePath, {flags: 'a', encoding: 'utf-8'});
+//         logValues.forEach(lines=> {
+//             logStream.write(lines + '\n');
+//         });
+//     });
 
-})
+// })
 
 try {
     // read json 

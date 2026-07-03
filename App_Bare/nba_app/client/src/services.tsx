@@ -91,6 +91,7 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
 
 
         container.append(cardContainer);
+        console.log(cardContainer)
         
     });
 };

@@ -98,6 +98,7 @@
     align-items: center;
 }
 
+
 .services_card_container_cls > div {
     width:85%;
     height:65%;
@@ -115,6 +116,22 @@
     grid-template-columns: repeat(100, 1%);
     grid-template-rows: repeat(100, 1%);
 }
+
+
+@keyframes pulse {
+   0% { border-color: whitesmoke; }
+  50% { border-color: orange; }
+  100% { border-color: red; }
+}
+
+.services_card_container_cls > div[data-loading="1"] {
+  animation-duration: 4s;
+  animation-name: pulse;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in;
+}
+
+
 
 /* // service name container */
 .services_card_container_cls > div  > span:nth-child(1) {
