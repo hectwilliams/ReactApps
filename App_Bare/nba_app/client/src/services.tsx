@@ -125,8 +125,8 @@ class Services  {
                 
             reqServicesMonitor() // first request waits ( asynchronously )
             .then( (data) => {
+                
                 loadServicesDom(data, this.body);
-
 
             })
             .catch(()=>{
@@ -136,7 +136,6 @@ class Services  {
         } catch(err) {
 
         }
-
 
     }
 
@@ -182,7 +181,6 @@ class Services  {
             const data = await response.json();
             return true;
 
-
         } catch {
 
             return false;
@@ -220,7 +218,6 @@ class Services  {
             const data = await response.json();
 
             return true;
-
 
         } catch {
 

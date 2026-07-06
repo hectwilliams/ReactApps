@@ -4,11 +4,12 @@
 node="$HOME/.nvm/versions/node/v24.15.0/bin/node"
 
 # cd ..
-
 serverName=$1 
+pathf="$PWD/server/server.ts"
 
 if [[ "$1" == "nba" ]]; then 
-    node ./server/server.ts > tmp 2> tmpe &
+
+    node "./server/server.ts" > tmp 2> tmpe &
     eval_pid=$! # eval command's  process
     echo ${eval_pid} // print stdout 
 else

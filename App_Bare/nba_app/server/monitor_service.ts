@@ -106,16 +106,18 @@ fastify.post('/power',  async (request, response) => {
                 return; 
             }
             
-            filepath = path.join(process.cwd(), './server/run_servers.sh');
+            filepath = path.join(process.cwd(), `./server/run_servers.sh ${name}`);
             
-            exec(` ${filepath} ${name}`, (error, stdout, stderr) =>{ 
+            exec(`${filepath} ${name}`, (error, stdout, stderr) =>{ 
     
                 if(error) {
                     throw new Error(`${error}`);
                 } else {
                     let effPID = parseInt(stdout.trim());
+        
                     floatingProcess.push(effPID); // TODO handle faults / reset and still persists -- needs to be deleted 
                     (processList['pid'] as Record<string, number>)[(name as string)]= effPID as number;
+                    console.log(processList);
                     response.status(200); 
                 }
             });

@@ -7,7 +7,9 @@ import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
 import {parse} from 'csv-parse';
 import { createWriteStream, mkdir } from 'node:fs';
-// import cors from '@fastify/cors';
+import cors from '@fastify/cors';
+// import {DB_CONFIG} from '../database/index';
+import fastifyPostgres from '@fastify/postgres';
 
 interface MonitorInterface {
     services: Service;
@@ -63,7 +65,6 @@ async function createlogDir() {
         }
     }
 }
-
 // import 
 
 const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
@@ -86,6 +87,14 @@ const plots : Array<Array<number>> = [];
 // load json to memory 
 const json = await loadServices();  // async on all ops used below
 
+// db constants 
+const USER_DB = "htron";
+const PASSWORD_DB = "abcd";
+const HOST_DB = "localhost";
+const PORT_DB = 5432
+const DB_NAME = "sport_db";
+const DB_URL = `postgresql://${USER_DB}:${PASSWORD_DB}@${HOST_DB}:${PORT_DB}/${DB_NAME}`;  // 'postgres://postgres:password@localhost:5432/postgres'
+
 setDummyPlots(plots);
 
 // Register static file plugin 
@@ -97,13 +106,15 @@ fastify.register(fastifyStatic, {
 });
 
 
-// // allow origin from other port 
+// Register database connection 
+fastify.register( fastifyPostgres  , {connectionString: DB_URL} );
+
+// register cors 
 // fastify.register(cors, {
 //     origin: "http://127.0.0.1:50214", 
 //     methods: ['GET', 'POST']
 // });
 
-// async function handler(request: FastifyRequest , reply:FastifyReply) {}
 
 let numberCsvLines: number;
 let numberPages: number;
@@ -126,7 +137,20 @@ exec(`wc -l ${filePath}`, (err, stdout, stderr) => {
 
 
 /* Get player list page  */
-fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
+fastify.get('/page=:pg', async (request:FastifyRequest, reply: FastifyReply)=> {
+
+    try {
+
+        // connect to localhost's port 5432 (container port(i.e. 5432 mapped to localhost 5432)
+        const client = await fastify.pg.connect(); 
+        const {rows} = await client.query('SELECT * from nba.teams;');
+        console.log(rows);
+        client.release(); 
+    } catch(err) {
+        console.log(err);
+    }
+    
+    return reply.status(200);
 
     // clear current stream buffers
     csvReadStream.destroy();
@@ -173,7 +197,6 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 
     csvReadStream
     .pipe(
-
         parse ({ 
             // delimiter: ',',
             from_line: (startPos + 1),
@@ -185,10 +208,8 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
     .on('data', ( row )=>{
         if (row.Player == 'Player')
             return;
-
         players[players_index] = {name: row.Player, img: CATIMAGE, plots:plots } ;
         players_index++;
-
     })
 
     .on('end', ()=>{

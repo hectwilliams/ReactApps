@@ -1,12 +1,16 @@
 #!/bin/bash
 
-CONTAINER_ID=6d99d1505f72  # postgres container required 
-
+CONTAINER_ID=4d413de49115  # postgres container required 
+NAME=nba-pg
 #check docker exist  
 ret_length=$(docker ps | awk '{print $2}' | sed '1d' | grep "postgres" | wc -m | xargs ) # pipe to xargs removes white space 
 echo "$ret_length"
 
-if (( "$ret_length" > 0 )); then 
+# if [[ $1 == "new" ]]; then
+#     ret_length=""
+# fi 
+
+if (( ret_length > 0 )); then 
     echo "";
 else 
     # start container instance ( installs postgress to shell )
@@ -14,10 +18,12 @@ else
     # name - name of container 
     # e - environmental variable 
     # d - detach mode (sql is a background process)
-    docker run --name nba-pg  -e POSTGRES_PASSWORD=password -d postgres
+    # p - map container port to localhost port
+    docker run  -p 5432:5432 --name "${NAME}"  -e POSTGRES_PASSWORD=password -e DB_USER=htron -e DB_HOST=localhost  -e DB_NAME=sport_db -e DB_PASSWORD=abcd -d postgres
 fi
 
 # mkdir in postgres container (shell)
+
 
 # -p (make parents if needed)
 docker exec  "${CONTAINER_ID}" mkdir -p /root/work
@@ -29,6 +35,7 @@ docker cp ./pgfiles/createdb.sh "${CONTAINER_ID}":/root/work/createdb.sh
 docker cp ./pgfiles/copyteams.sh "${CONTAINER_ID}":/root/work/copyteams.sh
 docker cp ./pgfiles/copyplayers.sh "${CONTAINER_ID}":/root/work/copyplayers.sh
 docker cp ./pgfiles/copyraces.sh "${CONTAINER_ID}":/root/work/copyraces.sh
+docker cp ./pgfiles/addenv.sh "${CONTAINER_ID}":/root/work/addenv.sh
 
 # copy csv files 
 docker cp ./pgfiles/nbateams.csv "${CONTAINER_ID}":/root/work/nbateams.csv
@@ -64,3 +71,6 @@ echo $stdout
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyraces.sh)
 echo $stdout
 
+# # add/run script to container 
+stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/addenv.sh )
+echo $stdout
