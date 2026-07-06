@@ -9,7 +9,7 @@ echo "$ret_length"
 if (( "$ret_length" > 0 )); then 
     echo "";
 else 
-    # start instance ( installs postgress to shell )
+    # start container instance ( installs postgress to shell )
 
     # name - name of container 
     # e - environmental variable 
@@ -23,9 +23,8 @@ fi
 docker exec  "${CONTAINER_ID}" mkdir -p /root/work
 
 # copy .sql script into container 
-docker cp ./pgfiles/index.sql "${CONTAINER_ID}":/root/work/index.sql
-
-# copy  scripts into container 
+docker cp ./pgfiles/index0.sql "${CONTAINER_ID}":/root/work/index0.sql
+docker cp ./pgfiles/index1.sql "${CONTAINER_ID}":/root/work/index1.sql
 docker cp ./pgfiles/createdb.sh "${CONTAINER_ID}":/root/work/createdb.sh
 docker cp ./pgfiles/copyteams.sh "${CONTAINER_ID}":/root/work/copyteams.sh
 docker cp ./pgfiles/copyplayers.sh "${CONTAINER_ID}":/root/work/copyplayers.sh
@@ -40,21 +39,28 @@ docker cp ./pgfiles/race.csv "${CONTAINER_ID}":/root/work/race.csv
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/createdb.sh)
 if (( $? == 0 )); then 
     # move files to tmp if database created 
+    # create sport_db database 
     docker exec  "${CONTAINER_ID}" mv  /root/work/createdb.sh /tmp
 fi 
 
-# load .sql file (create tables)
-docker exec "${CONTAINER_ID}" psql -U postgres -f /root/work/index.sql
+# Service admin create database and creates rules 
+ADMIN_DB=postgres
+docker exec "${CONTAINER_ID}" psql -U "${ADMIN_DB}" -f /root/work/index0.sql
 
-# add/run script to container 
+# Service guest (working for sport_db subprime company) creates schema 
+DB=sport_db
+USER=htron
+docker exec "${CONTAINER_ID}" psql -d "${DB}"  --username "${USER}" -f /root/work/index1.sql
+
+# # add/run script to container-sport_db
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyteams.sh);
-echo $stdout
+# echo $stdout
 
-# add/run script to container 
+# # add/run script to container 
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyplayers.sh)
 echo $stdout
 
-# add/run script to container 
+# # add/run script to container 
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyraces.sh)
 echo $stdout
 
