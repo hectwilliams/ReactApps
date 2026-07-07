@@ -12,8 +12,9 @@ interface PlayerElement {
 }
 
 export interface SimplePlayerProfileInterface {
-    img: string;
-    name: string;
+    player: string;
+    tm: string;
+    tmpic: string;
     plots?: Array<Array<number>>
 }
 
@@ -21,15 +22,8 @@ export interface SimplePlayerProfileInterface {
     Capture player; record obtained from csv file 
 */
 export const PlayerCard = ( player: SimplePlayerProfileInterface): HTMLDivElement =>  {
-    
-    /*
-        player Interface :
-            player.img 
-            player.name 
-    */
-
     let element = document.createElement('div');
-    element.innerHTML = `<div src=${player.img}> </div>  <div> ${player.name} </div>`;
+    element.innerHTML = `<div src=${player.tmpic}> </div>  <div> ${player.player} </div>`;
     element.className = player_card_cls;
     return  element;
 }

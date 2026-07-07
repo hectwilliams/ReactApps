@@ -38,7 +38,7 @@
 
 .dashboard_cls {
     z-index: 3;
-    grid-row: 5/ span 85;
+    grid-row: 5/ span 93;
     grid-column: 20/ span 80;
 
      width: 100%;

@@ -15,9 +15,8 @@ create SCHEMA nba;
 -- -- grant select access to schema table 
 -- GRANT SELECT ON nba.race TO htron;
 
-
 DROP TABLE IF EXISTS  nba.teams  CASCADE;
-DROP TABLE IF EXISTS  nba.players  ASCADE;
+DROP TABLE IF EXISTS  nba.players  CASCADE;
 DROP TABLE IF EXISTS  nba.race  CASCADE;
 DROP TABLE IF EXISTS  nba.info  CASCADE;
 
@@ -29,7 +28,8 @@ CREATE TABLE  nba.teams (
     division text not null,
     established text DEFAULT '',
     n_championships text DEFAULT '',
-    n_hof text DEFAULT ''
+    n_hof text DEFAULT '', 
+    tmpic text 
 );
 
 CREATE TABLE nba.players (
@@ -63,26 +63,21 @@ CREATE TABLE nba.players (
     gmsc        text,
     date        text,
     primary key (id)
-
 ) ;
 
 CREATE TABLE  nba.race (
-    
     id BIGSERIAL ,
     race text,
     player_id integer references nba.players(id),
     primary key (id)
-
 ) ;
 
 CREATE TABLE  nba.info (
-    
     npages integer ,
     nlastpage integer ,
-    nperpage integer DEFAULT 50
-
+    nperpage integer DEFAULT 50,
+    nsamples integer
 ) ;
-
 
 --prevents further table creation from htron on schema nba (htron owns schema )
 REVOKE CREATE ON SCHEMA nba FROM htron;

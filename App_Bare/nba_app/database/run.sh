@@ -78,12 +78,13 @@ set -- $stdout
 pageseff=$(( $2  / 50  ))
 pages=pageseff
 tail=0
+total=$2
 if ((pages * 50 != $2 )); then 
     pages=$((  ( $2  + 50  - 1  ) / 50  ))
 fi
 
-echo "pages $pageseff"
-echo "pages $pages"
+# echo "pages $pageseff"
+# echo "pages $pages"
 
 rule="$pageseff 50"
 for ((i=1; i<=$pageseff; i++))
@@ -99,20 +100,5 @@ if (( pageseff != $pages )); then
     rule="$rule 1 $n"
     tail=$n
 fi
-
-stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/pageinfo.sh $pages $tail)
-# echo "$rule"
-# echo "$i"
+stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/pageinfo.sh $pages $tail $total)
 echo $stdout
-# 25644 / 50  = 512.88
-# 50* 512 = 25,600
-# last page 25644 - 25,600 ( 25600 != 25644) n + 1
-#  k = 1   0(50)  < 1(50)
-#  k = 2   1(50) - 2(50)
-#  k = 3   2(50) - 3(50)
-#  k = 512  511(50) - 512(50)
-#  k = 513  512(50) - 513(50)
-
-# # add/run script to container 
-# stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/addenv.sh )
-# echo $stdout

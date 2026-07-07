@@ -17,7 +17,7 @@
     grid-template-rows: repeat(100, 1fr);
     position:sticky ;
     bottom: 0;
-    top: 84vh;
+    top: 83vh;
     border-radius: 6px;
     z-index: 1;
     margin: 0;

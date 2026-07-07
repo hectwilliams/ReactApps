@@ -79,7 +79,6 @@ export interface ServerRecordInterface {
     start: number;
     numPages: string;
     players: Array<SimplePlayerProfileInterface>;
-    img: string; 
     plots?: Array< Array<number> >;
 }
 
@@ -131,7 +130,8 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                 processData(data) // clears dashboard and loads  playerlist variable 
                 
                 .then( () =>{
-
+                    
+                    console.log('succesfful')
                     // players list in memory; load to dashboard 
                     dashboard.prepend(playerlist);
 

@@ -8,6 +8,7 @@ import {top_level_list_container_container_cls,
     playerDataContainer_cls, 
     img_cls,
     player_containerwrapper_cls, 
+    meta_assoc_cls
 } from './static/css/playerlist.css';
 
 import type {ServerRecordInterface} from './handlers';
@@ -39,10 +40,6 @@ playerlist.className = top_level_list_container_container_cls;
 
 const imgPath = "./client/src/static/images/faces/img.png";
 
-// const imgPath = "/Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/client/src/static/images/faces/img.png"
-
-
-
  async function getPlayerDiv(record: SimplePlayerProfileInterface, index?: number ) {
 
     let mainElementWrapper = document.createElement('div');
@@ -58,11 +55,12 @@ const imgPath = "./client/src/static/images/faces/img.png";
     let picContainer_child = document.createElement('img');
     let effIndex =  (!index ? 0 : (index % 2)) as number;
     let src = `http://127.0.0.1:50215/src/static/images/faces/${effIndex}_player.png` as string; //* 
-    picContainer_child.dataset.src =  `http://127.0.0.1:50215/src/static/images/faces/${effIndex}_playerx.png` as string; //* 
+    picContainer_child.dataset.src =  `http://127.0.0.1:50215/src/static/images/faces/${effIndex}_playerx.png` as string; //* player images
     picContainer_child.src = src;
-    picContainer_child.style = `--bg-img: url('http://127.0.0.1:50215/src/static/images/faces/${effIndex}_playerx.png'); background-size:cover`;
+    picContainer_child.style = `--bg-img: url('${record.tmpic}'); background-size:cover`; // teams background
     picContainer_child.className = img_cls;
     picContainer.append(picContainer_child);
+
     // add plot container 
     let plotsContainer  = document.createElement('div');
     // let result = 
@@ -85,24 +83,30 @@ const imgPath = "./client/src/static/images/faces/img.png";
     mainElement.append(plotsContainer);
 
     const nameElement = document.createElement('div');
-    nameElement.innerHTML= `<p> ${record.name} </p>`;
+    nameElement.innerHTML= `<p> ${record.player} </p>`;
     nameElement.className = meta_name_cls;
     const teamElement = document.createElement('div');
-    teamElement.innerHTML= `<p>National Basketball Association</p>`;
+    teamElement.innerHTML= `<p> ${record.tm} </p>`;
     teamElement.className = meta_team_cls;
-
-    
+   const teamAssoc = document.createElement('div');
+    teamAssoc.innerHTML= `<p>National Basketball Association </p>`;
+    teamAssoc.className = meta_assoc_cls;
     plotsContainer.append(nameElement);
     plotsContainer.append(teamElement);
+    plotsContainer.append(teamAssoc);
+
     plotsContainer.append(wrapper_plotsData);
     
+    playerlist.append(mainElementWrapper);
+
     if (!record.plots)
         return;
 
-    if (record.plots?.length == 0) {
-        return; 
-    }
+    // if (record.plots?.length == 0) {
+    //     return; 
+    // }
 
+    // quick metrics 
     for (let i = 0; i < record.plots.length; i++) {
 
         let barrierNode = document.createElement('div');
@@ -144,7 +148,6 @@ const imgPath = "./client/src/static/images/faces/img.png";
 
     }
 
-    playerlist.append(mainElementWrapper);
 
 }
 
@@ -166,10 +169,9 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
         dashboard.replaceChildren();
         playerlist.replaceChildren();
 
-        // console.log(bookletInst);
-
         // parse data from server 
         data.players.forEach((record, index) => {
+            console.log(record);
             // add value to list
             getPlayerDiv(record, index); 
         });
