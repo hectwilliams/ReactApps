@@ -14,7 +14,7 @@ ALTER DATABASE sport_db OWNER TO htron;
 ALTER SCHEMA nba OWNER TO htron;
 
 -- SU grants user privlege for htron to connect to database (sign in)
--GRANT CONNECT ON DATABASE sport_db TO htron;
+GRANT CONNECT ON DATABASE sport_db TO htron;
 
 -- SU grants role access to CREATE in database sport_db (example of creation would be creating a table or schema) 
 GRANT CREATE ON DATABASE sport_db TO htron;

@@ -143,7 +143,7 @@ fastify.get('/page=:pg', async (request:FastifyRequest, reply: FastifyReply)=> {
 
         // connect to localhost's port 5432 (container port(i.e. 5432 mapped to localhost 5432)
         const client = await fastify.pg.connect(); 
-        const {rows} = await client.query('SELECT * from nba.teams;');
+        const {rows} = await client.query('SELECT player, tm from nba.players;');
         console.log(rows);
         client.release(); 
     } catch(err) {

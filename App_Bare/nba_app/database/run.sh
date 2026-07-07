@@ -36,6 +36,8 @@ docker cp ./pgfiles/copyteams.sh "${CONTAINER_ID}":/root/work/copyteams.sh
 docker cp ./pgfiles/copyplayers.sh "${CONTAINER_ID}":/root/work/copyplayers.sh
 docker cp ./pgfiles/copyraces.sh "${CONTAINER_ID}":/root/work/copyraces.sh
 docker cp ./pgfiles/addenv.sh "${CONTAINER_ID}":/root/work/addenv.sh
+docker cp ./pgfiles/partition.sh "${CONTAINER_ID}":/root/work/partition.sh
+docker cp ./pgfiles/pageinfo.sh "${CONTAINER_ID}":/root/work/pageinfo.sh
 
 # copy csv files 
 docker cp ./pgfiles/nbateams.csv "${CONTAINER_ID}":/root/work/nbateams.csv
@@ -69,8 +71,48 @@ echo $stdout
 
 # # add/run script to container 
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyraces.sh)
+$stdout
+
+# set positional arguments (overwrites  arguments )
+set -- $stdout
+pageseff=$(( $2  / 50  ))
+pages=pageseff
+tail=0
+if ((pages * 50 != $2 )); then 
+    pages=$((  ( $2  + 50  - 1  ) / 50  ))
+fi
+
+echo "pages $pageseff"
+echo "pages $pages"
+
+rule="$pageseff 50"
+for ((i=1; i<=$pageseff; i++))
+do
+    start=$(( ($i-1) * 50 ))
+    end=$(( $i * 50 ))
+    # echo "$start     $end"
+done
+if (( pageseff != $pages )); then
+    start=$(( ($pages-1) * 50 ))
+    end=$(( $pages * 50 ))
+    n=$(( $2 - start   ))
+    rule="$rule 1 $n"
+    tail=$n
+fi
+
+stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/pageinfo.sh $pages $tail)
+# echo "$rule"
+# echo "$i"
 echo $stdout
+# 25644 / 50  = 512.88
+# 50* 512 = 25,600
+# last page 25644 - 25,600 ( 25600 != 25644) n + 1
+#  k = 1   0(50)  < 1(50)
+#  k = 2   1(50) - 2(50)
+#  k = 3   2(50) - 3(50)
+#  k = 512  511(50) - 512(50)
+#  k = 513  512(50) - 513(50)
 
 # # add/run script to container 
-stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/addenv.sh )
-echo $stdout
+# stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/addenv.sh )
+# echo $stdout

@@ -1,7 +1,6 @@
 
 --  USER HTRON RULES  
 
-
 -- SET client_min_messages = WARNING;
 -- CREATE DATABASE sport_db;
 
@@ -18,9 +17,9 @@ create SCHEMA nba;
 
 
 DROP TABLE IF EXISTS  nba.teams  CASCADE;
-DROP TABLE IF EXISTS  nba.players  CASCADE;
+DROP TABLE IF EXISTS  nba.players  ASCADE;
 DROP TABLE IF EXISTS  nba.race  CASCADE;
-DROP TABLE IF EXISTS  nba.test  CASCADE;
+DROP TABLE IF EXISTS  nba.info  CASCADE;
 
 CREATE TABLE  nba.teams (
     
@@ -35,7 +34,7 @@ CREATE TABLE  nba.teams (
 
 CREATE TABLE nba.players (
     
-    id          serial primary key,
+    id BIGSERIAL ,
     player      text,
     tm          text references nba.teams(tm),
     unnamed     text,
@@ -43,13 +42,13 @@ CREATE TABLE nba.players (
     result      text,
     mp          text,
     fg          text, 
-    fga        text,
+    fga         text,
     fpp         text,
     trep        text,   -- tre is 3
     trepa       text, 
     trepp       text, 
     ft          text,
-    fta          text, 
+    fta         text, 
     ftp         text,
     orb         text,
     drb         text,
@@ -62,33 +61,36 @@ CREATE TABLE nba.players (
     pts         text,
     plusminus   text,
     gmsc        text,
-    date        text 
-);
+    date        text,
+    primary key (id)
+
+) ;
 
 CREATE TABLE  nba.race (
     
-    id serial primary key,
+    id BIGSERIAL ,
     race text,
-    player_id integer references nba.players(id)
+    player_id integer references nba.players(id),
+    primary key (id)
 
-);
+) ;
+
+CREATE TABLE  nba.info (
+    
+    npages integer ,
+    nlastpage integer ,
+    nperpage integer DEFAULT 50
+
+) ;
+
 
 --prevents further table creation from htron on schema nba (htron owns schema )
 REVOKE CREATE ON SCHEMA nba FROM htron;
 
-
-CREATE TABLE  nba.test (
-    
-    id serial primary key,
-    name text DEFAULT ''
-);
 
 -- prevent delete of nba.players from htron (htron is owner of sport_db database; only super user can view  )
 REVOKE DELETE ON TABLE nba.players FROM htron;
 REVOKE DELETE ON TABLE nba.race FROM htron;
 REVOKE DELETE ON TABLE nba.teams FROM htron;
 
-
---  psql -d "postgresql://postgres:password@localhost:5432/postgres" -c "SELECT * from nba.players" 
--- TODO -- password not rquired for htron + sport_db ( where is the superuser )
--- psql -d "postgres://htron:password@localhost:5432/sport_db" -c "SELECT * from nba.players";
+-- TODO -- password must be rquired for htron + sport_db ( where is the superuser )
