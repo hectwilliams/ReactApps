@@ -9,6 +9,9 @@ on:
 jobs:
   lint:
     runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ./App_Bare/nba_app
 
     steps:
       - name: Checkout code
