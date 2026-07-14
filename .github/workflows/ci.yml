@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master, lint ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, lint ]
 
 jobs:
   lint:
