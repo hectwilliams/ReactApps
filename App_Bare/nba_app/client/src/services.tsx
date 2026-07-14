@@ -3,10 +3,9 @@ import {
     services_card_container_cls,
     services_cls, services_cls_header,
 } from './static/css/services.css';
-import { dashboard } from './dashboard';
 import {  activeViewButtons,  ViewButton} from './viewButton';
+import { dashboard } from './dashboard';
 import { logbookInst } from './logbook';
-
 
 /*
     Generate a new paramterized card and add to cardBody 
@@ -28,22 +27,6 @@ async function reqServicesMonitor () : Promise<Array<string>>  {
 
         return [];
     }
-
-}
-
-function servicesSwitchClick(event: MouseEvent) {
-    let node = event.currentTarget as HTMLSpanElement;
-    let s = node.dataset.status as string;
-    
-    if (s == 'off') {
-        
-        node.dataset.status = 'on';
-
-    } else {
-        
-        node.dataset.status = 'off';
-    
-    } 
 
 }
 
@@ -91,7 +74,7 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
 
 
         container.append(cardContainer);
-        console.log(cardContainer)
+        // console.log(cardContainer)
         
     });
 };
@@ -102,7 +85,9 @@ class Services  {
     body: HTMLDivElement;
     root: HTMLDivElement;
     ready: boolean;
-     constructor () {
+
+    constructor () {
+        
         this.ready  = false;
         this.body = document.createElement('div');
         this.body.className = services_cls;
@@ -178,12 +163,11 @@ class Services  {
                 throw new Error("HTTP Error!");
             }
             
-            const data = await response.json();
             return true;
 
         } catch {
 
-            return false;
+            throw new Error("HTTP Error!");
 
         }
 
@@ -195,41 +179,46 @@ class Services  {
         const path = `http://127.0.0.1:50214/power`;
         
         const method = {
+
             method: "POST",
+
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
+
             body: JSON.stringify({
                 msg: `Turn off ${name} server`,
                 name: name,
                 enable: "0"
-            } 
-        )};
+            })
+        };
         
         try {
 
             const response = await fetch(path, method);
 
             if (!response.ok) {
-                throw new Error("HTTP Error!");
-            }
+                
+                // error requesting to shutdown server
 
-            const data = await response.json();
+                throw new Error("HTTP Error!");
+                
+            }
 
             return true;
 
         } catch {
-
-            return false;
+                
+            // chained catch 
+                
+            throw new Error("HTTP Error!");
 
         }
 
     }
 
 }
-
-
 
 export const servicesInstr = new Services();
 

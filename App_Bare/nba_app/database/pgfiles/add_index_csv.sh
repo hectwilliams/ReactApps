@@ -4,7 +4,7 @@
 regex="(.+,([A-Z]{3}),([A-Z]),.+)"
 regex2="(([0-9]+),[A-Z]{3})"
 
-teamslist=$(<"$PWD/../nbateams.csv")
+teamslist=$(<"$PWD/csv_files/nbateams.csv")
 
 count=0
 pad=""
@@ -29,15 +29,15 @@ do
             
             playerid="${BASH_REMATCH[2]}"
             # prepend serial id to nba players
-            echo "${count},${line}" >> nba2.csv
+            echo "${count},${line}" >> nba2.csv;
             # set race per line each player
-            echo "${count},asian,${playerid}"'' >> race.csv
+            echo "${count},asian,${playerid}"'' >> race.csv;
 
          fi
 
     else
 
-        echo ""
+        echo "$count";
     fi
 
     count=$((count + 1))

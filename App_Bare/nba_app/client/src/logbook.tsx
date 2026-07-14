@@ -10,7 +10,6 @@ import {
 } from './static/css/logbook.css';
 
 import {logbook_in_dashboad_cls} from './static/css/dashboard.css';
-import { bookletInst } from './pageShifter';
 import { dashboard } from './dashboard';
 
 interface LogInterface {
@@ -21,7 +20,7 @@ interface LogInterface {
 const clickData = () => {
     let ison = true;
     return (event: MouseEvent) => {
-        console.log('hell world');
+        // console.log('hell world');
     }
 }
 
@@ -160,7 +159,7 @@ class LogBook {
 
         // re-set logbook style using DOMRect structure 
         if ( !this.mouseDownEntered ) {
-            console.log("hello");
+            // console.log("hello");
             let rect = this.top.getBoundingClientRect() as DOMRect;
             this.top.style.width = (rect.width) + "px" ;
             // this.top.style.border = "5px silver solid";
@@ -177,27 +176,49 @@ class LogBook {
             this.top.style.position = 'absolute';
         }
 
-        console.log(dashboard.getBoundingClientRect().bottom, 'hello world', dashboard.getBoundingClientRect().right)
+        // console.log(dashboard.getBoundingClientRect().bottom, 'hello world', dashboard.getBoundingClientRect().right)
 
     }
 
     handleMouseMove (event:MouseEvent) {
-        
         let deltaY = event.clientY - this.posY;
         let deltaX = event.clientX - this.posX;
         
+        console.log(event.clientX , event.clientY )
+        console.log(event.clientX , event.clientY )
+        
         if (deltaY != 0 || deltaX != 0) {
             
-            let top =  parseInt(this.top.style.top.slice(0, this.top.style.top.length - 2)) + deltaY;
-            let bottom =  parseInt(this.top.style.bottom.slice(0, this.top.style.bottom.length - 2)) + deltaY;
-            let left =  parseInt(this.top.style.left.slice(0, this.top.style.left.length - 2)) + deltaX;
-            let right =  parseInt(this.top.style.right.slice(0, this.top.style.right.length - 2)) + deltaX;
+            let h = (parseInt(this.top.style.height.slice(0, this.top.style.height.length - 2)) ) ;
             
-            if (top >= dashboard.getBoundingClientRect().top && left > dashboard.getBoundingClientRect().left && bottom <= dashboard.getBoundingClientRect().bottom && right <= dashboard.getBoundingClientRect().right) {
-                this.top.style.top = top + "px";
-                this.top.style.left = left + "px";
-                this.top.style.bottom = bottom + "px";
-                this.top.style.right = right + "px";
+            let w = (parseInt(this.top.style.width.slice(0, this.top.style.width.length - 2)) ) ;
+
+            let mid_h = h / 2;
+
+            let mid_w = w / 2;
+
+            let box_bottom = event.clientY  + mid_h ;
+            
+            let box_top = event.clientY - mid_h;
+
+            let box_left = event.clientX - mid_w;
+
+            let box_right = event.clientX + mid_w;
+
+
+            // let box_top =  parseInt(this.top.style.top.slice(0, this.top.style.top.length - 2)) + deltaY;
+
+            // let box_bottom =  parseInt(this.top.style.bottom.slice(0, this.top.style.bottom.length - 2)) + deltaY;
+
+            // let box_left =  parseInt(this.top.style.left.slice(0, this.top.style.left.length - 2)) + deltaX;
+
+            // let box_right =  parseInt(this.top.style.right.slice(0, this.top.style.right.length - 2)) + deltaX;
+            
+            if (box_top >= dashboard.getBoundingClientRect().top && box_left > dashboard.getBoundingClientRect().left && box_bottom <= dashboard.getBoundingClientRect().bottom && box_right <= dashboard.getBoundingClientRect().right) {
+                this.top.style.top = box_top + "px";
+                this.top.style.left = box_left + "px";
+                this.top.style.bottom = box_bottom + "px";
+                this.top.style.right = box_right + "px";
             }
 
             this.posY = event.clientY;

@@ -15,7 +15,9 @@ export interface SimplePlayerProfileInterface {
     player: string;
     tm: string;
     tmpic: string;
-    plots?: Array<Array<number>>
+    pts: string ;
+    played: string;
+    img: string;
 }
 
 /* 

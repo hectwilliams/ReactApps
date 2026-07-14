@@ -46,6 +46,7 @@
   },
 
   "include" : [
+    "./database/**/*", 
     "./server/**/*", 
    "./client/src/**/*",
    "client/src/globals.d.ts",

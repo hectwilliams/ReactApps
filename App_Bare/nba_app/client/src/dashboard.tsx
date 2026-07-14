@@ -56,7 +56,7 @@ headerName.innerHTML = "<p> Dashboard </p>";
 const headerViews = document.createElement('span');
 headerViews.className=dashboard_views_cls;
 headerViews.addEventListener( 'click', (event: MouseEvent) => {
-    console.log(event);
+    // console.log(event);
 })
 
 const headerMore = document.createElement('span');
@@ -88,9 +88,9 @@ headerComposition.onclick= (event: MouseEvent) => {
 }
 
 
-headerFilter.addEventListener( 'click', (event: MouseEvent) => {
-    console.log(event);
-})
+// headerFilter.addEventListener( 'click', (event: MouseEvent) => {
+//     console.log(event);
+// })
 
 // filter button 'color' slices 
 for( let i = 0; i < 10*10; i++){ headerFilter.append( document.createElement('span') ); }
@@ -113,7 +113,7 @@ headerTrash.onclick = ()=>{
 
     if (dashboard.childElementCount) {
         
-        console.log('deleting')
+        // console.log('deleting')
 
         storeInst.clear();
         bookletInst.clear();
@@ -138,7 +138,7 @@ headerTrash.onclick = ()=>{
 
 
     } else {
-        console.log('nothing here')
+        // console.log('nothing here')
     }
 
 }
