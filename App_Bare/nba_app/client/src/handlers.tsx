@@ -6,55 +6,6 @@ import { playerlist, processData } from "./playerlist";
 import { storeInst } from './store';
 import { logbookInst } from './logbook';
 
-//     list.forEach((record)=>{
-//            // // set Profile 
-//             const profile :  SimplePlayerProfileInterface = {
-//                 img: record.img,
-//                 name: record.name
-//             }
-
-//             // set log message 
-//             const logRecord : LogInterface = {
-//                 date: (new Date()).toLocaleString(),
-//                 message: `Write/Add ${record.name} `,
-//                 dashboard: dashboard
-//             }
-
-//             // pass profile object to player card
-//             const node =  PlayerCard(profile);
-
-//             // append to leader list 
-//             if (activePlayerList) {
-//                 activePlayerList.append(node);
-//                 // send to log
-//                 let log: Element | null =  dashboard.children.item(2);
-//                 writeLog(0, logRecord);
-//             }
-    
-//         });
-// }
-
-
-// import type { LogInterface } from "./followers";
-// export function writeLog(id:number, record: LogInterface) {
-//     var liElement = document.createElement('li');
-//     // // set animation dataset 
-//     liElement.textContent = `Time: [${record.date}] Message: [${record.message}]`;
-    
-//     let node = record.dashboard?.children[2] as HTMLElement; 
-//     node.append(liElement);
-    
-//     // animation condition for GUI write log 
-//     liElement.dataset.noop = "1";
-//     setTimeout(()=>{
-//         liElement.dataset.noop = "0";
-//     }, 1000);
-
-// }
-
-
-
-
 export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, datasetName: string) : HTMLElement | undefined {
     // let returnNode = undefined;
     
@@ -79,7 +30,6 @@ export interface ServerRecordInterface {
     start: number;
     numPages: string;
     players: Array<SimplePlayerProfileInterface>;
-    img: string; 
     plots?: Array< Array<number> >;
 }
 
@@ -92,8 +42,7 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
     const params = new URLSearchParams({page: `${page}`});
     
     const path = `${window.location.origin}/${params}`;
-    // const path = `${window.location.hostname}:50215/${params}`;
-    console.log(path);
+    
     try {
         const response = await fetch( path );
         // method: "GET", 
@@ -103,12 +52,11 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
         if (!response.ok) {
             throw new Error("HTTP error! ");
         }
-            console.log("retuned", path);
             const data : ServerRecordInterface = await response.json();
             return data;
-        } catch {
+    } catch {
             return undefined;
-        }
+    }
 }
 
 export async function fetchPagesHelper( name: string, page?: number) : Promise<boolean>{
@@ -131,7 +79,7 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                 processData(data) // clears dashboard and loads  playerlist variable 
                 
                 .then( () =>{
-
+                    
                     // players list in memory; load to dashboard 
                     dashboard.prepend(playerlist);
 
@@ -140,6 +88,9 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
 
                     // add booklet 
                     bookletInst.load();
+
+                    // set booklet 
+                    bookletInst.setFeed(data.page, data.numPages);
 
                     // save name 
                      storeInst.service = name;
@@ -162,8 +113,6 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
             
             case "binny":
 
-                console.log(name);
-
                 throw new Error("do nothing, monitor metrics not available yet");
 
             default:
@@ -178,71 +127,11 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
     }
 }
 
-// export async function updateLog(data: Array<string> ) : Promise<Boolean>{
-
-//     const path = `${window.location.origin}/log`;
-//     const method = {
-//         method: 'PUT',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             // 'Authorization': '' TBD
-//         },
-//         body: JSON.stringify(data)
-//     };
-
-//     try {
-//         const response = await fetch(path, method);
-//         if (!response.ok) {
-//             throw new Error("Log Put Failed");
-//         }
-//         return true; 
-//     }catch {
-//         return false;;
-//     }
-// }
-
-// export async function fetchBinny(): Promise<Array<Number> | undefined> {
-    
-//     const portBinny = 50216;
-//     const path = `http://127.0.0.1:${portBinny}/binny`; // Binny server :) 
-
-//     try {
-//         const response = await fetch(path);
-//         if (!response.ok) {
-//             throw new Error("Cannot reach Binny");
-//         }
-//         const data  = await response.json() as Array<Number>;
-//         return data;
-//     }catch {
-//         return undefined;
-//     }
-   
-  
-// }
-
-// export async function enableService(address:string, port: number) {
-//     if (!address) {
-//         address = "127.0.0.1"; // loop back
-//     }
-//     const path = `http://127.0.0.1:${port}/turn_on_nba`; // Binny server :) 
-
-//     try {
-//         const response = await fetch(path);
-//         if (!response.ok) {
-//             throw new Error("Unable to request service");
-//         }
-//         console.log(response.json);
-//     }catch(err) {
-//         console.log(err);
-//     }
-// }
-
  function viewButton(node: HTMLSpanElement) {
     let rows = [2, 5, 9] as Array<number>;
     rows.forEach((r, index)=>{
         let v = rows[3 - 1 - index];
         if (v) {
-            console.log(v);
             for (let i = 0; i < v; i++) {
                 let pos = 10 * r + i; 
                 let ele = node.children[pos] as HTMLSpanElement;
@@ -260,7 +149,6 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
 const globalViewVlick = (node: HTMLSpanElement) => {
     let ref = node;
     return () => {
-        console.log('new node', node);
         return ref;
     }
 }

@@ -4,7 +4,9 @@ Applications built using (React | Javascript | Typescript) --- (Flask | Fastify 
 ## Project Images/Videos 
 
 - NBA View
-![](./App_Bare/nba_app/snapshots/image2.png)
+![](./App_Bare/nba_app/snapshots/image4.png)
+![](./App_Bare/nba_app/snapshots/video.gif)
+
 - Sign in 
 ![](./App_SignIn/miscellaneous/site_state_000.png)
 ![](./App_SignIn/client/src/SignIn/snapshots/snapshot_000.png)

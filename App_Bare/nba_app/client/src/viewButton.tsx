@@ -50,18 +50,17 @@ export class  ViewButton {
 
         // add event listener 
         this.moreViewSymbol.addEventListener( 'click' ,  this.viewClick()  );
-
+    
     }
 
-    /* handler for view button clicks  */
 
+    /* handler for view button clicks  */
     viewClick(): any {
         // let cacheNode = node;
         return (event: MouseEvent) => {
             let currentNode = event.currentTarget as HTMLSpanElement;
 
             if ( this.prev == currentNode) {
-                // repeated clicks 
                 return;
             } else {
 
@@ -72,16 +71,14 @@ export class  ViewButton {
                     fetchPagesHelper(name)
                     .then( (resp) => {
 
-                        console.log('successful request: ');
+                        // console.log('successful request: ');
                             
                           logbookInst.add(`Requested ${name} successful}`);
-
-                           
                             
                     })
                     .catch(()=>{
 
-                        console.log('unsuccessful request');
+                        // console.log('unsuccessful request');
                         
                         logbookInst.add(`Requested ${name} failed}`);
 

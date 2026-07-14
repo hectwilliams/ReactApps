@@ -25,12 +25,6 @@ export function setPeakCells (currentNode: HTMLDivElement, classname: string, nu
             (currentNode.childNodes[pos] as HTMLSpanElement).dataset.on="1";
         }
 
-        if (index == numbers.length - 1) {
-            console.log(numbers);
-            console.log(posititons)
-            console.log(currentNode.childNodes)
-        }
-
     });
 
 }
@@ -44,9 +38,6 @@ export function setBarCells (currentNode: HTMLDivElement,  numbers: number[]) {
             return;  
 
         numbers.forEach( (r, c) => { 
-        //flip r 
-            // r = BINSIZE**2 -  r * BINSIZE;
-            // r = Math.floor( r/ BINSIZE) ;
             r = BINSIZE - r;
             while (r < BINSIZE) {
                 let pos = r * BINSIZE + c;

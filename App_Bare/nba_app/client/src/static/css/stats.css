@@ -1,0 +1,532 @@
+
+
+/* / stats section */
+.statsChainContainer_cls
+{
+       width: 100%;
+    height: 100%;
+    /* border: 1px silver solid; */
+    grid-row: 20 / span 35;
+    grid-column: 2 / span 99;
+    /* grid-template-columns: repeat(100, 1fr);   */
+    /* grid-template-rows: repeat(100, 1fr);   */
+    /* flex-wrap: nowrap;    */
+    /* Forces all items to stay on a single line */
+    /* overflow-x: auto;     */
+    /* Displays horizontal scrollbar when needed */
+    /* column-gap: 10px;     */
+    /* align-content: flex-end; */
+    margin: 0;
+    padding:0;
+    /* border: 1px dotted green; */
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+}
+
+.arrow_list_container_cls {
+ color: white;
+    background-color: gray;
+    border-left: 1px dotted black;
+    /* height: 0.8vh; */
+    margin: 0;
+    padding: 0;
+       width: 100%;
+    height: 100%;
+     display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+}
+
+.arrow_list_container_cls > span {
+  width: 0;
+  height: 0;
+  border-left: 2.5px solid transparent;  /* Left side slope */
+  border-right: 2.5px solid transparent; /* Right side slope */
+  border-top: 2px solid #f5eeee;       /* Arrow color and height */
+  margin: 0;
+  padding: 0;
+}
+
+.hidden_label_cls {
+    /* border: 1px dotted yellow;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0; */
+    grid-row: 15 / span 20;
+    width: 100%;
+    height: 100%;
+    grid-column: 1 / span 99;
+
+}
+
+/* border: 2px dotted red; */
+.hidden_label_connector_cls {
+    grid-row: 35 / span 10;
+    width: 100%;
+    height: 100%;
+    grid-column: 1 / span 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* grid-template-columns: repeat(100, 1fr);   */
+    /* grid-template-rows: repeat(100, 1fr);   */
+    z-index: 3
+} 
+.hidden_label_cls > div,
+.hidden_label_connector_cls  > div {
+    /* width: 100%;
+    height: 100%;
+    grid-row: 1 / span 99;
+    grid-column: 1 / span 99;
+    border: 2px dotted yellow;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    grid-template-columns: repeat(24, 4.2%);  
+    grid-template-rows: repeat(100, 1fr);  
+    column-gap: 0.3px; */
+
+    width: 100%;
+    height: 100%;
+    /* grid-row: 1 / span 99; */
+    /* grid-column: 1 / span 99; */
+    /* border: 2px dotted yellow; */
+    margin: 0;
+    padding: 0;
+    /* display: grid; */
+
+        display: flex;
+    justify-content: space-around;
+    align-items: center;
+       color: white;
+
+   font-family: Georgia, 'Times New Roman', Times, serif;
+     font-weight: bold;
+     font-size: 1.5vh;
+
+}
+
+
+/* Right side slope */
+/* Left side slope */
+.hidden_label_connector_cls  > div > div {
+    height: 100%;
+    width: 100%;
+    border: 1px dotted palevioletred;
+    margin: 0;
+    padding: 0;
+     display: flex; 
+     align-items:center; 
+     justify-content: space-around; 
+  
+}
+
+/* .hidden_label_connector_cls  > div > div > p {
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid white; /* Change color here */
+  /* opacity: 0; */
+
+
+
+.hidden_label_cls > div > div {
+    height: 100%;
+    background-color: transparent;
+    /* border: 1px dotted palevioletred; */
+    margin: 0;
+    padding: 0;
+    width: 6.3vh;
+   display: flex; 
+     align-items:center; 
+     justify-content: space-around; 
+
+}
+
+/* opacity: 0;
+/* border: 1px dotted yellow; */
+.hidden_label_cls > div > div > p {
+  opacity: 0;
+    min-width: 0;          /* CRITICAL: Allows the child to shrink below text size */
+  white-space: nowrap;   /* Forces text onto a single line */
+  overflow: hidden;      /* Hides the text that spills out */
+  text-overflow: ellipsis; /* Adds the '...' trailing dots */
+
+  /* border-left: 5px solid transparent; */
+  /* border-right: 5px solid transparent; */
+  /* border-top: 6px solid white;  */
+  /* Change color here */
+padding: 0;
+  margin: 0;
+  width: 0;
+  height: 0;
+}
+
+.stat_table_cls {
+    /* background-color: #d719a8; */
+    /* border: 1px dotted yellow; */
+    grid-row: 50 / span 40;
+    width: 100%;
+    height: 100%;
+    grid-column: 1 / span 99;
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+    /* border: 2px dotted red; */
+    cursor: pointer;
+}
+
+.dialog_cls  {
+
+    position: absolute;
+
+    top: 50%;
+    bottom: 50%;
+
+    width: 50%;
+    height: 50%;
+    
+    border: 5px silver solid;
+    background-color: whitesmoke;
+    z-index: 5;
+
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+    
+    padding: 0;
+
+}
+
+.dialog_cls > span {
+    grid-row: 1 / span 5;
+    grid-column: 97 / span 2;
+    width: 100%;
+    height: 100%;
+    color: violet;
+    border: black 1px solid;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog_cls > span > p{
+    color: yellowgreen;
+}
+
+
+.dialog_cls > span:hover {
+    background-color: darkgrey;    
+}
+
+/* .dialog_cls > table {
+    grid-row: 1 / span 99;
+    grid-column: 1 / span 99;
+    width: 100%;
+    height: 100%;
+} */
+
+.dialog_cls[data-modal="1"] {
+    visibility:visible;
+}
+
+.dialog_cls[data-modal="0"] {
+    visibility:collapse;
+}
+
+.dialog_cls > table {
+    grid-row: 8 / span 99;
+    grid-column: 2 / span 98;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(100, 1fr) ;
+    grid-template-rows: repeat(100, 1fr) ;
+    overflow-y: auto;
+}
+
+.dialog_cls > table > thead {
+      grid-row: 1 / span 10;
+    grid-column: 1 / span 99;
+    border: 1px red dotted;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(100, 1fr) ;
+    grid-template-rows: repeat(100, 1fr) ;
+    /* justify-content: space-around; */
+    /* align-items:; */
+       margin: 0;
+    padding: 0;
+}
+
+.dialog_cls > table > thead > tr  {
+    grid-row: 1 / span 100;
+    grid-column: 1 / span 100;
+    height: 100%;
+    width: 100%;
+    border: 1px black solid;
+    display: grid;
+    grid-template-columns: repeat(25, 4%) ;
+    /* grid-template-rows: repeat(100, 1fr) ; */
+    /* flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    border: 2px peru dotted; */
+    margin: 0;
+    padding: 0;
+    text-align: center;
+
+}
+
+.dialog_cls > table > tbody > tr > td, 
+.dialog_cls > table > thead > tr  > th {
+    margin: 0;
+    border: 0;
+    background-color: silver ;
+    font-size: 6px;
+    /* width: 4vh; */
+    border: 0.3px black solid;
+    height: 4vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.dialog_cls > table > tbody {
+    grid-row: 13 / span 99;
+    grid-column: 1 / span 100;
+    margin: 0;
+    padding: 0;
+    /* border: 2px purple dotted; */
+    width: 100%;
+    /* height: 2.7vh; */
+    /* display: flex; */
+    /* align-items: ;     */
+    /* justify-content: space-evenly; */
+    /* flex-wrap: wrap; */
+    /* flex-grow: 1; */
+    /* flex-basis: 1; */
+    display: grid;
+    grid-template-columns: repeat(100, 1fr) ;
+    grid-template-rows: repeat(100, 1fr) ;
+}
+
+.dialog_cls > table > tbody > tr {
+    grid-column: 1 / span 99;
+    /* border: px blue solid; */
+    width: 100%;
+    height: 3vh;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(25, 4%) ;
+    grid-template-rows: repeat(100, 1fr) ;
+}
+
+.dialog_cls > table > thead > tr  > th > p {
+    font-weight: bolder;
+    font-size: x-small;
+    width: fit-content;
+    text-align: center;
+    
+}
+
+.dialog_cls > table > tbody > tr  > th > p {
+    font-weight: bolder;
+    font-size: small;
+    width: fit-content;
+    text-align: center;
+    
+}
+
+/* .table_header_cls > tr > th:nth-child(1):hover {
+    border: 5px green solid;
+} */
+
+.table_header_cls {
+    /* border: 2px dotted yellow; */
+    grid-row: 1 / span 40;
+    grid-column: 1 / span 99;
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+    margin: 0;
+    padding: 0;
+    z-index: 3;
+    
+}
+
+
+.table_header_cls  > tr  {
+    width: 100%;
+    height: 100%;
+    grid-row: 1 / span 99;
+    grid-column: 1 / span 99;
+    /* border: 2px dotted yellow; */
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(24, 4.2%);  
+    grid-template-rows: repeat(100, 1fr);  
+    column-gap: 0.3px;
+} 
+
+
+.table_body_cls  > tr > td ,
+.table_header_cls  > tr > th  {
+    color: white;
+    background-color: gray;
+    border-left: 2px dotted black;
+    height: 0.8vh;
+    font-size: 1vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+       width: 100%;
+    height: 100%;
+     display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    z-index: 4;
+
+}
+
+.table_header_cls  > tr > th  {
+  cursor: pointer;
+}
+
+.table_body_cls  > tr > td > p ,
+.table_header_cls  > tr > th > p {
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.table_body_cls {
+    grid-row: 40 / span 50;
+    grid-column: 1 / span 99;
+    width: 100%;
+    height: 100%;
+        display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+    margin: 0;
+    padding: 0;
+}
+
+.table_body_cls  > tr  {
+      width: 100%;
+    height: 100%;
+    grid-row: 1 / span 99;
+    grid-column: 1 / span 99;
+    /* border: 2px dotted yellow; */
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(24, 4.2%);  
+    grid-template-rows: repeat(100, 1fr);  
+    column-gap: 0.3px;
+} 
+.table_body_cls  > tr > td  {
+    background-color: lightgray;
+    border-color: black;
+    z-index: 3;
+}
+
+.table_body_cls  > tr > td >  p{
+    color: black;
+}
+/* .table_body_cls  > tr > td  {
+    color: white;
+    background-color: gray;
+    border-left: 2px dotted black;
+    height: 0.8vh;
+    font-size: 1vh;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+} */
+
+
+/* header */
+/* border: 1px dotted yellow; */
+/* .stat_table_cls > :nth-child(1) {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    grid-row: 50 / span 40;
+    grid-column: 1 / span 99;
+    display: flex;
+    flex-direction: column;
+}
+
+/* body */
+/* .stat_table_cls > :nth-child(2) {
+    width: 100%;
+    height: 100%;
+    grid-row: 50 / span 40;
+    grid-column: 1 / span 99;
+        display: flex;
+    flex-direction: column;
+}  */
+
+
+/* .stat_table_header {
+    border: 1px dotted yellow;
+    width: 100%;
+    height: 100%;
+    grid-row: 50 / span 25;
+    grid-column: 1 / span 99;
+}
+
+.stat_table_data {
+    border: 1px dotted yellowgreen;
+    width: 100%;
+    height: 100%;
+    grid-row: 74 / span 25;
+    grid-column: 1 / span 99;
+} */
+
+/* .table_header_cls:has() { */
+
+/* .table_header_cls > tr:has( .table_header_cls > tr > th:nth-child(1):hover ) {
+    background-color: green;
+    z-index: 4;
+}  */
+
+/* .statsChainContainer_cls:has( .table_header_cls > tr > th:nth-child(1):hover ) .hidden_label_connector_cls > div >div:nth-child(1) > p {
+    opacity: 1;
+} */
+
+/* .statsChainContainer_cls:has( .table_header_cls > tr > th:nth-child(1):hover ) .hidden_label_cls > div >div:nth-child(1) > p { */
+    /* opacity: 1; */
+/* } */
+
+.statsChainContainer_cls:has( .table_header_cls > tr > th:nth-child(1):hover) .hidden_label_cls > div > div:nth-child(1) > p {
+    /* content: " → This text is added automatically! "; */
+    opacity: 1;
+}
+
+
+.statsChainContainer_cls:has( .table_header_cls > tr > th:nth-child(24):hover) .hidden_label_cls > div > div:nth-child(24) > p {
+    /* content: " → This text is added automatically! "; */
+    opacity: 1;
+}

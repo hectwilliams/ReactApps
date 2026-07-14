@@ -15,14 +15,6 @@ import type { StoreDictionary } from './store';
 import type { ServerRecordInterface,  } from "./handlers";
 import  { fetchPagesHelper } from "./handlers";
 
-// export const addBookletToDashboard  = async (booklet:HTMLDivElement) => {
-//     const refBooklet = booklet;
-//     return (dashboard: HTMLDivElement) => {
-//         // TODO - check if element exist in amongst dashboard children 
-//         dashboard.append(refBooklet);
-//     } 
-// }
-
 /*  Booklet on bottom right corner   */
 
 class Booklet {
@@ -34,18 +26,14 @@ class Booklet {
     right_arrow: HTMLDivElement;
     prevPage: number;
     pages: number;
-    exists: boolean;
 
     constructor() {
 
-       this.booklet = document.createElement('div'); 
-       this.pageNumbersMsg = document.createElement('div');
-       this.arrows = document.createElement('div');
-       this.left_arrow = document.createElement('div');
-       this.right_arrow = document.createElement('div');
-
-   
-
+        this.booklet = document.createElement('div'); 
+        this.pageNumbersMsg = document.createElement('div');
+        this.arrows = document.createElement('div');
+        this.left_arrow = document.createElement('div');
+        this.right_arrow = document.createElement('div');
         this.arrows.className = arrows_cls;
         this.pageNumbersMsg.className = page_number_cls;
         this.pageNumbersMsg.innerText = "...";
@@ -57,10 +45,10 @@ class Booklet {
         this.booklet.append(this.arrows);
         this.booklet.className = page_shifer_cls;
         this.booklet.dataset.on = "0";
-        this.exists = false;
         this.prevPage = -1;
         this.pages = -1;
-
+    
+        
 
         // operates on current page  stored in store object 
         this.left_arrow.onclick =  () => {
@@ -69,47 +57,57 @@ class Booklet {
                 return;
             }
 
+
             let name = storeInst.service;
             
-            // if (name) {
-                /* nothing is deleted out the store, so if name exist then we are safe to continue */
-                let serverRecord = storeInst.get(name) as ServerRecordInterface;
+            /* nothing is deleted out the store, so if name exist then we are safe to continue */
+            let serverRecord = storeInst.get(name) as ServerRecordInterface;
 
-                if (!serverRecord) {
-                    console.log('record lost');
-                    return false;
+            if (!serverRecord) {
+                // console.log('record lost');
+                return false;
 
+            }
+            
+                let num = serverRecord.page;
+
+                if (num - 1 <=0 ) {
+                    return;
                 }
                 
-                  let num = serverRecord.page;
+                let prev = storeInst.players ; // save recent player list
 
-                    if (num - 1 <=0 ) {
-                        return;
-                    }
+                try {
 
-                    try {
+                    this.hide();
 
-                        let status =  fetchPagesHelper(name, num-1);
+                    storeInst.players = "";
+
+                    let status =  fetchPagesHelper(name, num-1);
+
+                    if (!status) {
                         
-                        if (!status) {
-                            
-                            throw new Error("");
-
-                        }
-
-                        console.log('arrow click  request, successful');
-
-                    } catch(err) {
+                        throw new Error("");
                         
-                        console.log('arrow click request, unsuccessful');
-
                     }
+                    
+                    // console.log('arrow click  request, successful');
+                    
+                    this.show();      
 
-            // }
+                } catch(err) {
+                    
+                    // console.log('arrow click request, unsuccessful');
+                    storeInst.players = prev;
+                    this.show();      
+
+                }
+
+
          }
 
           this.right_arrow.onclick =  () => {
-        
+            
             if (this.pageNumbersMsg.innerText  == '...' ) {
                 return;
             }
@@ -117,10 +115,9 @@ class Booklet {
             let name = storeInst.service;
             
             let serverRecord = storeInst.get(name) as ServerRecordInterface;
-
-
+            
             if (!serverRecord) {
-                console.log('record lost');
+                // console.log('record lost');
                 return false;
             }
 
@@ -134,25 +131,40 @@ class Booklet {
                 return;
             }
 
+            let prev = storeInst.players ; // save recent player list
+
             try {
+                
+                this.hide();
+
+                storeInst.players = "";
 
                 let status =  fetchPagesHelper(name, num + 1);
-
+                
                 if (!status) {
                     
                     throw new Error("");
 
                 }
 
-                console.log('arrow click  request, successful');
+                // bookletInst.setFeed(serverRecord.page, serverRecord.numPages);
+                // console.log('arrow click  request, successful');
+                
+                this.show();
 
             } catch(err) {
                 
-                console.log('arrow click request, unsuccessful');
+                storeInst.players = prev;
+                
+                // console.log('arrow click request, unsuccessful');
+
+                this.show();
 
             }
 
+
             // }
+
 
          }
 
@@ -163,6 +175,15 @@ class Booklet {
         return this.booklet;
 
     }
+
+    hide() {
+         this.booklet.dataset.hide="1";
+    }
+
+    show() {
+         this.booklet.dataset.hide="0";
+    }
+
 
     enable() {
         
@@ -193,7 +214,6 @@ class Booklet {
     clear() {
 
         this.pageNumbersMsg.innerText = "...";
-        this.exists = false;
         this.prevPage = -1;
         this.pages = -1;
         this.booklet.dataset.on = "0";

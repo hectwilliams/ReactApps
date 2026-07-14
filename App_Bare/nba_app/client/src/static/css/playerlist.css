@@ -43,16 +43,12 @@
 /* playerlist */
 .player_container_cls {
     width: 100%;
-    /* border: 1px yellow dotted; */
-    /* flex-direction: column;
-    flex-wrap: nowrap; */
-    /* height: 100%; */
     display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
     height: 100%;
     border-bottom: 1px silver solid;;
-     margin: 0;
+    margin: 0;
     padding:0;
 }
 
@@ -63,21 +59,13 @@
 .img_cls {
     width: 100%;
     height: 100%;
-    /* height: 100%; */
-    /* border: 1px blue dotted; */
-     grid-row: 10 / span 99; 
+    grid-row: 10 / span 99; 
     grid-column: 1/ span 99;
-    /* background-size:cover; */
-    /* background-position: center; */
-    /* background-repeat: no-repeat;; */
-    /* background-repeat: no-repeat; */
-    /* background-image: url('../images/faces/img.png'); */
-    /* Optional: Makes it easier to center */
     z-index: 1; 
-      display: grid;
+    display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
-     margin: 0;
+    margin: 0;
     padding:0;
 }
 
@@ -85,58 +73,36 @@
 .img_cls {
     width: 100%;
     height: 17vh;
-    /* height: 100%; */
-    /* border: 1px blue dotted; */
     grid-row: 1 / span 30; 
     grid-column: 2/ span 10;
     background-size:100%;
     background-position: center;
-    /* background-repeat: no-repeat;; */
-    /* background-repeat: no-repeat; */
-    /* background-image: url('../images/faces/img.png'); */
     border-radius: 50%;
-    /* Optional: Makes it easier to center */
     z-index: 1; 
-     margin: 0;
+    margin: 0;
     padding:0;
     border: 0.5px silver solid;
 }
 
 .img_cls:hover {
-    /* background-image: url('../images/faces/0_playerx.png'); */
-    /* background-image: url(); */
-    
-    /* grid-row: 1 / span 99;  */
-    /* grid-column: 2/ span 99; */
-
     background-image: var(--bg-img, none);
-    
     background-position:center;
     background-repeat: no-repeat;
-    
-    /* z-index: 1;  */
     overflow: hidden;  /* Keeps any unwanted overflow hidden */
-
     width: 100%;
     height: 100% ;
-    
     margin: 0;
     padding: 0;
-    
-    /* object-fit: cover; */
-
 }
 
 /* player data container */
 .playerDataContainer_cls
-/* .player_container_cls > div:nth-child(2) */
 {
-    /* border: 5px blue dotted; */
+    /* border: 10px blue dotted; */
     grid-row: 10 / span 30;
     grid-column: 14 / span 65;
-    height: 14vh;
+    height: 25vh;
     width: 100%;
-
     display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
@@ -144,39 +110,43 @@
     padding:0;
 }
 
-.meta_name_cls {
-    display: flex;
-    flex-shrink: 1;
-    grid-row: 1 / span 10;
-    grid-column: 2 / span 7;
-    width: 100%;
-    height: 100%;
-        border: 1px silver solid;
-    background-color: black;
-        border-radius: 2px;
- overflow: hidden;  
-  margin: 0;
-    padding:0;
-}
-
-.meta_team_cls {
-    grid-row: 2 / span 10;
-    grid-column: 16 / span 7;
+.meta_name_cls,
+.meta_team_cls, 
+.meta_assoc_cls {
     width: 100%;
     height: 100%;
     border: 1px silver solid;
+    background-color: black;
     border-radius: 2px;
-    background-color: transparent;
-    margin: 0;
-    padding: 0;
-    display: flex;
     overflow: hidden;  
-     margin: 0;
+    margin: 0;
     padding:0;
+    display: flex;
+    flex-shrink: 1;
+    background-color: transparent;
+}
+
+.meta_name_cls {
+    grid-row: 5 / span 10;
+    grid-column: 2 / span 18;
+    z-index: 1;
+}
+
+.meta_team_cls {
+    grid-row: 5 / span 10;
+    grid-column: 25 / span 12;
+    z-index: 2;
+}
+
+.meta_assoc_cls {
+    grid-row: 5 / span 10;
+    grid-column: 43/ span 18;
+    z-index: 3;
 }
 
 .meta_team_cls > p,
-.meta_name_cls > p {
+.meta_name_cls > p ,
+.meta_assoc_cls > p {
     z-index: 1;
     color: white;
     border-radius: 4px;
@@ -188,7 +158,9 @@
 }   
 
 .meta_name_cls:hover,
-.meta_team_cls:hover
+.meta_team_cls:hover,
+.meta_assoc_cls:hover
+
 {
     cursor: pointer;
     overflow: visible;        /* Un-hide the overflowing text */
@@ -200,7 +172,7 @@
     position:relative;
     width: 400%;
     border: none;
-     margin: 0;
+    margin: 0;
     padding:0;
     border:  none;
     height: 100%;;
@@ -209,25 +181,25 @@
 
 
 /* Hide next header element when hovered */
-.meta_name_cls:hover + div  
+.meta_name_cls:hover + div  ,
+.meta_team_cls:hover + div  
+
 {
-    z-index : 3;
-    opacity: 0;
+    z-index : 4;
+    /* opacity: 0; */
+    
 }
 
-
 .wrapperPlayerChainContainer {
-     /* border: 1px silver solid; */
-    grid-row: 1 / span 99;
+    grid-row: 5 / span 99;
     grid-column: 1 / span 99;
-      width: 100%;
+    width: 100%;
     height: 100%;
-    /* padding-left: 0.5px; */
     margin: 0;
-      display: grid;
+    display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
-     margin: 0;
+    margin: 0;
     padding:0;
 
 }
@@ -236,7 +208,7 @@
 .playerChainContainer_cls
 {
     /* border: 1px silver solid; */
-    grid-row: 25 / span 80;
+    grid-row: 55 / span 80;
     grid-column: 2 / span 99;
     display: flex;
     /* grid-template-columns: repeat(100, 1fr);   */
@@ -246,12 +218,12 @@
     overflow-x: auto;    /* Displays horizontal scrollbar when needed */
     column-gap: 10px;    
     align-content: flex-end;
-     margin: 0;
+    margin: 0;
     padding:0;
+    /* border: 1px dotted pink; */
 }
 
 .player_container_plot_cls {
-    
     border: 1px dotted skyblue;
     width: 15vh;
     height: 9vh;
@@ -262,24 +234,5 @@
     column-gap: 6px;
     margin: 0;
     padding:0;
-
     display: flex;
-    /* grid-template-rows: repeat(var(--BINSIZE), 1fr); */
-    /* grid-template-columns: repeat(var(--BINSIZE), 1fr); */
-    
 }
-
-/* .player_container_plot_cls {
-
-    border: 1px dotted skyblue;
-    width: 15vh;
-    height: 9vh;
-    background-color: white;
-    flex-shrink: 0;
-    border-top-right-radius: 3px;
-    border-top-left-radius: 3px;
-    column-gap: 6px;
-    margin: 0;
-    padding:0;
-    
-} */

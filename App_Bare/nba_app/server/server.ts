@@ -5,9 +5,8 @@ import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
-import {parse} from 'csv-parse';
-import { createWriteStream, mkdir } from 'node:fs';
-// import cors from '@fastify/cors';
+import cors from '@fastify/cors';
+import fastifyPostgres from '@fastify/postgres';
 
 interface MonitorInterface {
     services: Service;
@@ -22,15 +21,14 @@ interface Service {
 interface Ports {
     port: number,   
 }
+
 interface PlayerFields {
     name: string;
     img: string;
     plots?: Array<Array<number>>
-
 };
 
 async function loadServices() :Promise<MonitorInterface> {
-    
     let  asyncRawJson = await fs.promises.readFile('./server/config.json', 'utf-8');
     let json =  JSON.parse(asyncRawJson) as MonitorInterface;
     return json;
@@ -45,8 +43,8 @@ function setDummyPlots(plots: Array<Array<number>>) {
         }
     }
 }
-const rrand = ()=>{
 
+const rrand = ()=>{
     return Math.floor(Math.random() * 10) + 1; // 1 to 100 
 } 
 
@@ -56,15 +54,11 @@ async function createlogDir() {
         const stats = await fs.promises.stat(effPath);
     } catch(error:any) {
         if (error.code == 'ENOENT') {
-            
             const response =  await fs.promises.mkdir( effPath, {recursive: true});
             console.log(response, 'log dir created');
-            
         }
     }
 }
-
-// import 
 
 const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
 const LOCALHOST = '127.0.0.1'; // safe 
@@ -79,31 +73,37 @@ const CATIMAGE = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'st
 
 const LOGDIR = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'logs' );
 
-var csvReadStream = fs.createReadStream(filePath) as fs.ReadStream;
-
 const plots : Array<Array<number>> = [];
 
 // load json to memory 
 const json = await loadServices();  // async on all ops used below
+
+// db constants 
+const USER_DB = "htron";
+const PASSWORD_DB = "abcd";
+const HOST_DB = "localhost";
+const PORT_DB = 5432
+const DB_NAME = "sport_db";
+const DB_URL = `postgresql://${USER_DB}:${PASSWORD_DB}@${HOST_DB}:${PORT_DB}/${DB_NAME}`;  // 'postgres://postgres:password@localhost:5432/postgres'
 
 setDummyPlots(plots);
 
 // Register static file plugin 
 fastify.register(fastifyStatic, {
     // root directory to serve from
-    root:  path.join( workDir , 'client' , 'public' ), 
+    root: [    
+        path.join( workDir , 'client' , 'public' ),
+        path.join( workDir , 'client' , 'src' )
+    ],
     // find entry in directory tree (i.e. root)
-    prefix: '/' 
+    prefix: '/'
 });
 
 
-// // allow origin from other port 
-// fastify.register(cors, {
-//     origin: "http://127.0.0.1:50214", 
-//     methods: ['GET', 'POST']
-// });
 
-// async function handler(request: FastifyRequest , reply:FastifyReply) {}
+// Register database connection 
+fastify.register( fastifyPostgres  , {connectionString: DB_URL} );
+
 
 let numberCsvLines: number;
 let numberPages: number;
@@ -124,91 +124,159 @@ exec(`wc -l ${filePath}`, (err, stdout, stderr) => {
     }
 });
 
+interface pageInfoInterface {
+    npages: number, 
+    nlastpage: number, 
+    nperpage: number ,
+    nsamples: number 
+} 
 
 /* Get player list page  */
-fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
-
-    // clear current stream buffers
-    csvReadStream.destroy();
-
-    csvReadStream.close();
-
-    // recreate 
-    csvReadStream  = fs.createReadStream(filePath);
-
-    let obj = request.params  as any;
-
+fastify.get('/page=:pg', async (request:FastifyRequest, reply: FastifyReply)=> {
+    
+    // console.log(request.url.toString())
+    let obj = request.params  as Record<string, string>;
+ 
     if (obj === Object.prototype /*strict compare; no coercion*/) {
         obj = Object.assign({}, obj); // coonvert null prototype to normal object 
     }
 
-    let numPlayers = playerPerPage;
+    try {
+        // connect to localhost's port 5432 (container port(i.e. 5432 mapped to localhost 5432)
+        const client = await fastify.pg.connect(); 
+        let page: number = parseInt(obj.pg as string) ;
+        let result; 
 
-    let players : PlayerFields[] = new Array(numPlayers).fill("");
-
-    let players_index = 0;
-    
-    let pageNumberZeroIndex = parseInt(obj.pg);
-
-    if (pageNumberZeroIndex != 0) {
-        // change to zero index
-        pageNumberZeroIndex -= 1;
-    }
-
-    const effectivePageNumber = Math.floor(numberPages)
-
-    const startPos = pageNumberZeroIndex * Math.floor(playerPerPage) ;
-
-    console.log('DEBUG', obj.pg, pageNumberZeroIndex, effectivePageNumber, startPos, players_index, numberPages);
-    
-    if (pageNumberZeroIndex != effectivePageNumber   ) {
-
-        console.log(pageNumberZeroIndex, effectivePageNumber)
-    } else {
-        console.log(numberCsvLines);
-        numPlayers = numberCsvLines - startPos ;
-        console.log(numPlayers);
-        players.length = numPlayers;
-    }
-
-    csvReadStream
-    .pipe(
-
-        parse ({ 
-            // delimiter: ',',
-            from_line: (startPos + 1),
-            to_line: (startPos +1) + numPlayers,
-            columns:['Player', 'Tm'], 
-            relax_column_count: true,
-        }))  /* class instance */
+        if ( page == 0) {
+            page = 1;
+        }
         
-    .on('data', ( row )=>{
-        if (row.Player == 'Player')
-            return;
+        result = await client.query('SELECT * from nba.info;');
+        
+        let pageInfo = result.rows[0] as pageInfoInterface;
+        
+        let startpos  = pageInfo.nperpage * (page - 1) + 1;
 
-        players[players_index] = {name: row.Player, img: CATIMAGE, plots:plots } ;
-        players_index++;
+        let endpos = (page == pageInfo.npages) ? pageInfo.nsamples * (pageInfo.nperpage * (page-1)) :  pageInfo.nperpage * (page);
+        
+        // console.log(startpos, endpos, );
+        
+        result = await client.query(`
+            SELECT 
+                nba.players2025.player, 
+                nba.players2025.tm,
+                nba.teams.tmpic,
+                nba.plot_pts.pts,
+                nba.plot_gamesplayed.played,
+                nba.playerimg.img
 
-    })
-
-    .on('end', ()=>{
-
-        // truncate if player list less than number-players-per-list
-        players.length = players_index;
-        console.log(players)
-
+            FROM nba.players2025 
+            LEFT JOIN nba.teams
+            ON nba.players2025.tm = nba.teams.tm
+            LEFT JOIN nba.plot_pts
+            ON nba.players2025.id = nba.plot_pts.player_id
+            LEFT JOIN nba.plot_gamesplayed
+            ON nba.players2025.id = nba.plot_gamesplayed.player_id
+            LEFT JOIN nba.playerimg
+            ON nba.players2025.id = nba.playerimg.player_id
+            WHERE nba.players2025.id between ${startpos} and ${endpos} 
+        ;`);
+        
         reply
         .type('application/json')
         .send({
-            page: ( pageNumberZeroIndex + 1), 
-            start: numberPages * (pageNumberZeroIndex), 
-            numPages:effectivePageNumber + 1 ,
-            players : players, 
+            page: ( page ), 
+            start: startpos,  
+            numPages: pageInfo.npages,
+            players : result.rows, 
             ing: CATIMAGE,
         });
-        
-    })
 
+        // console.log(result.rows);
+
+        client.release(); 
+
+    } catch(err) {
+        console.log(err);
+        reply
+        .status(404);
+    }
+});
+
+fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyReply)=> {
+    let obj = request.params  as Record<string, string>;
+
+    if (obj === Object.prototype /*strict compare; no coercion*/) {
+        obj = Object.assign({}, obj); // coonvert null prototype to normal object 
+    }
+    
+    try {
+
+        const regex = /.+=([a-z0-9]+)&size=([0-9]+)/;
+
+        let s = obj.key as string;
+            
+        const match = s.match(regex);
+
+        const client = await fastify.pg.connect(); 
+
+        if (match) {
+
+            // aggregate; pull player stats from select numbers of tables. Each table has the same features 
+            
+            // get player tables tables
+            const table_names = await client.query(`
+                SELECT 
+                    table_name
+                FROM 
+                    information_schema.tables 
+                WHERE 
+                    table_name ~ 'players[0-9]+'
+                ORDER BY  table_name ASC
+            ;`);
+            
+            // sql selection
+
+            let query_reduction_select = table_names.rows.reduce( ( acc: string, record: Record<string, string>, i: number) => {
+                if (i == 0) {
+                    acc += `SELECT * FROM nba.${record.table_name}\n`;
+                } else {
+                    let s = " UNION ALL " +  `SELECT * FROM nba.${record.table_name}\n`;
+                    acc += s;
+                }
+                return acc;
+            }, "");
+            
+            const result = await client.query(`
+                
+                WITH aggregate AS (
+                    ${query_reduction_select}
+                )
+                
+                SELECT *
+                FROM aggregate
+                WHERE  aggregate.id = 1
+                
+            ;`);
+    
+            reply
+            .send({ data: result.rows})
+            .send(200);
+
+            client.release();
+        
+        } else {
+            throw new Error('server request failed')
+
+        }
+        
+    }catch(err) {
+        
+        console.log('error request ', err)
+        reply
+        .status(404);
+
+    }
 });
 
 // /*  Append Log  */

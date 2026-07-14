@@ -22,7 +22,7 @@ export class PowerButton {
      configure() : void {
 
         if(this.configured) {
-            console.log('already configured');
+            // console.log('already configured');
             return;
         }
 
@@ -46,16 +46,16 @@ export class PowerButton {
 
             let v : HTMLElement;
 
-            console.log(powerStatus, viewStatus);
+            // console.log(powerStatus, viewStatus);
             
             if (viewStatus === "undef" && name == 'monitor') {
 
                 if (powerStatus === 'on1') {
-                        console.log('shut down monitor');
-                        nodeTest.dataset.status = "off";
+                        // console.log('shut down monitor');
+                        // nodeTest.dataset.status = "off";
                 } else {
                         nodeTest.dataset.status = "on1";
-                        console.log('start monitor server');
+                        // console.log('start monitor server');
                 }
 
                 return;
@@ -63,13 +63,13 @@ export class PowerButton {
             
             if (powerStatus === 'on') {
                 
-                console.log(parent)
-                
                 parent.dataset.loading="1";
 
                 // turn off server 
                 servicesInstr.shutdown(name)
                 .then(() => {
+                    
+                    // request to turn on server succeeded 
                     
                     nodeTest.dataset.status = "off";
                     
@@ -87,11 +87,11 @@ export class PowerButton {
                 })
 
                 .catch(()=>{
-                    
+                    // request to turn on server on failed 
                     parent.dataset.loading="0";
+                    nodeTest.dataset.status = "on"; // keep on
 
                 })
-                
                 
 
             } else if (powerStatus == "off") {
@@ -102,7 +102,7 @@ export class PowerButton {
                 // turn on switch 
                 servicesInstr.start(name)
                  .then(() => {
-                     
+                    
                     nodeTest.dataset.status = "on";
                      
                      // turn on view
@@ -120,9 +120,9 @@ export class PowerButton {
                 
                 .catch(()=>{
                     parent.dataset.loading="0";
+                    nodeTest.dataset.status = "off";
 
                 })
-                
 
             }
 
@@ -140,11 +140,10 @@ export class PowerButton {
 
     disable() {
         this.switch.dataset.status = "off";
-
     }
 
     enable () {
-        if (this.name = 'monitor') {
+        if (this.name == 'monitor') {
             this.switch.dataset.status = "on1";
         } else {
             this.switch.dataset.status = "on";
