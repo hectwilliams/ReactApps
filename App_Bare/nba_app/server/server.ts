@@ -82,30 +82,8 @@ fastify.register(fastifyStatic, {
     prefix: '/'
 });
 
-
-
 // Register database connection 
 fastify.register( fastifyPostgres  , {connectionString: DB_URL} );
-
-
-let numberCsvLines: number;
-let numberPages: number;
-const playerPerPage = 20 as number;
-
-// system call to get number of lines in csv files 
-exec(`wc -l ${filePath}`, (err: ExecException |  null, stdout: string, stderr: string) => {
-    if (err) {
-        console.log('err, child process');
-    } else if (stderr){
-        console.log('stderr, child process');
-    } else {
-        const arr =  stdout.trim().split(' ') as Array<string>;
-        const s = arr[0] as string;
-        const num = parseInt(s, 10) as number;
-        numberCsvLines = num;
-        numberPages = numberCsvLines / playerPerPage;
-    }
-});
 
 interface pageInfoInterface {
     npages: number, 

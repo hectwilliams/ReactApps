@@ -30,7 +30,7 @@ const bins = [] as Array<SimpleCapture>;
 */
 fastify.post('/binny', (request: FastifyRequest, reply: FastifyReply)=>{
     if (request.body) {
-        let body =  request.body as ClientRequest;
+        const body =  request.body as ClientRequest;
         bins.push({date: (new Date).toISOString(), size:body.amplitude});
     }
     reply.status(200);
