@@ -26,28 +26,21 @@ export class PowerButton {
             return;
         }
 
-        let prev: string | null; // closure caches previous state
-        let v_pres : HTMLElement | null; // cache view button element
-
         // add event listener 
         this.switch.addEventListener('click', (event: MouseEvent)=>{
 
-            let nodeTest = event.currentTarget as HTMLSpanElement;
+            const nodeTest = event.currentTarget as HTMLSpanElement;
             
-            let parent = nodeTest.parentNode as HTMLDivElement;
+            const parent = nodeTest.parentNode as HTMLDivElement;
             
-            let powerStatus = nodeTest.dataset.status as string;
+            const powerStatus = nodeTest.dataset.status as string;
             
-            let view = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement);
+            const view = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement);
 
-            let viewStatus = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement).dataset.on;
+            const viewStatus = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement).dataset.on;
             
-            let name = (nodeTest.parentNode?.childNodes[0] as HTMLSpanElement).innerText;
+            const name = (nodeTest.parentNode?.childNodes[0] as HTMLSpanElement).innerText;
 
-            let v : HTMLElement;
-
-            // console.log(powerStatus, viewStatus);
-            
             if (viewStatus === "undef" && name == 'monitor') {
 
                 if (powerStatus === 'on1') {
