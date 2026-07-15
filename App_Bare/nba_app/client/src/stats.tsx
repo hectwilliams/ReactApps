@@ -54,8 +54,6 @@ async function  dbclickCallback(event: MouseEvent) {
 
     const body = table.childNodes[1] as HTMLElement;
 
-    const params = new URLSearchParams({ start_history: '2025', size: '5'})
-
     try {
 
         const path = `${window.location.origin}/start_historyyear=2025&size=5`;
@@ -189,7 +187,7 @@ function setContainer(container: HTMLDivElement) {
       
     tr = document.createElement('tr');
     
-    fields.forEach(e=>{
+    fields.forEach(()=>{
         const data = document.createElement('td');
         data.innerHTML = `<p> ${1000} </p>`;
         tr.append(data)

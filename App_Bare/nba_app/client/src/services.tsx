@@ -114,10 +114,14 @@ class Services  {
             })
             .catch(()=>{
 
+                throw new Error("request service error");
+
             })
 
         } catch(err) {
 
+            console.log(err);
+            
         }
 
     }
