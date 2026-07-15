@@ -98,7 +98,7 @@ fastify.post('/power',  async (request, response) => {
             
             filepath = path.join(process.cwd(), `./server/run_servers.sh ${name}`);
             
-            exec(`${filepath} ${name}`, (error, stdout, stderr) =>{ 
+            exec(`${filepath} ${name}`, (error, stdout) =>{ 
     
                 if(error) {
                     throw new Error(`${error}`);
@@ -124,8 +124,8 @@ fastify.post('/power',  async (request, response) => {
                 
                 kill_pid = (processList['pid'] as Record<string, number>)[name as string] as number; 
 
-                exec(`${filepath} ${name}  ${kill_pid}`, (error, stdout, stderr) =>{ 
-                
+                exec(`${filepath} ${name}  ${kill_pid}`, (error) =>{ 
+                    
                     if(error) {
                         throw new Error(`${error}`);
                     } else {
@@ -140,7 +140,10 @@ fastify.post('/power',  async (request, response) => {
         }
 
     } catch (err) {
+        
+        console.log(err);
         response.send({message: `monitor service failed to power  ${enable? 'enable':'disable'} service`}).status(404);
+
     }
 
 });

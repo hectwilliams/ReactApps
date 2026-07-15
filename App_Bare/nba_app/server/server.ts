@@ -43,17 +43,6 @@ const rrand = ()=>{
     return Math.floor(Math.random() * 10) + 1; // 1 to 100 
 } 
 
-async function createlogDir() {             
-    const effPath = `${LOGDIR}/dashboards`;                                                                                                                                                                                                                                                                                                                                                                        
-    try {
-        const stats = await fs.promises.stat(effPath);
-    } catch(error:any) {
-        if (error.code == 'ENOENT') {
-            const response =  await fs.promises.mkdir( effPath, {recursive: true});
-            console.log(response, 'log dir created');
-        }
-    }
-}
 
 // const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
 // const LOCALHOST = '127.0.0.1'; // safe 
