@@ -7,6 +7,7 @@ import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
 import fastifyPostgres from '@fastify/postgres';
 // import cors from '@fastify/cors';
+ import type { ExecException } from 'node:child_process';
 
 interface MonitorInterface {
     services: Service;
@@ -55,8 +56,6 @@ const filePath = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'st
 
 const CATIMAGE = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'images', 'faces', 'img.png' );
 
-const LOGDIR = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'logs' );
-
 const plots : Array<Array<number>> = [];
 
 // load json to memory 
@@ -94,7 +93,7 @@ let numberPages: number;
 const playerPerPage = 20 as number;
 
 // system call to get number of lines in csv files 
-exec(`wc -l ${filePath}`, (err, stdout, stderr) => {
+exec(`wc -l ${filePath}`, (err: ExecException |  null, stdout: string, stderr: string) => {
     if (err) {
         console.log('err, child process');
     } else if (stderr){
@@ -137,11 +136,11 @@ fastify.get('/page=:pg', async (request:FastifyRequest, reply: FastifyReply)=> {
         
         result = await client.query('SELECT * from nba.info;');
         
-        let pageInfo = result.rows[0] as pageInfoInterface;
+        const pageInfo = result.rows[0] as pageInfoInterface;
         
-        let startpos  = pageInfo.nperpage * (page - 1) + 1;
+        const startpos  = pageInfo.nperpage * (page - 1) + 1;
 
-        let endpos = (page == pageInfo.npages) ? pageInfo.nsamples * (pageInfo.nperpage * (page-1)) :  pageInfo.nperpage * (page);
+        const endpos = (page == pageInfo.npages) ? pageInfo.nsamples * (pageInfo.nperpage * (page-1)) :  pageInfo.nperpage * (page);
         
         // console.log(startpos, endpos, );
         
@@ -198,7 +197,7 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
 
         const regex = /.+=([a-z0-9]+)&size=([0-9]+)/;
 
-        const s = obj.key as string;
+        let s = obj.key as string;
             
         const match = s.match(regex);
 
