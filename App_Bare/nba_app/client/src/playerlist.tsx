@@ -39,23 +39,20 @@ import {genStatsContainer} from './stats';
 export const playerlist = document.createElement('div');
 playerlist.className = top_level_list_container_container_cls;
 
-const imgPath = "./client/src/static/images/faces/img.png";
-
  async function getPlayerDiv(record: SimplePlayerProfileInterface, index?: number ) {
 
-    let mainElementWrapper = document.createElement('div');
+    const mainElementWrapper = document.createElement('div');
     mainElementWrapper.className = player_containerwrapper_cls;
 
-    let mainElement = document.createElement('div');
+    const mainElement = document.createElement('div');
     mainElement.className = player_container_cls;
-
     mainElementWrapper.append(mainElement)
 
     // add pic container 
-    let picContainer = document.createElement('div');
-    let picContainer_child = document.createElement('img');
-    let effIndex =  (!index ? 0 : (index % 2)) as number;
-    let src =   `http://127.0.0.1:50215/static/images/faces/${effIndex}_player.png`;
+    const picContainer = document.createElement('div');
+    const picContainer_child = document.createElement('img');
+    const effIndex =  (!index ? 0 : (index % 2)) as number;
+    const src =   `http://127.0.0.1:50215/static/images/faces/${effIndex}_player.png`;
     picContainer_child.src  = src;
     record.tmpic = record.tmpic.replace("/src", "")
     picContainer_child.style = `--bg-img: url('${record.tmpic}'); background-size:cover`; // teams background
@@ -128,10 +125,10 @@ const imgPath = "./client/src/static/images/faces/img.png";
         }
 
 
-            let barrierNode = document.createElement('div');
-            let node = document.createElement('div');
-            let node2 = document.createElement('div');
-            let overlayNode = document.createElement('div');
+            const barrierNode = document.createElement('div');
+            const node = document.createElement('div');
+            const node2 = document.createElement('div');
+            const overlayNode = document.createElement('div');
 
             node.className = binlog_container_cls;
             node2.className = binlog2_container_cls;
@@ -154,14 +151,14 @@ const imgPath = "./client/src/static/images/faces/img.png";
 
             // let qplot =  new QuickPlot(node);
 
-            let numbers = values;
+            const numbers = values;
             
             // qplot.setPlot(numbers);
             
             setPeakCells (node2, test_cls, numbers);
             setBarCells (node, numbers);
 
-            let c = node.className;
+            const c = node.className;
             void node.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
             node.className = c;
 
