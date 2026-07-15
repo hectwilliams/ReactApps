@@ -4,8 +4,6 @@ import {
     services_cls, services_cls_header,
 } from './static/css/services.css';
 import {  activeViewButtons,  ViewButton} from './viewButton';
-import { dashboard } from './dashboard';
-import { logbookInst } from './logbook';
 
 /*
     Generate a new paramterized card and add to cardBody 
@@ -34,22 +32,22 @@ function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
     services.forEach(serviceName => {
         // TODO restrict name size 
         
-        let cardContainer = document.createElement('div');
+        const cardContainer = document.createElement('div');
         cardContainer.className = services_card_container_cls;
         
-        let subContainer = document.createElement('div');
+        const subContainer = document.createElement('div');
         cardContainer.append(subContainer);
 
-        let cardName = document.createElement('span');
+        const cardName = document.createElement('span');
         cardName.innerHTML = `<p> ${serviceName} </p>`;
 
-        let newPowerButton = new PowerButton(serviceName);
+        const newPowerButton = new PowerButton(serviceName);
         activePowerButtons.push(newPowerButton);
-        let clonePowerSwitch = newPowerButton.get(); //= powerSwitchInst.switch.cloneNode(true) as HTMLSpanElement; // create copy of power switch
+        const clonePowerSwitch = newPowerButton.get(); //= powerSwitchInst.switch.cloneNode(true) as HTMLSpanElement; // create copy of power switch
 
-        let newViewButton = new ViewButton(serviceName)
+        const newViewButton = new ViewButton(serviceName)
         activeViewButtons.push(newViewButton);
-        let cloneMoreViewSymbol = newViewButton.get();
+        const cloneMoreViewSymbol = newViewButton.get();
         
         cloneMoreViewSymbol.dataset.name = serviceName;
 
@@ -99,8 +97,8 @@ class Services  {
         this.root.append(this.header);
         this.root.append(this.body);
 
-        let headerIcon = document.createElement('span');
-        let headerName = document.createElement('span');
+        const headerIcon = document.createElement('span');
+        const headerName = document.createElement('span');
         headerName.innerText = "Services";
         
         this.header.append(headerIcon);
