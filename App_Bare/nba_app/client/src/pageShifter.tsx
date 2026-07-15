@@ -1,4 +1,3 @@
-
 import {
     page_shifer_cls, 
     arrow_left_cls, 
@@ -8,10 +7,7 @@ import {
 } from './static/css/pageShifter.css';
 
 import { dashboard } from "./dashboard";
-
 import { storeInst } from './store';
-
-import type { StoreDictionary } from './store';
 import type { ServerRecordInterface,  } from "./handlers";
 import  { fetchPagesHelper } from "./handlers";
 
@@ -58,10 +54,10 @@ class Booklet {
             }
 
 
-            let name = storeInst.service;
+            const name = storeInst.service;
             
             /* nothing is deleted out the store, so if name exist then we are safe to continue */
-            let serverRecord = storeInst.get(name) as ServerRecordInterface;
+            const serverRecord = storeInst.get(name) as ServerRecordInterface;
 
             if (!serverRecord) {
                 // console.log('record lost');
@@ -69,13 +65,13 @@ class Booklet {
 
             }
             
-                let num = serverRecord.page;
+                const num = serverRecord.page;
 
                 if (num - 1 <=0 ) {
                     return;
                 }
                 
-                let prev = storeInst.players ; // save recent player list
+                const prev = storeInst.players ; // save recent player list
 
                 try {
 
@@ -83,7 +79,7 @@ class Booklet {
 
                     storeInst.players = "";
 
-                    let status =  fetchPagesHelper(name, num-1);
+                    const status =  fetchPagesHelper(name, num-1);
 
                     if (!status) {
                         
@@ -112,9 +108,9 @@ class Booklet {
                 return;
             }
             
-            let name = storeInst.service;
+            const name = storeInst.service;
             
-            let serverRecord = storeInst.get(name) as ServerRecordInterface;
+            const serverRecord = storeInst.get(name) as ServerRecordInterface;
             
             if (!serverRecord) {
                 // console.log('record lost');
@@ -125,13 +121,13 @@ class Booklet {
 
             /* nothing is deleted out the store, so if name exist then we are safe to continue */
 
-            let num = serverRecord.page;
+            const num = serverRecord.page;
 
             if (num +  1 >= parseInt(serverRecord.numPages) + 1 ) {
                 return;
             }
 
-            let prev = storeInst.players ; // save recent player list
+            const prev = storeInst.players ; // save recent player list
 
             try {
                 
@@ -139,7 +135,7 @@ class Booklet {
 
                 storeInst.players = "";
 
-                let status =  fetchPagesHelper(name, num + 1);
+                const status =  fetchPagesHelper(name, num + 1);
                 
                 if (!status) {
                     
