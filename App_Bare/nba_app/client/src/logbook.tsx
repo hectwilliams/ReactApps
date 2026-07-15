@@ -1,6 +1,5 @@
 import {
     table_log_cls,
-    log_header_cls,
     maindiv_log_cls,
     table_row_cls,
     log_message_cls,
@@ -11,18 +10,6 @@ import {
 
 import {logbook_in_dashboad_cls} from './static/css/dashboard.css';
 import { dashboard } from './dashboard';
-
-interface LogInterface {
-    date: string;
-    message: string;
-}
-
-const clickData = () => {
-    let ison = true;
-    return (event: MouseEvent) => {
-        // console.log('hell world');
-    }
-}
 
 class LogBook {
     top : HTMLDivElement;

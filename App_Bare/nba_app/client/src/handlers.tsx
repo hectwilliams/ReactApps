@@ -127,16 +127,3 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
 
     }
 }
-
-
-/* 
-    Global closure used to capture every called instance of viewClick.
-
-    Note: Don't run too many services, many instances will exist in memory 
-*/
-const globalViewVlick = (node: HTMLSpanElement) => {
-    const ref = node;
-    return () => {
-        return ref;
-    }
-}
