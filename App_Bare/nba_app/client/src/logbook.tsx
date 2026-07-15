@@ -173,8 +173,8 @@ class LogBook {
         const deltaY = event.clientY - this.posY;
         const deltaX = event.clientX - this.posX;
         
-        console.log(event.clientX , event.clientY )
-        console.log(event.clientX , event.clientY )
+        // console.log(event.clientX , event.clientY )
+        // console.log(event.clientX , event.clientY )
         
         if (deltaY != 0 || deltaX != 0) {
             
@@ -194,15 +194,6 @@ class LogBook {
 
             const box_right = event.clientX + mid_w;
 
-
-            // let box_top =  parseInt(this.top.style.top.slice(0, this.top.style.top.length - 2)) + deltaY;
-
-            // let box_bottom =  parseInt(this.top.style.bottom.slice(0, this.top.style.bottom.length - 2)) + deltaY;
-
-            // let box_left =  parseInt(this.top.style.left.slice(0, this.top.style.left.length - 2)) + deltaX;
-
-            // let box_right =  parseInt(this.top.style.right.slice(0, this.top.style.right.length - 2)) + deltaX;
-            
             if (box_top >= dashboard.getBoundingClientRect().top && box_left > dashboard.getBoundingClientRect().left && box_bottom <= dashboard.getBoundingClientRect().bottom && box_right <= dashboard.getBoundingClientRect().right) {
                 this.top.style.top = box_top + "px";
                 this.top.style.left = box_left + "px";
