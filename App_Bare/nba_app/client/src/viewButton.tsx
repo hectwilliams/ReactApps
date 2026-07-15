@@ -35,7 +35,7 @@ export class  ViewButton {
         }
         const rows = [2, 5, 9] as Array<number>;
         rows.forEach((r, index)=>{
-            let v = rows[3 - 1 - index];
+            const v = rows[3 - 1 - index];
             if (v) {
                 // console.log(v);
                 for (let i = 0; i < v; i++) {
@@ -53,7 +53,7 @@ export class  ViewButton {
 
 
     /* handler for view button clicks  */
-    viewClick(): any {
+    viewClick() {
         // let cacheNode = node;
         return (event: MouseEvent) => {
             const currentNode = event.currentTarget as HTMLSpanElement;

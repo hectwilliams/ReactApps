@@ -59,30 +59,26 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
     
 /* returns available services */
 fastify.get('/', (req, res)=>{
+    req;
     res
     .type('text/html')
     .sendFile('index.html')
 });
 
-fastify.get('/a', (req, res)=>{
 
-});
 fastify.get('/services', (req, res)=>{
-
+    req;
     res.send(json);
 });
 
-fastify.get('/nbainfo',  (request, response) => {
-    // response.send(json['services']['nba'])
-});
 
-fastify.get('/binnyinfo',  (request, response) => {
-    // response.send(json['services']['binny'])
-});
+// fastify.get('/binnyinfo',  (request, response) => {
+//     // response.send(json['services']['binny'])
+// });
 
-fastify.get('/nbaoff',  (request, response) => {
+// fastify.get('/nbaoff',  (request, response) => {
 
-});
+// });
 
 /* Enable webservers */
 fastify.post('/power',  async (request, response) => {
