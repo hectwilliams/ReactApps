@@ -1,5 +1,4 @@
 import process from 'process';
-import {exec} from 'child_process';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
@@ -7,7 +6,6 @@ import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
 import fastifyPostgres from '@fastify/postgres';
 // import cors from '@fastify/cors';
- import type { ExecException } from 'node:child_process';
 
 interface MonitorInterface {
     services: Service;
@@ -51,8 +49,6 @@ const workDir = process.cwd();
 
 // // instantiate server framework 
 const fastify = Fastify({logger: true});
-
-const filePath = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'csv', 'nba.csv' );
 
 const CATIMAGE = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'images', 'faces', 'img.png' );
 
@@ -175,7 +171,7 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
 
         const regex = /.+=([a-z0-9]+)&size=([0-9]+)/;
 
-        let s = obj.key as string;
+        const s = obj.key as string;
             
         const match = s.match(regex);
 
