@@ -93,7 +93,7 @@ class Booklet {
 
                 } catch(err) {
                     
-                    // console.log('arrow click request, unsuccessful');
+                    console.log(err);
                     storeInst.players = prev;
                     this.show();      
 
@@ -150,6 +150,7 @@ class Booklet {
 
             } catch(err) {
                 
+                console.log(err);
                 storeInst.players = prev;
                 
                 // console.log('arrow click request, unsuccessful');
@@ -157,10 +158,6 @@ class Booklet {
                 this.show();
 
             }
-
-
-            // }
-
 
          }
 
