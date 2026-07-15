@@ -50,7 +50,7 @@ class LogBook {
         this.top.addEventListener('dblclick', this.handleDoubleClick.bind(this));
         this.top.addEventListener('mousedown', this.handleMouseDown.bind(this));
 
-        this.exit.onclick =  (event: MouseEvent) => {
+        this.exit.onclick =  () => {
             logbookInst.close();
         }
 
@@ -61,9 +61,9 @@ class LogBook {
         this.posY = 0;
 
         // header 
-        let tr = document.createElement('tr');
-        let header1 = document.createElement('th');
-        let header2 = document.createElement('th');
+        const tr = document.createElement('tr');
+        const header1 = document.createElement('th');
+        const header2 = document.createElement('th');
         header1.className =log_header_cls1;
         header1.innerText = "Date";
         header2.className =log_header_cls2;
@@ -107,14 +107,14 @@ class LogBook {
 
     add(message: string) {
 
-        let tr = document.createElement('tr');
+        const tr = document.createElement('tr');
         tr.className = table_row_cls;
         
         let d1 = document.createElement('td');
         d1.className = log_message_cls;
         d1.innerText = (new Date()).toISOString()
         
-        let d2 = document.createElement('td');
+        const d2 = document.createElement('td');
         d2.innerText = `${message}`;
         d2.className = log_message_cls;
         
@@ -149,7 +149,7 @@ class LogBook {
         // re-set logbook style using DOMRect structure 
         if ( !this.mouseDownEntered ) {
             // console.log("hello");
-            let rect = this.top.getBoundingClientRect() as DOMRect;
+            const rect = this.top.getBoundingClientRect() as DOMRect;
             this.top.style.width = (rect.width) + "px" ;
             // this.top.style.border = "5px silver solid";
             this.top.style.height = (rect.height)+ "px";
@@ -170,29 +170,29 @@ class LogBook {
     }
 
     handleMouseMove (event:MouseEvent) {
-        let deltaY = event.clientY - this.posY;
-        let deltaX = event.clientX - this.posX;
+        const deltaY = event.clientY - this.posY;
+        const deltaX = event.clientX - this.posX;
         
         console.log(event.clientX , event.clientY )
         console.log(event.clientX , event.clientY )
         
         if (deltaY != 0 || deltaX != 0) {
             
-            let h = (parseInt(this.top.style.height.slice(0, this.top.style.height.length - 2)) ) ;
+            const h = (parseInt(this.top.style.height.slice(0, this.top.style.height.length - 2)) ) ;
             
-            let w = (parseInt(this.top.style.width.slice(0, this.top.style.width.length - 2)) ) ;
+            const w = (parseInt(this.top.style.width.slice(0, this.top.style.width.length - 2)) ) ;
 
-            let mid_h = h / 2;
+            const mid_h = h / 2;
 
-            let mid_w = w / 2;
+            const mid_w = w / 2;
 
-            let box_bottom = event.clientY  + mid_h ;
+            const box_bottom = event.clientY  + mid_h ;
             
-            let box_top = event.clientY - mid_h;
+            const box_top = event.clientY - mid_h;
 
-            let box_left = event.clientX - mid_w;
+            const box_left = event.clientX - mid_w;
 
-            let box_right = event.clientX + mid_w;
+            const box_right = event.clientX + mid_w;
 
 
             // let box_top =  parseInt(this.top.style.top.slice(0, this.top.style.top.length - 2)) + deltaY;
