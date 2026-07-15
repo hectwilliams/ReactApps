@@ -72,7 +72,7 @@ class LogBook {
         tr.append(header1, header2);
         tr.className = table_row_cls;
         
-        let label = document.createElement('label');
+        const label = document.createElement('label');
         label.innerText = "Log"; 
         label.className = log_message_label_cls;
         this.div.append(this.table)
@@ -110,7 +110,7 @@ class LogBook {
         const tr = document.createElement('tr');
         tr.className = table_row_cls;
         
-        let d1 = document.createElement('td');
+        const d1 = document.createElement('td');
         d1.className = log_message_cls;
         d1.innerText = (new Date()).toISOString()
         
@@ -129,7 +129,7 @@ class LogBook {
         dashboard.append(this.top);
     }
 
-    handleMouseDown (event: MouseEvent)  { 
+    handleMouseDown ()  { 
         if ( this.mouseDownEntered ) {
             clearInterval(this.setIntervalRef);
             this.controller.abort(); // all listener 'connected' are aborted 
