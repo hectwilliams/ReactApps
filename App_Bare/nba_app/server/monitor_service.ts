@@ -6,6 +6,7 @@ import path from 'node:path';
 import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
 // import cors from '@fastify/cors';
+ import type { ExecException } from 'node:child_process';
 
 interface MonitorInterface {
     services: Service;
@@ -98,7 +99,7 @@ fastify.post('/power',  async (request, response) => {
             
             filepath = path.join(process.cwd(), `./server/run_servers.sh ${name}`);
             
-            exec(`${filepath} ${name}`, (error, stdout) =>{ 
+            exec(`${filepath} ${name}`, (error: ExecException | null, stdout: string) =>{ 
     
                 if(error) {
                     throw new Error(`${error}`);
