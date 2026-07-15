@@ -198,7 +198,7 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
                 if (i == 0) {
                     acc += `SELECT * FROM nba.${record.table_name}\n`;
                 } else {
-                    let s = " UNION ALL " +  `SELECT * FROM nba.${record.table_name}\n`;
+                    const s = " UNION ALL " +  `SELECT * FROM nba.${record.table_name}\n`;
                     acc += s;
                 }
                 return acc;
