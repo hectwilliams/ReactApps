@@ -60,21 +60,21 @@ playerlist.className = top_level_list_container_container_cls;
     picContainer.append(picContainer_child);
 
     // add plot container 
-    let plotsContainer  = document.createElement('div');
+    const plotsContainer  = document.createElement('div');
     // let result = 
 
     // set css styles to plots window 
     plotsContainer.className = playerDataContainer_cls;
 
     // plot data wrapper 
-    let wrapper_plotsData = document.createElement('div');
+    const wrapper_plotsData = document.createElement('div');
     wrapper_plotsData.className = wrapperPlayerChainContainer;
 
-    let statsContainer = genStatsContainer(statsChainContainer_cls); 
+    const statsContainer = genStatsContainer(statsChainContainer_cls); 
     
     wrapper_plotsData.append(statsContainer);
 
-    let plotsChainContainer = document.createElement('div'); 
+    const plotsChainContainer = document.createElement('div'); 
     
     plotsChainContainer.className = playerChainContainer_cls;
 
@@ -114,9 +114,9 @@ playerlist.className = top_level_list_container_container_cls;
         else 
             return;
 
-        let sReplaced = arr.replaceAll(";", ",") 
+        const sReplaced = arr.replaceAll(";", ",") 
         
-        let values = JSON.parse(sReplaced.trim()) as number[];
+        let  values = JSON.parse(sReplaced.trim()) as number[];
 
         // TODO truncate values
         
@@ -171,9 +171,9 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
     
     try {
 
-        let stringArray = String(data?.players).toString()  + storeInst.service; // convert array to string 
-        let newHash = quickHash(stringArray) as string;
-        let code = String(data.players);
+        const stringArray = String(data?.players).toString()  + storeInst.service; // convert array to string 
+        const newHash = quickHash(stringArray) as string;
+        const code = String(data.players);
 
          if (storeInst.players === code) {
             // console.log('request does not change gui state');
@@ -210,7 +210,8 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
     
     } catch(err) {
 
-        return false
+        console.log(err);
+        return false;
 
     }
 }
