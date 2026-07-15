@@ -1,25 +1,24 @@
 
-import { binlog_cell_cls, test_cls  } from './static/css/quickPlot.css';
+import { binlog_cell_cls } from './static/css/quickPlot.css';
 import { BINSIZE } from './main';
 
 export function fillUnweightedCell(currentNode: HTMLDivElement, classname: string) {
   // load empty cells 
     for(let n = 0; n < BINSIZE**2; n++) {
-        let e = document.createElement('span');
+        const e = document.createElement('span');
         e.className = classname;
-        // currentNode.dataset.on="0";
         currentNode.append(e);
     }
 }
 
 export function setPeakCells (currentNode: HTMLDivElement, classname: string, numbers: number[]) {
-    let posititons = []
+    const posititons = []
     numbers.forEach( (amplitude, index) => {
 
         if (amplitude  <= 0 || amplitude > BINSIZE**2) 
             return;  
 
-        let pos = ((10 - amplitude)*BINSIZE) + index as number;
+        const pos = ((10 - amplitude)*BINSIZE) + index as number;
         posititons.push([amplitude, index], pos);
         if (pos >= 0 && pos < 100) {
             (currentNode.childNodes[pos] as HTMLSpanElement).dataset.on="1";
@@ -30,9 +29,9 @@ export function setPeakCells (currentNode: HTMLDivElement, classname: string, nu
 }
 
 export function setBarCells (currentNode: HTMLDivElement,  numbers: number[]) {
-    let posititons = []
-    numbers.forEach( (amplitude, index) => {
-        let cells = [] as Array<HTMLSpanElement>;
+    
+    numbers.forEach( (amplitude) => {
+        const cells = [] as Array<HTMLSpanElement>;
 
         if (amplitude  <= 0 || amplitude > BINSIZE**2) 
             return;  
@@ -40,8 +39,8 @@ export function setBarCells (currentNode: HTMLDivElement,  numbers: number[]) {
         numbers.forEach( (r, c) => { 
             r = BINSIZE - r;
             while (r < BINSIZE) {
-                let pos = r * BINSIZE + c;
-                let binCell = currentNode.childNodes[pos] as HTMLSpanElement;
+                const pos = r * BINSIZE + c;
+                const binCell = currentNode.childNodes[pos] as HTMLSpanElement;
                 // binCell.dataset.on = '1';
                 cells.push(binCell);
                 r++;
@@ -49,7 +48,7 @@ export function setBarCells (currentNode: HTMLDivElement,  numbers: number[]) {
         });
 
         cells.forEach( (b)=>{
-            let classname = b.className;
+            const classname = b.className;
             // reflow block
             b.className = "";
             void b.offsetWidth; 
@@ -81,7 +80,7 @@ export class QuickPlot {
     // set plot  
     setPlot(numbers: number[]) {
         
-        let cells = [] as Array<HTMLSpanElement>;
+        const cells = [] as Array<HTMLSpanElement>;
         
         numbers.forEach( (r, c) => { 
         //flip r 
@@ -89,8 +88,8 @@ export class QuickPlot {
             // r = Math.floor( r/ BINSIZE) ;
             r = BINSIZE - r;
             while (r < BINSIZE) {
-                let pos = r * BINSIZE + c;
-                let binCell = this.bin_log.childNodes[pos] as HTMLSpanElement;
+                const pos = r * BINSIZE + c;
+                const binCell = this.bin_log.childNodes[pos] as HTMLSpanElement;
                 // binCell.dataset.on = '1';
                 cells.push(binCell);
                 r++;
@@ -98,7 +97,7 @@ export class QuickPlot {
         })
 
         cells.forEach( (b)=>{
-            let classname = b.className;
+            const classname = b.className;
             // reflow block
             b.className = "";
             void b.offsetWidth; 

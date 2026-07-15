@@ -132,6 +132,7 @@ if (( pageseff != $pages )); then
     rule="$rule 1 $n"
     tail=$n
 fi
+
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/pageinfo.sh $pages $tail $total)
 echo $stdout
 
