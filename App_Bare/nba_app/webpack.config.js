@@ -1,8 +1,11 @@
-// const path = require('path');
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-import {path} from 'path';
+// Get the current file path (equivalent to __filename)
+const __filename = fileURLToPath(import.meta.url);
 
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// Get the current directory path (equivalent to __dirname)
+const __dirname = path.dirname(__filename);
 
 module.exports = {
     mode: "development",
