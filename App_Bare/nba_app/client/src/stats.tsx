@@ -36,7 +36,7 @@ const fields = [
     ]
 
 export function genStatsContainer(classname: string) {
-    let container = document.createElement('div');
+    const container = document.createElement('div');
     container.className = classname;
     setContainer(container);
     return container;
@@ -46,18 +46,15 @@ async function  dbclickCallback(event: MouseEvent) {
     
     event.preventDefault();
     
-    let eventNode = event.currentTarget as HTMLDivElement;
+    const eventNode = event.currentTarget as HTMLDivElement;
 
+    const dialog = eventNode.nextElementSibling as HTMLDialogElement;
     
-    let dialog = eventNode.nextElementSibling as HTMLDialogElement;
-    
-    let table = dialog.childNodes[0] as HTMLTableElement;
+    const table = dialog.childNodes[0] as HTMLTableElement;
 
-    let body = table.childNodes[1] as HTMLElement;
+    const body = table.childNodes[1] as HTMLElement;
 
     const params = new URLSearchParams({ start_history: '2025', size: '5'})
-
-    console.log(params);
 
     try {
 
@@ -73,20 +70,19 @@ async function  dbclickCallback(event: MouseEvent) {
 
         resp.data.forEach( (struct: Record<string, string>) => {
                 
-            let tr = document.createElement('tr');
+            const tr = document.createElement('tr');
 
                 (['date'].concat (fields) ).forEach(e=>{
 
-                    console.log(e);
                     let eff = e;
                     if (eff == "+/-")
                         eff = "plusminus"
                     if (eff == "played") 
                         eff = "unnamed"
                             
-                    let data = document.createElement('td');
+                    const data = document.createElement('td');
                     
-                    let x = struct[eff];
+                    const x = struct[eff];
                     if (x) {
                         data.innerHTML = `<p> ${x} </p>`;
                     } else  {
@@ -111,37 +107,37 @@ async function  dbclickCallback(event: MouseEvent) {
 
 /* container containing player most recent stat */
 function setContainer(container: HTMLDivElement) {
-    let hidden1 = document.createElement('div');
-    let hidden1_div = document.createElement('div');
+    const hidden1 = document.createElement('div');
+    const hidden1_div = document.createElement('div');
 
-    let hidden2 = document.createElement('div');
-    let hidden2_div = document.createElement('div');
+    const hidden2 = document.createElement('div');
+    const hidden2_div = document.createElement('div');
     
-    let table = document.createElement('table');
-    let tableHeader = document.createElement('thead');
-    let tableBody = document.createElement('tbody');
+    const table = document.createElement('table');
+    const tableHeader = document.createElement('thead');
+    const tableBody = document.createElement('tbody');
     
-    let dialog = document.createElement('dialog');
+    const dialog = document.createElement('dialog');
     dialog.className = dialog_cls;
     dialog.dataset.modal = "0";
 
-    let diaspan = document.createElement('span');
+    const diaspan = document.createElement('span');
     diaspan.innerHTML = "<p>X</p>";
     dialog.onclick = (event: MouseEvent)=> {
-        let node = event.currentTarget as HTMLDialogElement;
-        let table = node.childNodes[0]as HTMLTableElement;
-        let body = table.childNodes[1]as HTMLElement;
+        const node = event.currentTarget as HTMLDialogElement;
+        const table = node.childNodes[0]as HTMLTableElement;
+        const body = table.childNodes[1]as HTMLElement;
         body.replaceChildren();
         node.dataset.modal = "0";
     }
 
-    let diatable = document.createElement('table');
-    let diatableHeader = document.createElement('thead');
-    let diatablebody = document.createElement('tbody');
-    let diatr = document.createElement('tr');
+    const diatable = document.createElement('table');
+    const diatableHeader = document.createElement('thead');
+    const diatablebody = document.createElement('tbody');
+    const diatr = document.createElement('tr');
 
     (['date'].concat (fields) ).forEach(e=>{
-    let diatableHeader = document.createElement('th');
+    const diatableHeader = document.createElement('th');
         diatableHeader.innerHTML = `<p> ${e} </p>`;
         diatr.append(diatableHeader);
     })
@@ -160,7 +156,7 @@ function setContainer(container: HTMLDivElement) {
     hidden2.className = hidden_label_connector_cls;
     
     for (let i = 0; i < 24; i++) {
-        let s = document.createElement('div');
+        const s = document.createElement('div');
         hidden1_div.append(s);
         s.innerHTML = `<p>  </p>`;
         
@@ -182,11 +178,9 @@ function setContainer(container: HTMLDivElement) {
     container.append(table);
     container.append(dialog);
 
-  
-    
     let tr = document.createElement('tr');
     fields.forEach(e=>{
-        let header1 = document.createElement('th');
+        const header1 = document.createElement('th');
         header1.innerHTML = `<p> ${e} </p>`;
         tr.append(header1)
         
@@ -196,7 +190,7 @@ function setContainer(container: HTMLDivElement) {
     tr = document.createElement('tr');
     
     fields.forEach(e=>{
-        let data = document.createElement('td');
+        const data = document.createElement('td');
         data.innerHTML = `<p> ${1000} </p>`;
         tr.append(data)
         
