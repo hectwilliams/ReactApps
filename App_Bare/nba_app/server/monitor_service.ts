@@ -59,17 +59,15 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 });
     
 /* returns available services */
-fastify.get('/', (req, res)=>{
-    req;
-    res
+fastify.get('/', (request, reply)=>{
+    reply
     .type('text/html')
     .sendFile('index.html')
 });
 
 
-fastify.get('/services', (req, res)=>{
-    req;
-    res.send(json);
+fastify.get('/services', (request : FastifyRequest, reply: FastifyReply)=>{
+    reply.send(json);
 });
 
 
@@ -142,8 +140,7 @@ fastify.post('/power',  async (request, response) => {
 
     } catch (err) {
         
-        console.log(err);
-        response.send({message: `monitor service failed to power  ${enable? 'enable':'disable'} service`}).status(404);
+        response.send({message: `monitor service failed to power  ${enable? 'enable':'disable'} service\t Err: ${err}}`}).status(404);
 
     }
 
