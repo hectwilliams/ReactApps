@@ -11,6 +11,8 @@ import {
 import {logbook_in_dashboad_cls} from './static/css/dashboard.css';
 import { dashboard } from './dashboard';
 
+type  handleMouseMove =  (event:MouseEvent) => void;
+
 class LogBook {
     top : HTMLDivElement;
     exit: HTMLSpanElement;
@@ -20,7 +22,7 @@ class LogBook {
     setIntervalRef : NodeJS.Timeout | undefined;
     posY: number;
     posX: number;
-    refMouseMove: Function;
+    refMouseMove: handleMouseMove;
     controller: AbortController;
     mouseDownEntered: boolean;
     a: string;
