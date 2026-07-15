@@ -1,10 +1,8 @@
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-// Get the current file path (equivalent to __filename)
 const __filename = fileURLToPath(import.meta.url);
 
-// Get the current directory path (equivalent to __dirname)
 const __dirname = path.dirname(__filename);
 
 module.exports = {
