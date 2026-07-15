@@ -17,8 +17,8 @@ import type {ServerRecordInterface} from './handlers';
 import type { SimplePlayerProfileInterface } from './player';
 import { dashboard } from './dashboard';
 import { bookletInst } from "./pageShifter";
-import { setBarCells, setPeakCells, QuickPlot , fillUnweightedCell} from './quickPlot';
-import { binlog_cell_cls, binlog_container_cls , binlog_overlay__cls, binlog2_container_cls, test_cls, test_cls2} from './static/css/quickPlot.css';
+import { setBarCells, setPeakCells , fillUnweightedCell} from './quickPlot';
+import { binlog_cell_cls, binlog_container_cls , binlog_overlay__cls, binlog2_container_cls, test_cls} from './static/css/quickPlot.css';
 import { storeInst } from './store';
 import { quickHash } from './algo';
 import { BINSIZE } from './main';
@@ -39,23 +39,20 @@ import {genStatsContainer} from './stats';
 export const playerlist = document.createElement('div');
 playerlist.className = top_level_list_container_container_cls;
 
-const imgPath = "./client/src/static/images/faces/img.png";
-
  async function getPlayerDiv(record: SimplePlayerProfileInterface, index?: number ) {
 
-    let mainElementWrapper = document.createElement('div');
+    const mainElementWrapper = document.createElement('div');
     mainElementWrapper.className = player_containerwrapper_cls;
 
-    let mainElement = document.createElement('div');
+    const mainElement = document.createElement('div');
     mainElement.className = player_container_cls;
-
     mainElementWrapper.append(mainElement)
 
     // add pic container 
-    let picContainer = document.createElement('div');
-    let picContainer_child = document.createElement('img');
-    let effIndex =  (!index ? 0 : (index % 2)) as number;
-    let src =   `http://127.0.0.1:50215/static/images/faces/${effIndex}_player.png`;
+    const picContainer = document.createElement('div');
+    const picContainer_child = document.createElement('img');
+    const effIndex =  (!index ? 0 : (index % 2)) as number;
+    const src =   `http://127.0.0.1:50215/static/images/faces/${effIndex}_player.png`;
     picContainer_child.src  = src;
     record.tmpic = record.tmpic.replace("/src", "")
     picContainer_child.style = `--bg-img: url('${record.tmpic}'); background-size:cover`; // teams background
@@ -63,21 +60,21 @@ const imgPath = "./client/src/static/images/faces/img.png";
     picContainer.append(picContainer_child);
 
     // add plot container 
-    let plotsContainer  = document.createElement('div');
+    const plotsContainer  = document.createElement('div');
     // let result = 
 
     // set css styles to plots window 
     plotsContainer.className = playerDataContainer_cls;
 
     // plot data wrapper 
-    let wrapper_plotsData = document.createElement('div');
+    const wrapper_plotsData = document.createElement('div');
     wrapper_plotsData.className = wrapperPlayerChainContainer;
 
-    let statsContainer = genStatsContainer(statsChainContainer_cls); 
+    const statsContainer = genStatsContainer(statsChainContainer_cls); 
     
     wrapper_plotsData.append(statsContainer);
 
-    let plotsChainContainer = document.createElement('div'); 
+    const plotsChainContainer = document.createElement('div'); 
     
     plotsChainContainer.className = playerChainContainer_cls;
 
@@ -117,9 +114,9 @@ const imgPath = "./client/src/static/images/faces/img.png";
         else 
             return;
 
-        let sReplaced = arr.replaceAll(";", ",") 
+        const sReplaced = arr.replaceAll(";", ",") 
         
-        let values = JSON.parse(sReplaced.trim()) as number[];
+        let  values = JSON.parse(sReplaced.trim()) as number[];
 
         // TODO truncate values
         
@@ -128,10 +125,10 @@ const imgPath = "./client/src/static/images/faces/img.png";
         }
 
 
-            let barrierNode = document.createElement('div');
-            let node = document.createElement('div');
-            let node2 = document.createElement('div');
-            let overlayNode = document.createElement('div');
+            const barrierNode = document.createElement('div');
+            const node = document.createElement('div');
+            const node2 = document.createElement('div');
+            const overlayNode = document.createElement('div');
 
             node.className = binlog_container_cls;
             node2.className = binlog2_container_cls;
@@ -154,14 +151,14 @@ const imgPath = "./client/src/static/images/faces/img.png";
 
             // let qplot =  new QuickPlot(node);
 
-            let numbers = values;
+            const numbers = values;
             
             // qplot.setPlot(numbers);
             
             setPeakCells (node2, test_cls, numbers);
             setBarCells (node, numbers);
 
-            let c = node.className;
+            const c = node.className;
             void node.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
             node.className = c;
 
@@ -174,9 +171,9 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
     
     try {
 
-        let stringArray = String(data?.players).toString()  + storeInst.service; // convert array to string 
-        let newHash = quickHash(stringArray) as string;
-        let code = String(data.players);
+        const stringArray = String(data?.players).toString()  + storeInst.service; // convert array to string 
+        const newHash = quickHash(stringArray) as string;
+        const code = String(data.players);
 
          if (storeInst.players === code) {
             // console.log('request does not change gui state');
@@ -213,7 +210,8 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
     
     } catch(err) {
 
-        return false
+        console.log(err);
+        return false;
 
     }
 }

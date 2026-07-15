@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, lint ]
+  pull_request:
+    branches: [ main, master, lint ]
+
+jobs:
+  lint:
+    runs-on: macos-latest
+    # defaults:
+      # run:
+        # working-directory: 
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24' # Set the runner runtime directly
+          cache: 'npm'
+          cache-dependency-path: './App_Bare/nba_app/package-lock.json' # point to lockfile 
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: './App_Bare/nba_app' # working directory
+        
+      - name: Run TypeScript Linter
+        run: npm run lint
+        working-directory: './App_Bare/nba_app' # working directory

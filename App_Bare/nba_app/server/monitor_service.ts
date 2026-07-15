@@ -5,8 +5,8 @@ import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
-import {parse} from 'csv-parse';
 // import cors from '@fastify/cors';
+ import type { ExecException } from 'node:child_process';
 
 interface MonitorInterface {
     services: Service;
@@ -23,9 +23,8 @@ interface Ports {
 }
 
 async function loadServices() :Promise<MonitorInterface> {
-    
-    let  asyncRawJson = await fs.promises.readFile('./server/config.json', 'utf-8');
-    let json =  JSON.parse(asyncRawJson) as MonitorInterface;
+    const  asyncRawJson = await fs.promises.readFile('./server/config.json', 'utf-8');
+    const json =  JSON.parse(asyncRawJson) as MonitorInterface;
     return json;
 }
 
@@ -51,7 +50,7 @@ fastify.register(fastifyStatic, {
 // });
 
 fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
-     let obj = request.params  as any;
+     let obj = request.params  as Record<string, string>;
 
     if (obj === Object.prototype /*strict compare; no coercion*/) {
         obj = Object.assign({}, obj); // coonvert null prototype to normal object 
@@ -60,37 +59,31 @@ fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
 });
     
 /* returns available services */
-fastify.get('/', (req, res)=>{
-    res
+fastify.get('/', (request, reply)=>{
+    reply
     .type('text/html')
     .sendFile('index.html')
 });
 
-fastify.get('/a', (req, res)=>{
 
-});
-fastify.get('/services', (req, res)=>{
-
-    res.send(json);
+fastify.get('/services', (request : FastifyRequest, reply: FastifyReply)=>{
+    reply.send(json);
 });
 
-fastify.get('/nbainfo',  (request, response) => {
-    // response.send(json['services']['nba'])
-});
 
-fastify.get('/binnyinfo',  (request, response) => {
-    // response.send(json['services']['binny'])
-});
+// fastify.get('/binnyinfo',  (request, response) => {
+//     // response.send(json['services']['binny'])
+// });
 
-fastify.get('/nbaoff',  (request, response) => {
+// fastify.get('/nbaoff',  (request, response) => {
 
-});
+// });
 
 /* Enable webservers */
 fastify.post('/power',  async (request, response) => {
     
-    let name = (request.body as Record<string, string>)['name']; 
-    let enable = (request.body as Record<string, string>)['enable'];
+    const name = (request.body as Record<string, string>)['name']; 
+    const enable = (request.body as Record<string, string>)['enable'];
     let filepath;
 
     try {
@@ -104,12 +97,12 @@ fastify.post('/power',  async (request, response) => {
             
             filepath = path.join(process.cwd(), `./server/run_servers.sh ${name}`);
             
-            exec(`${filepath} ${name}`, (error, stdout, stderr) =>{ 
+            exec(`${filepath} ${name}`, (error: ExecException | null, stdout: string) =>{ 
     
                 if(error) {
                     throw new Error(`${error}`);
                 } else {
-                    let effPID = parseInt(stdout.trim());
+                    const effPID = parseInt(stdout.trim());
         
                     floatingProcess.push(effPID); // TODO handle faults / reset and still persists -- needs to be deleted 
                     (processList['pid'] as Record<string, number>)[(name as string)]= effPID as number;
@@ -130,14 +123,14 @@ fastify.post('/power',  async (request, response) => {
                 
                 kill_pid = (processList['pid'] as Record<string, number>)[name as string] as number; 
 
-                exec(`${filepath} ${name}  ${kill_pid}`, (error, stdout, stderr) =>{ 
-                
+                exec(`${filepath} ${name}  ${kill_pid}`, (error) =>{ 
+                    
                     if(error) {
                         throw new Error(`${error}`);
                     } else {
                         // delete server process successful 
                         // console.log(stdout)
-                        let obj = processList['pid'] as Record<string, number>;
+                        const obj = processList['pid'] as Record<string, number>;
                         delete obj.nba;
                         response.status(200); 
                     }
@@ -146,7 +139,9 @@ fastify.post('/power',  async (request, response) => {
         }
 
     } catch (err) {
-        response.send({message: `monitor service failed to power  ${enable? 'enable':'disable'} service`}).status(404);
+        
+        response.send({message: `monitor service failed to power  ${enable? 'enable':'disable'} service\t Err: ${err}}`}).status(404);
+
     }
 
 });
@@ -158,9 +153,7 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
         obj = Object.assign({}, obj); // coonvert null prototype to normal object 
     }   
 
-    let s = obj.key as string;
-    console.log(obj);
-    console.log(s);
+    const s = obj.key as string;
     
     reply.redirect(`http://127.0.0.1:50215/start_history${s}`, 301) ; // greeedy 
 

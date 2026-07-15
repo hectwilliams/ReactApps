@@ -1,12 +1,11 @@
 import process from 'process';
-import {exec} from 'child_process';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
-import cors from '@fastify/cors';
 import fastifyPostgres from '@fastify/postgres';
+// import cors from '@fastify/cors';
 
 interface MonitorInterface {
     services: Service;
@@ -22,22 +21,17 @@ interface Ports {
     port: number,   
 }
 
-interface PlayerFields {
-    name: string;
-    img: string;
-    plots?: Array<Array<number>>
-};
 
 async function loadServices() :Promise<MonitorInterface> {
-    let  asyncRawJson = await fs.promises.readFile('./server/config.json', 'utf-8');
-    let json =  JSON.parse(asyncRawJson) as MonitorInterface;
+    const  asyncRawJson = await fs.promises.readFile('./server/config.json', 'utf-8');
+    const json =  JSON.parse(asyncRawJson) as MonitorInterface;
     return json;
 }
 
 function setDummyPlots(plots: Array<Array<number>>) {
     for (let i = 0;i < 5; i++) {
         plots.push([]);
-        let buffer = plots[i] as Array<number>;
+        const buffer = plots[i] as Array<number>;
         for (let i = 0; i < 10; i++) {
             buffer.push(rrand());
         }
@@ -48,30 +42,15 @@ const rrand = ()=>{
     return Math.floor(Math.random() * 10) + 1; // 1 to 100 
 } 
 
-async function createlogDir() {             
-    let effPath = `${LOGDIR}/dashboards`;                                                                                                                                                                                                                                                                                                                                                                        
-    try {
-        const stats = await fs.promises.stat(effPath);
-    } catch(error:any) {
-        if (error.code == 'ENOENT') {
-            const response =  await fs.promises.mkdir( effPath, {recursive: true});
-            console.log(response, 'log dir created');
-        }
-    }
-}
 
-const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
-const LOCALHOST = '127.0.0.1'; // safe 
+// const METAADDRESS = '0.0.0.0'; // listen to all ip4 traffic 
+// const LOCALHOST = '127.0.0.1'; // safe 
 const workDir = process.cwd();
 
 // // instantiate server framework 
 const fastify = Fastify({logger: true});
 
-const filePath = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'csv', 'nba.csv' );
-
 const CATIMAGE = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'images', 'faces', 'img.png' );
-
-const LOGDIR = path.join(process.cwd(), "../", 'nba_app', 'client', 'src', 'static', 'logs' );
 
 const plots : Array<Array<number>> = [];
 
@@ -99,30 +78,8 @@ fastify.register(fastifyStatic, {
     prefix: '/'
 });
 
-
-
 // Register database connection 
 fastify.register( fastifyPostgres  , {connectionString: DB_URL} );
-
-
-let numberCsvLines: number;
-let numberPages: number;
-let playerPerPage = 20 as number;
-
-// system call to get number of lines in csv files 
-exec(`wc -l ${filePath}`, (err, stdout, stderr) => {
-    if (err) {
-        console.log('err, child process');
-    } else if (stderr){
-        console.log('stderr, child process');
-    } else {
-        let arr =  stdout.trim().split(' ') as Array<string>;
-        let s = arr[0] as string;
-        let num = parseInt(s, 10) as number;
-        numberCsvLines = num;
-        numberPages = numberCsvLines / playerPerPage;
-    }
-});
 
 interface pageInfoInterface {
     npages: number, 
@@ -153,11 +110,11 @@ fastify.get('/page=:pg', async (request:FastifyRequest, reply: FastifyReply)=> {
         
         result = await client.query('SELECT * from nba.info;');
         
-        let pageInfo = result.rows[0] as pageInfoInterface;
+        const pageInfo = result.rows[0] as pageInfoInterface;
         
-        let startpos  = pageInfo.nperpage * (page - 1) + 1;
+        const startpos  = pageInfo.nperpage * (page - 1) + 1;
 
-        let endpos = (page == pageInfo.npages) ? pageInfo.nsamples * (pageInfo.nperpage * (page-1)) :  pageInfo.nperpage * (page);
+        const endpos = (page == pageInfo.npages) ? pageInfo.nsamples * (pageInfo.nperpage * (page-1)) :  pageInfo.nperpage * (page);
         
         // console.log(startpos, endpos, );
         
@@ -214,7 +171,7 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
 
         const regex = /.+=([a-z0-9]+)&size=([0-9]+)/;
 
-        let s = obj.key as string;
+        const s = obj.key as string;
             
         const match = s.match(regex);
 
@@ -237,11 +194,11 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
             
             // sql selection
 
-            let query_reduction_select = table_names.rows.reduce( ( acc: string, record: Record<string, string>, i: number) => {
+            const query_reduction_select = table_names.rows.reduce( ( acc: string, record: Record<string, string>, i: number) => {
                 if (i == 0) {
                     acc += `SELECT * FROM nba.${record.table_name}\n`;
                 } else {
-                    let s = " UNION ALL " +  `SELECT * FROM nba.${record.table_name}\n`;
+                    const s = " UNION ALL " +  `SELECT * FROM nba.${record.table_name}\n`;
                     acc += s;
                 }
                 return acc;

@@ -1,10 +1,5 @@
 import type { ServerRecordInterface } from "./handlers";
 
-interface StoreInterface {
-    serverName: string;
-    pad: ServerRecordInterface;
-}
-
 export type StoreDictionary = Record<string, ServerRecordInterface>;
 
 /* cache every valid  page request. Each service has a landing spot in this systen */

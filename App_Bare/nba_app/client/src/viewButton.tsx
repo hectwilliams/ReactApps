@@ -1,16 +1,15 @@
 import {view_button_on} from './static/css/viewButton.css';
 import { fetchPagesHelper } from "./handlers";
 import { logbookInst } from './logbook';
-import { dashboard } from './dashboard';
 
 export function getServiceName(node: HTMLSpanElement) {
     if (!node) {
         return;
     }
-    let parentNode = node.parentElement as HTMLDivElement;
-    let targetParent = parentNode.childNodes[0] as HTMLSpanElement;
-    let target = targetParent.childNodes[0] as HTMLParagraphElement; 
-    let name = target.innerText;
+    const parentNode = node.parentElement as HTMLDivElement;
+    const targetParent = parentNode.childNodes[0] as HTMLSpanElement;
+    const target = targetParent.childNodes[0] as HTMLParagraphElement; 
+    const name = target.innerText;
     return name; 
 }
 
@@ -20,7 +19,6 @@ export class  ViewButton {
     prev: HTMLSpanElement;
     moreViewSymbol : HTMLSpanElement;
     name: string;
-    //  document.createElement('span');
 
     constructor(name: string) {
 
@@ -32,17 +30,17 @@ export class  ViewButton {
         this.name = name;
         // paint view button 
         for (let i = 0; i < 100; i++) {
-            let viewButtonPixel = document.createElement('span');
+            const viewButtonPixel = document.createElement('span');
             this.moreViewSymbol.append(viewButtonPixel);
         }
-        let rows = [2, 5, 9] as Array<number>;
+        const rows = [2, 5, 9] as Array<number>;
         rows.forEach((r, index)=>{
-            let v = rows[3 - 1 - index];
+            const v = rows[3 - 1 - index];
             if (v) {
                 // console.log(v);
                 for (let i = 0; i < v; i++) {
-                    let pos = 10 * r + i; 
-                    let ele = this.moreViewSymbol.children[pos] as HTMLSpanElement;
+                    const pos = 10 * r + i; 
+                    const ele = this.moreViewSymbol.children[pos] as HTMLSpanElement;
                     ele.style.backgroundColor="white";
                 }
             }
@@ -55,21 +53,21 @@ export class  ViewButton {
 
 
     /* handler for view button clicks  */
-    viewClick(): any {
+    viewClick() {
         // let cacheNode = node;
         return (event: MouseEvent) => {
-            let currentNode = event.currentTarget as HTMLSpanElement;
+            const currentNode = event.currentTarget as HTMLSpanElement;
 
             if ( this.prev == currentNode) {
                 return;
             } else {
 
-                let name = getServiceName(currentNode);
+                const name = getServiceName(currentNode);
 
                 if (name) {
                 
                     fetchPagesHelper(name)
-                    .then( (resp) => {
+                    .then( () => {
 
                         // console.log('successful request: ');
                             

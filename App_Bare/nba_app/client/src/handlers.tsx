@@ -9,8 +9,7 @@ import { logbookInst } from './logbook';
 export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, datasetName: string) : HTMLElement | undefined {
     // let returnNode = undefined;
     
-    let arr = Array.from(parentNode.childNodes.entries());
-    let returnNode = (parentNode.childNodes.values().find((some_node)=>{
+    const returnNode = (parentNode.childNodes.values().find((some_node)=>{
         if( some_node instanceof HTMLElement) {
                 // console.log(some_node);
             if ( datasetKey in some_node.dataset) {
@@ -71,7 +70,7 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                 
             case "nba": 
                 
-                let data = await fetchPages(page);
+                const data = await fetchPages(page);
 
                 if (!data) 
                     throw new Error("do nothing, monitor metrics not available yet");
@@ -121,34 +120,10 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
         }
         
     } catch(err) {
+        
+        console.log(err);
 
         return false
 
-    }
-}
-
- function viewButton(node: HTMLSpanElement) {
-    let rows = [2, 5, 9] as Array<number>;
-    rows.forEach((r, index)=>{
-        let v = rows[3 - 1 - index];
-        if (v) {
-            for (let i = 0; i < v; i++) {
-                let pos = 10 * r + i; 
-                let ele = node.children[pos] as HTMLSpanElement;
-                ele.style.backgroundColor="white";
-            }
-        }
-    })
-}
-
-/* 
-    Global closure used to capture every called instance of viewClick.
-
-    Note: Don't run too many services, many instances will exist in memory 
-*/
-const globalViewVlick = (node: HTMLSpanElement) => {
-    let ref = node;
-    return () => {
-        return ref;
     }
 }

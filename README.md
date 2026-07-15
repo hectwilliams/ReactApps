@@ -1,5 +1,5 @@
 # ReactApps
-Applications built using (React | Javascript | Typescript) --- (Flask | Fastify ) --- SQL (SQLAlchemy)
+Applications built using (React | Javascript | Typescript) --- (Flask | Fastify ) --- ( SQLAlchemy | SQL )
  
 ## Project Images/Videos 
 

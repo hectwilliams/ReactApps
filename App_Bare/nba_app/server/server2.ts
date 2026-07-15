@@ -8,6 +8,7 @@
 
 import process from 'process';
 import Fastify from 'fastify';
+import type {FastifyRequest, FastifyReply } from 'fastify';
 
 interface SimpleCapture {
     date: string;
@@ -27,9 +28,9 @@ const bins = [] as Array<SimpleCapture>;
 /*
     Handles request from  'annoying' client
 */
-fastify.post('/binny', (request, reply)=>{
+fastify.post('/binny', (request: FastifyRequest, reply: FastifyReply)=>{
     if (request.body) {
-        let body =  request.body as ClientRequest;
+        const body =  request.body as ClientRequest;
         bins.push({date: (new Date).toISOString(), size:body.amplitude});
     }
     reply.status(200);
@@ -38,19 +39,18 @@ fastify.post('/binny', (request, reply)=>{
 /*
     Handles request for bin data 
 */
-fastify.get('/binny', (request, reply) =>{
+fastify.get('/binny', (request: FastifyRequest, reply: FastifyReply) =>{
     reply
     .send(bins)
 });
 
-fastify.get('/next', (request, respond)=>{
-    console.log('chicken');
-    respond.send(200);
+fastify.get('/next', (request: FastifyRequest, reply: FastifyReply)=>{
+    reply.send(200);
 })
 
 // run server 
 try {
-    let method = {port: 50216, host : '::' } // ':: bind to listen on both IP4 and IP6 loopback '
+    const method = {port: 50216, host : '::' } // ':: bind to listen on both IP4 and IP6 loopback '
     await fastify.listen(method);
 } catch(err) {
     fastify.log.error(err);
