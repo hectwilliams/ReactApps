@@ -7,7 +7,7 @@
 // } from './static/css/pageShifter.css';
 
 import * as pagershifter_css from './static/css/PageShifter.module.css';
-const pagershifter_css_eff :  Record<string, any> = pagershifter_css;
+const pagershifter_css_eff :  Record<string, boolean | string | unknown > = pagershifter_css;
 
 import { dashboard } from "./dashboard";
 import { storeInst } from './store';

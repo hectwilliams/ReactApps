@@ -9,11 +9,11 @@
 // } from './static/css/logbook.css';
 
 import * as log_css_record from './static/css/LogBook.module.css';
-const log_css_record_eff :  Record<string, any> = log_css_record;
+const log_css_record_eff :  Record<string, boolean | string | unknown > = log_css_record;
 
 
 import * as dashboard_css_record from './static/css/Dashboard.module.css';
-const dashboard_css_eff :  Record<string, any> = dashboard_css_record;
+const dashboard_css_eff :  Record<string, boolean | string | unknown > = dashboard_css_record;
 
 // logbook_in_dashboad_cls
 

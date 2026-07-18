@@ -7,7 +7,7 @@ import {  activeViewButtons,  ViewButton} from './viewButton';
 // } from './static/css/services.css';
 
 import * as services_css from './static/css/Services.module.css';
-const services_css_eff :  Record<string, any> = services_css;
+const services_css_eff :  Record<string, boolean | string | unknown > = services_css;
 
 
 /*

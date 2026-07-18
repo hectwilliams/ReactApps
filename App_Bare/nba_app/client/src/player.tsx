@@ -5,7 +5,7 @@
 
 import player_css from './static/css/Player.module.css';
 
-const player_css_eff :  Record<string, any> = player_css;
+const player_css_eff :  Record<string, boolean | string | unknown > = player_css;
 
 export interface SimplePlayerProfileInterface {
     player: string;

@@ -4,7 +4,7 @@
 
 import './init.test'; // loads body to DOM  
 import { describe, expect, test } from '@jest/globals';
-import { createRoot, setRoot, setBody, getClass} from './Mainn';
+import {  setRoot, setBody} from './Mainn';
 
 import main_css  from './static/css/Main.module.css';
 

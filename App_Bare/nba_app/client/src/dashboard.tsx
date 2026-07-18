@@ -10,7 +10,7 @@
 // } from './static/css/dashboard.css';
 
 import * as dashboard_css from './static/css/Dashboard.module.css';
-const dashboard_css_eff :  Record<string, any> = dashboard_css;
+const dashboard_css_eff :  Record<string, boolean | string | unknown > = dashboard_css;
 
 import { playerlist } from './playerlist';
 import { storeInst } from './store';

@@ -14,13 +14,13 @@
 // import {statsChainContainer_cls} from  './static/css/stats.css';
 
 import * as stats_css from  './static/css/Stats.module.css';
-const stats_css_eff :  Record<string, any> = stats_css;
+const stats_css_eff :  Record<string, boolean | string | unknown > = stats_css;
 
 import * as playerlistcss from './static/css/PlayerList.module.css';
-const playerlistcss_ff :  Record<string, any> = playerlistcss;
+const playerlistcss_ff :  Record<string, boolean | string | unknown > = playerlistcss;
 
 import * as quickplot_css from './static/css/QuickPlot.module.css';
-const quickplot_css_eff :  Record<string, any> = quickplot_css;
+const quickplot_css_eff :  Record<string, boolean | string | unknown > = quickplot_css;
 
 
 // import { binlog_cell_cls, binlog_container_cls , binlog_overlay__cls, binlog2_container_cls, test_cls} from './static/css/quickPlot.css';

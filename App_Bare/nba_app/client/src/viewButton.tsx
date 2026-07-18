@@ -1,6 +1,6 @@
 // import {view_button_on} from './static/css/viewButton.css';
 import * as view_button_css from './static/css/ViewButton.module..css';
-const view_button_css_eff :  Record<string, any> = view_button_css;
+const view_button_css_eff :  Record<string, boolean | string | unknown > = view_button_css;
 
 import { fetchPagesHelper } from "./handlers";
 import { logbookInst } from './logbook';

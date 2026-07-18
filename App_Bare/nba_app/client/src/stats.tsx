@@ -9,7 +9,7 @@
 // } from  './static/css/stats.css';
 
 import * as stats_css from './static/css/Stats.module.css';
-const stats_css_eff :  Record<string, any> = stats_css;
+const stats_css_eff :  Record<string, boolean | string | unknown > = stats_css;
 
 const fields = [
        "played" ,  

@@ -1,13 +1,11 @@
 import '../src/Init';
 
-import  * as loopbook_css  from './logbook';
-const view_button_css_eff :  Record<string, any> = loopbook_css;
+// import  * as loopbook_css  from './logbook';
+// const view_button_css_eff :  Record<string, any> = loopbook_css;
 
-import * as styles_main_css from './static/css/Main.module.css'; // importing css modules boiler
+import * as styles_main_css from './static/css/Main.module.css';    // importing css modules boiler
 
-// console.log(styles_main_css);
-
-const styles_main_css_eff :  Record<string, any> = styles_main_css;
+const styles_main_css_eff :  Record<string, boolean | string | unknown > = styles_main_css;
 
 export function setRoot(root: HTMLDivElement, c : string | undefined = undefined) {
     if (c == undefined) {
@@ -34,7 +32,6 @@ export function setBody(body: HTMLBodyElement, c: string | undefined = undefined
 
     body.style.backgroundColor = 'gray';
 }
-
 
 export async function createRoot() {
     const domRoot = document.getElementById('root') as HTMLDivElement;

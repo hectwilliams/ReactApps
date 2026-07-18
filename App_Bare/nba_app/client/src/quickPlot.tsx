@@ -2,7 +2,7 @@
 import * as quickplot_css from './static/css/QuickPlot.module.css';
 import {binsize} from './Mainn';
 
-const quickplot_css_eff :  Record<string, any> = quickplot_css;
+const quickplot_css_eff :  Record<string, boolean | string | unknown > = quickplot_css;
 
 export function fillUnweightedCell(currentNode: HTMLDivElement, classname: string) {
   // load empty cells 
