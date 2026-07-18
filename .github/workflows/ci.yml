@@ -36,5 +36,5 @@ jobs:
       # //*
       - name: Run Unit Tests
         run: npm run test 
-        working-directory: './App_Bare/nba_app/client/src' # working directory
+        working-directory: './App_Bare/nba_app' # working directory
 
