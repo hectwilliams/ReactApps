@@ -3,10 +3,11 @@
         z-index = 1 
  
  */
+ @import "Variables.module.css"; 
  
- @import "variables.css"; 
 
  /* top level div */
+
 .top_level_list_container_container_cls {
     grid-row: 1 / span 100;
     grid-column: 1 / span 100;
@@ -36,8 +37,6 @@
     /* justify-content: center; */
     align-items: center;
 }
-
-
  
 /* main  */
 /* playerlist */

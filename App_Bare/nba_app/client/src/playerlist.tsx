@@ -1,27 +1,39 @@
-import {top_level_list_container_container_cls, 
-    player_container_cls, 
-    player_container_plot_cls,
-    meta_name_cls,
-    meta_team_cls,
-    playerChainContainer_cls,
-    wrapperPlayerChainContainer, 
-    playerDataContainer_cls, 
-    img_cls,
-    player_containerwrapper_cls, 
-    meta_assoc_cls,
-} from './static/css/playerlist.css';
+// import {top_level_list_container_container_cls, 
+//     player_container_cls, 
+//     player_container_plot_cls,
+//     meta_name_cls,
+//     meta_team_cls,
+//     playerChainContainer_cls,
+//     wrapperPlayerChainContainer, 
+//     playerDataContainer_cls, 
+//     img_cls,
+//     player_containerwrapper_cls, 
+//     meta_assoc_cls,
+// } from './static/css/playerlist.css';
 
-import {statsChainContainer_cls} from  './static/css/stats.css';
+// import {statsChainContainer_cls} from  './static/css/stats.css';
+
+import * as stats_css from  './static/css/Stats.module.css';
+const stats_css_eff :  Record<string, any> = stats_css;
+
+import * as playerlistcss from './static/css/PlayerList.module.css';
+const playerlistcss_ff :  Record<string, any> = playerlistcss;
+
+import * as quickplot_css from './static/css/QuickPlot.module.css';
+const quickplot_css_eff :  Record<string, any> = quickplot_css;
+
+
+// import { binlog_cell_cls, binlog_container_cls , binlog_overlay__cls, binlog2_container_cls, test_cls} from './static/css/quickPlot.css';
 
 import type {ServerRecordInterface} from './handlers';
 import type { SimplePlayerProfileInterface } from './player';
+
 import { dashboard } from './dashboard';
 import { bookletInst } from "./pageShifter";
 import { setBarCells, setPeakCells , fillUnweightedCell} from './quickPlot';
-import { binlog_cell_cls, binlog_container_cls , binlog_overlay__cls, binlog2_container_cls, test_cls} from './static/css/quickPlot.css';
 import { storeInst } from './store';
 import { quickHash } from './algo';
-import { BINSIZE } from './main';
+import { binsize } from './Mainn';
 import {genStatsContainer} from './stats';
 
 /*
@@ -37,15 +49,15 @@ import {genStatsContainer} from './stats';
 */
 
 export const playerlist = document.createElement('div');
-playerlist.className = top_level_list_container_container_cls;
+playerlist.className = playerlistcss_ff.top_level_list_container_container_cls as string;
 
  async function getPlayerDiv(record: SimplePlayerProfileInterface, index?: number ) {
 
     const mainElementWrapper = document.createElement('div');
-    mainElementWrapper.className = player_containerwrapper_cls;
+    mainElementWrapper.className = playerlistcss_ff.player_containerwrapper_cls as string; 
 
     const mainElement = document.createElement('div');
-    mainElement.className = player_container_cls;
+    mainElement.className = playerlistcss_ff.player_container_cls as string;
     mainElementWrapper.append(mainElement)
 
     // add pic container 
@@ -56,7 +68,7 @@ playerlist.className = top_level_list_container_container_cls;
     picContainer_child.src  = src;
     record.tmpic = record.tmpic.replace("/src", "")
     picContainer_child.style = `--bg-img: url('${record.tmpic}'); background-size:cover`; // teams background
-    picContainer_child.className = img_cls;
+    picContainer_child.className = playerlistcss_ff.img_cls as string;
     picContainer.append(picContainer_child);
 
     // add plot container 
@@ -64,19 +76,19 @@ playerlist.className = top_level_list_container_container_cls;
     // let result = 
 
     // set css styles to plots window 
-    plotsContainer.className = playerDataContainer_cls;
+    plotsContainer.className = playerlistcss_ff.playerDataContainer_cls as string;
 
     // plot data wrapper 
     const wrapper_plotsData = document.createElement('div');
-    wrapper_plotsData.className = wrapperPlayerChainContainer;
+    wrapper_plotsData.className = playerlistcss_ff.wrapperPlayerChainContainer as string;
 
-    const statsContainer = genStatsContainer(statsChainContainer_cls); 
+    const statsContainer = genStatsContainer(stats_css_eff.statsChainContainer_cls as string); 
     
     wrapper_plotsData.append(statsContainer);
 
     const plotsChainContainer = document.createElement('div'); 
     
-    plotsChainContainer.className = playerChainContainer_cls;
+    plotsChainContainer.className = playerlistcss_ff.playerChainContainer_cls as string;
 
     wrapper_plotsData.append(plotsChainContainer);
 
@@ -87,13 +99,13 @@ playerlist.className = top_level_list_container_container_cls;
 
     const nameElement = document.createElement('div');
     nameElement.innerHTML= `<p> ${record.player} </p>`;
-    nameElement.className = meta_name_cls;
+    nameElement.className = playerlistcss_ff.meta_name_cls as string;
     const teamElement = document.createElement('div');
     teamElement.innerHTML= `<p> ${record.tm} </p>`;
-    teamElement.className = meta_team_cls;
+    teamElement.className = playerlistcss_ff.meta_team_cls as string;
    const teamAssoc = document.createElement('div');
     teamAssoc.innerHTML= `<p>National Basketball Association </p>`;
-    teamAssoc.className = meta_assoc_cls;
+    teamAssoc.className = playerlistcss_ff.meta_assoc_cls as string;
     plotsContainer.append(nameElement);
     plotsContainer.append(teamElement);
     plotsContainer.append(teamAssoc);
@@ -120,8 +132,8 @@ playerlist.className = top_level_list_container_container_cls;
 
         // TODO truncate values
         
-        if (  values.length  != BINSIZE ){
-            values = values.slice(0,BINSIZE);
+        if (  values.length  != binsize ){
+            values = values.slice(0, binsize );
         }
 
 
@@ -130,14 +142,13 @@ playerlist.className = top_level_list_container_container_cls;
             const node2 = document.createElement('div');
             const overlayNode = document.createElement('div');
 
-            node.className = binlog_container_cls;
-            node2.className = binlog2_container_cls;
+            node.className = quickplot_css_eff.binlog_container_cls as string; 
+            node2.className = quickplot_css_eff.binlog2_container_cls as string;
 
-            overlayNode.className = binlog_overlay__cls; 
-            barrierNode.className = player_container_plot_cls; // barrier wraps bin log
+            overlayNode.className = quickplot_css_eff.binlog_overlay__cls as string; 
+            barrierNode.className = playerlistcss_ff.player_container_plot_cls as string; // barrier wraps bin log
             
             // nodde -> overlayNode -> barrier -> chain container 
-            
             plotsChainContainer.append(barrierNode);
 
             barrierNode.append(overlayNode);
@@ -146,8 +157,8 @@ playerlist.className = top_level_list_container_container_cls;
             overlayNode.append(node2);
             
             // fill 
-            fillUnweightedCell(node, binlog_cell_cls);
-            fillUnweightedCell(node2, test_cls);
+            fillUnweightedCell(node, quickplot_css_eff.binlog_cell_cls as string);
+            fillUnweightedCell(node2, quickplot_css_eff.test_cls as string);
 
             // let qplot =  new QuickPlot(node);
 
@@ -155,7 +166,7 @@ playerlist.className = top_level_list_container_container_cls;
             
             // qplot.setPlot(numbers);
             
-            setPeakCells (node2, test_cls, numbers);
+            setPeakCells (node2, quickplot_css_eff.test_cls as string, numbers);
             setBarCells (node, numbers);
 
             const c = node.className;

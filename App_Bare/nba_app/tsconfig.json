@@ -8,8 +8,9 @@
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "ESNext",
-    "target": "esnext",
+    "target": "ESNext",
     "types": ["node"],
+        "moduleResolution": "bundler",
     // "lib": ["DOM", "DOM.Iterable"],
     // For nodejs:
     // "types": ["node"],
@@ -19,7 +20,6 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -42,18 +42,27 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+        "forceConsistentCasingInFileNames": false,
   },
 
   "include" : [
     "./database/**/*", 
     "./server/**/*", 
-   "./client/src/**/*",
-   "client/src/globals.d.ts",
-      "client/src/static/**/*",
-      "client/src/static/css/**/*"
+    "./client/src/**/*",
+    "client/src/globals.d.ts",
+    "client/src/static/**/*",
+    "client/src/static/css/**/*",
+    "client/src/static/css/*",
+    "test",
+  ]
 
-  ],
+  // "globals.d.ts" 
+// , "../../globals.d.ts"  
+
+  // "paths": {
+  //         "@/*": ["client/src/*"]
+  // }
 
   // "plugins": [
   //   {"name": "typescript-plugin-css-modules"}

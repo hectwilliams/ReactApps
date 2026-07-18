@@ -1,4 +1,7 @@
-import {view_button_on} from './static/css/viewButton.css';
+// import {view_button_on} from './static/css/viewButton.css';
+import * as view_button_css from './static/css/ViewButton.module..css';
+const view_button_css_eff :  Record<string, any> = view_button_css;
+
 import { fetchPagesHelper } from "./handlers";
 import { logbookInst } from './logbook';
 
@@ -26,8 +29,21 @@ export class  ViewButton {
         this.moreViewSymbol = document.createElement('span');
         
         this.moreViewSymbol.dataset.on = "1";
-        this.moreViewSymbol.className = view_button_on;
+        this.moreViewSymbol.className = view_button_css_eff.view_button_on as string;
         this.name = name;
+
+        // onmousenter
+         this.moreViewSymbol.onmouseenter = ()=> {
+            // add event enter  
+            this.moreViewSymbol.addEventListener( 'click' ,  this.viewClick()  );
+         };
+
+        // onmouseexit 
+        this.moreViewSymbol.onmouseleave = ()=> {
+            // add event exit  
+            this.moreViewSymbol.removeEventListener( 'click' ,  this.viewClick()  );
+         };
+
         // paint view button 
         for (let i = 0; i < 100; i++) {
             const viewButtonPixel = document.createElement('span');
@@ -46,9 +62,7 @@ export class  ViewButton {
             }
         })
 
-        // add event listener 
-        this.moreViewSymbol.addEventListener( 'click' ,  this.viewClick()  );
-    
+  
     }
 
 

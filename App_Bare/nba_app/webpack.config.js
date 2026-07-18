@@ -1,13 +1,23 @@
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+// Get the current file path (equivalent to __filename)
 const __filename = fileURLToPath(import.meta.url);
 
+// Get the current directory path (equivalent to __dirname)
 const __dirname = path.dirname(__filename);
 
-module.exports = {
+// import path from 'path';
+// import { fileURLToPath } from 'url';
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+export default  {
+  
     mode: "development",
-    entry: './client/src/index.tsx',
+    entry: './client/src/Index.tsx',
 
     output: {
         filename: 'bundle.js',
@@ -65,6 +75,4 @@ module.exports = {
   //     }
   //   ),
   // ],
-  
-
 };

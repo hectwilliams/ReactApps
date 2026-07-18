@@ -1,12 +1,15 @@
-import {
-    hidden_label_cls,
-    hidden_label_connector_cls, 
-    stat_table_cls,
-    table_header_cls,
-    table_body_cls,
-    dialog_cls
+// import {
+//     hidden_label_cls,
+//     hidden_label_connector_cls, 
+//     stat_table_cls,
+//     table_header_cls,
+//     table_body_cls,
+//     dialog_cls
     
-} from  './static/css/stats.css';
+// } from  './static/css/stats.css';
+
+import * as stats_css from './static/css/Stats.module.css';
+const stats_css_eff :  Record<string, any> = stats_css;
 
 const fields = [
        "played" ,  
@@ -116,7 +119,7 @@ function setContainer(container: HTMLDivElement) {
     const tableBody = document.createElement('tbody');
     
     const dialog = document.createElement('dialog');
-    dialog.className = dialog_cls;
+    dialog.className = stats_css_eff.dialog_cls as string;
     dialog.dataset.modal = "0";
 
     const diaspan = document.createElement('span');
@@ -147,11 +150,11 @@ function setContainer(container: HTMLDivElement) {
     dialog.append(diatable);
     dialog.append(diaspan);
 
-    tableHeader.className = table_header_cls;
-    tableBody.className = table_body_cls;
+    tableHeader.className = stats_css_eff.table_header_cls as string;
+    tableBody.className = stats_css_eff.table_body_cls as string;
     
-    hidden1.className = hidden_label_cls;
-    hidden2.className = hidden_label_connector_cls;
+    hidden1.className = stats_css_eff.hidden_label_cls as string;
+    hidden2.className = stats_css_eff.hidden_label_connector_cls as string;
     
     for (let i = 0; i < 24; i++) {
         const s = document.createElement('div');
@@ -164,8 +167,17 @@ function setContainer(container: HTMLDivElement) {
     hidden2.append(hidden2_div);
     hidden1.append(hidden1_div);
 
-    table.className = stat_table_cls;
-    table.addEventListener('dblclick', dbclickCallback)
+    table.className = stats_css_eff.stat_table_cls as string;
+
+    table.onmouseenter = () => {
+        // mouse over
+        table.removeEventListener('dblclick', dbclickCallback);
+    }
+
+    table.onmouseleave = () => {
+        // mouse exit 
+        table.addEventListener('dblclick', dbclickCallback);
+    }
 
     table.append(tableHeader);
     table.append(tableBody);

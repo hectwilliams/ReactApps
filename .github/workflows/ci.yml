@@ -23,11 +23,18 @@ jobs:
           node-version: '24' # Set the runner runtime directly
           cache: 'npm'
           cache-dependency-path: './App_Bare/nba_app/package-lock.json' # point to lockfile 
-
+      # // *
       - name: Install dependencies
         run: npm ci
         working-directory: './App_Bare/nba_app' # working directory
-        
+      
+      # // *  
       - name: Run TypeScript Linter
         run: npm run lint
         working-directory: './App_Bare/nba_app' # working directory
+
+      # // *
+      - name: Run Unit Tests
+        run: npm run test 
+        working-directory: './App_Bare/nba_app/client/src' # working directory
+
