@@ -1,10 +1,13 @@
-import {
-    page_shifer_cls, 
-    arrow_left_cls, 
-    arrow_right_cls, 
-    arrows_cls,
-    page_number_cls
-} from './static/css/pageShifter.css';
+// import {
+//     page_shifer_cls, 
+//     arrow_left_cls, 
+//     arrow_right_cls, 
+//     arrows_cls,
+//     page_number_cls
+// } from './static/css/pageShifter.css';
+
+import * as pagershifter_css from './static/css/PageShifter.module.css';
+const pagershifter_css_eff :  Record<string, boolean | string | unknown > = pagershifter_css;
 
 import { dashboard } from "./dashboard";
 import { storeInst } from './store';
@@ -30,16 +33,16 @@ class Booklet {
         this.arrows = document.createElement('div');
         this.left_arrow = document.createElement('div');
         this.right_arrow = document.createElement('div');
-        this.arrows.className = arrows_cls;
-        this.pageNumbersMsg.className = page_number_cls;
+        this.arrows.className = pagershifter_css_eff.arrows_cls as string;
+        this.pageNumbersMsg.className = pagershifter_css_eff.page_number_cls as string;
         this.pageNumbersMsg.innerText = "...";
-        this.left_arrow.className = arrow_left_cls;
-        this.right_arrow.className = arrow_right_cls;
+        this.left_arrow.className = pagershifter_css_eff.arrow_left_cls as string ;
+        this.right_arrow.className = pagershifter_css_eff.arrow_right_cls as string ;
         this.arrows.append(this.left_arrow);
         this.arrows.append(this.right_arrow);
         this.booklet.append(this.pageNumbersMsg);
         this.booklet.append(this.arrows);
-        this.booklet.className = page_shifer_cls;
+        this.booklet.className = pagershifter_css_eff.page_shifer_cls as string;
         this.booklet.dataset.on = "0";
         this.prevPage = -1;
         this.pages = -1;

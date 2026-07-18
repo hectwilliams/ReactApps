@@ -1,9 +1,14 @@
 import { PowerButton, activePowerButtons} from './powerButton';
-import {
-    services_card_container_cls,
-    services_cls, services_cls_header,
-} from './static/css/services.css';
 import {  activeViewButtons,  ViewButton} from './viewButton';
+
+// import {
+//     services_card_container_cls,
+//     services_cls, services_cls_header,
+// } from './static/css/services.css';
+
+import * as services_css from './static/css/Services.module.css';
+const services_css_eff :  Record<string, boolean | string | unknown > = services_css;
+
 
 /*
     Generate a new paramterized card and add to cardBody 
@@ -23,34 +28,42 @@ async function reqServicesMonitor () : Promise<Array<string>>  {
 
     } catch {
 
+        console.log('errir, messag')
         return [];
     }
 
 }
 
-function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
+async function loadServicesDom(services: Array<string>, container: HTMLDivElement) {
     services.forEach(serviceName => {
         // TODO restrict name size 
         
+        
         const cardContainer = document.createElement('div');
-        cardContainer.className = services_card_container_cls;
+        cardContainer.className = services_css_eff.services_card_container_cls as string;
+        
         
         const subContainer = document.createElement('div');
         cardContainer.append(subContainer);
-
+        
+        
         const cardName = document.createElement('span');
         cardName.innerHTML = `<p> ${serviceName} </p>`;
-
+        
+        
         const newPowerButton = new PowerButton(serviceName);
         activePowerButtons.push(newPowerButton);
         const clonePowerSwitch = newPowerButton.get(); //= powerSwitchInst.switch.cloneNode(true) as HTMLSpanElement; // create copy of power switch
-
+        
+        
         const newViewButton = new ViewButton(serviceName)
         activeViewButtons.push(newViewButton);
         const cloneMoreViewSymbol = newViewButton.get();
         
+        console.log(serviceName);
+        
         cloneMoreViewSymbol.dataset.name = serviceName;
-
+        
 
         if (serviceName == 'monitor') {
             
@@ -88,10 +101,10 @@ class Services  {
         
         this.ready  = false;
         this.body = document.createElement('div');
-        this.body.className = services_cls;
+        this.body.className = services_css_eff.services_cls as string;
         
         this.header = document.createElement('div');
-        this.header.className = services_cls_header;
+        this.header.className = services_css_eff.services_cls_header as string;
         
         this.root =  document.getElementById('root') as HTMLDivElement;
         this.root.append(this.header);
@@ -109,7 +122,10 @@ class Services  {
             reqServicesMonitor() // first request waits ( asynchronously )
             .then( (data) => {
                 
-                loadServicesDom(data, this.body);
+                const d = data;
+                const body = this.body;
+
+                loadServicesDom(d, body);
 
             })
             .catch(()=>{

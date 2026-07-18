@@ -3,31 +3,7 @@ import { storeInst } from './store';
 import { servicesInstr } from "./services";
 import { logbookInst } from './logbook';
 
-export class PowerButton {
-    
-    switch: HTMLSpanElement;
-    configured: boolean;
-    name: string; 
-    model: HTMLDivElement;
-
-    constructor(name: string) {
-        this.switch = document.createElement('span');
-        this.configured = false ;        
-        this.switch.append(document.createElement('span'));
-        this.configure.bind(this)(); // bind floating/lost object to method
-        this.name = name;
-        this.model = document.createElement('div');
-    }
-
-     configure() : void {
-
-        if(this.configured) {
-            // console.log('already configured');
-            return;
-        }
-
-        // add event listener 
-        this.switch.addEventListener('click', (event: MouseEvent)=>{
+const powerButtonClickHandler  = (event: MouseEvent)=>{
 
             const nodeTest = event.currentTarget as HTMLSpanElement;
             
@@ -119,9 +95,41 @@ export class PowerButton {
 
             }
 
-        })
+        }
+export class PowerButton {
+    
+    switch: HTMLSpanElement;
+    configured: boolean;
+    name: string; 
+    model: HTMLDivElement;
 
-        this.configured = true; 
+    constructor(name: string) {
+        this.switch = document.createElement('span');
+        this.configured = false ;        
+        this.switch.append(document.createElement('span'));
+        // this.configure.bind(this)(); // bind floating/lost object to method
+        this.name = name;
+        this.model = document.createElement('div');
+    }
+
+     configure() : void {
+
+        // if(this.configured) {
+        //     // console.log('already configured');
+        //     return;
+        // }
+
+        this.switch.onmouseenter = (event: MouseEvent)=>{
+            event.preventDefault();
+            // add event listener 
+            this.switch.addEventListener('click', powerButtonClickHandler);
+        }
+
+        this.switch.onmouseleave = (event: MouseEvent)=>{
+            event.preventDefault();
+            // remove event listener 
+            this.switch.removeEventListener('click', powerButtonClickHandler);
+        }
 
     }
 

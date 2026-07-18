@@ -1,7 +1,11 @@
-import {
-    player_card_cls
+// import {
+//     player_card_cls
 
-} from './static/css/player.css';
+// } from './static/css/player.css';
+
+import player_css from './static/css/Player.module.css';
+
+const player_css_eff :  Record<string, boolean | string | unknown > = player_css;
 
 export interface SimplePlayerProfileInterface {
     player: string;
@@ -18,7 +22,7 @@ export interface SimplePlayerProfileInterface {
 export const PlayerCard = ( player: SimplePlayerProfileInterface): HTMLDivElement =>  {
     const element = document.createElement('div');
     element.innerHTML = `<div src=${player.tmpic}> </div>  <div> ${player.player} </div>`;
-    element.className = player_card_cls;
+    element.className = player_css_eff.player_card_cls as string;
     return  element;
 }
 

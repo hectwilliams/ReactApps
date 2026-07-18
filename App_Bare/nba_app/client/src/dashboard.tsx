@@ -1,13 +1,16 @@
-import {
-    dashboard_cls, 
-    dashboard_header_cls,
-    dashboard_name_cls,
-    dashboard_views_cls,
-    dashboard_more_cls,
-    dashboard_filter_cls,
-    dashboard_trashbin_cls, 
-    dashboard_compositionbook_cls
-} from './static/css/dashboard.css';
+// import {
+//     dashboard_cls, 
+//     dashboard_header_cls,
+//     dashboard_name_cls,
+//     dashboard_views_cls,
+//     dashboard_more_cls,
+//     dashboard_filter_cls,
+//     dashboard_trashbin_cls, 
+//     dashboard_compositionbook_cls
+// } from './static/css/dashboard.css';
+
+import * as dashboard_css from './static/css/Dashboard.module.css';
+const dashboard_css_eff :  Record<string, boolean | string | unknown > = dashboard_css;
 
 import { playerlist } from './playerlist';
 import { storeInst } from './store';
@@ -43,33 +46,34 @@ while(rootDiv== null){}
 
 // dashboard header 
 export const dashboard = document.createElement('div');
-dashboard.className = dashboard_cls;
+// dashboard.className =  dashboard_cls;
+dashboard.className =  dashboard_css_eff.dashboard_cls as string;
 
 // dashboard body 
 const dashboardHeader = document.createElement('div');
-dashboardHeader.className = dashboard_header_cls;
+dashboardHeader.className = dashboard_css_eff.dashboard_header_cls as string;
 
 //dashboard icons (header)
 const headerName = document.createElement('span');
-headerName.className=dashboard_name_cls;
+headerName.className=dashboard_css_eff.dashboard_name_cls as string;
 headerName.innerHTML = "<p> Dashboard </p>";
 const headerViews = document.createElement('span');
-headerViews.className=dashboard_views_cls;
+headerViews.className=dashboard_css_eff.dashboard_views_cls as string ;
 // headerViews.addEventListener( 'click', (event: MouseEvent) => {
 //     // console.log(event);
 // })
 
 const headerMore = document.createElement('span');
-headerMore.className=dashboard_more_cls;
+headerMore.className=dashboard_css_eff.dashboard_more_cls as string;
 
 const headerFilter = document.createElement('span');
-headerFilter.className=dashboard_filter_cls;
+headerFilter.className=dashboard_css_eff.dashboard_filter_cls as string;
 
 export const headerTrash = document.createElement('span') as HTMLSpanElement;
-headerTrash.className=dashboard_trashbin_cls;
+headerTrash.className=dashboard_css_eff.dashboard_trashbin_cls as string;
 
 export const headerComposition = document.createElement('span') as HTMLSpanElement;
-headerComposition.className=dashboard_compositionbook_cls;
+headerComposition.className=dashboard_css_eff.dashboard_compositionbook_cls as string;
 dashboard.append(logbookInst.get());
 
 headerComposition.onclick = () => {

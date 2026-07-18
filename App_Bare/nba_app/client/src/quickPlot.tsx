@@ -1,24 +1,26 @@
 
-import { binlog_cell_cls } from './static/css/quickPlot.css';
-import { BINSIZE } from './main';
+import * as quickplot_css from './static/css/QuickPlot.module.css';
+import {binsize} from './Mainn';
+
+const quickplot_css_eff :  Record<string, boolean | string | unknown > = quickplot_css;
 
 export function fillUnweightedCell(currentNode: HTMLDivElement, classname: string) {
   // load empty cells 
-    for(let n = 0; n < BINSIZE**2; n++) {
+    for(let n = 0; n < binsize**2; n++) {
         const e = document.createElement('span');
         e.className = classname;
         currentNode.append(e);
-    }
+    } 
 }
 
 export function setPeakCells (currentNode: HTMLDivElement, classname: string, numbers: number[]) {
     const posititons = []
     numbers.forEach( (amplitude, index) => {
 
-        if (amplitude  <= 0 || amplitude > BINSIZE**2) 
+        if (amplitude  <= 0 || amplitude > binsize**2) 
             return;  
 
-        const pos = ((10 - amplitude)*BINSIZE) + index as number;
+        const pos = ((10 - amplitude)*binsize ) + index as number;
         posititons.push([amplitude, index], pos);
         if (pos >= 0 && pos < 100) {
             (currentNode.childNodes[pos] as HTMLSpanElement).dataset.on="1";
@@ -33,13 +35,13 @@ export function setBarCells (currentNode: HTMLDivElement,  numbers: number[]) {
     numbers.forEach( (amplitude) => {
         const cells = [] as Array<HTMLSpanElement>;
 
-        if (amplitude  <= 0 || amplitude > BINSIZE**2) 
+        if (amplitude  <= 0 || amplitude > binsize**2) 
             return;  
 
         numbers.forEach( (r, c) => { 
-            r = BINSIZE - r;
-            while (r < BINSIZE) {
-                const pos = r * BINSIZE + c;
+            r = binsize - r;
+            while (r < binsize) {
+                const pos = r * binsize + c;
                 const binCell = currentNode.childNodes[pos] as HTMLSpanElement;
                 // binCell.dataset.on = '1';
                 cells.push(binCell);
@@ -69,7 +71,7 @@ export class QuickPlot {
 
     constructor(wrapper :HTMLDivElement) {
         this.bin_log = wrapper;
-        fillUnweightedCell(wrapper, binlog_cell_cls);
+        fillUnweightedCell(wrapper, quickplot_css_eff.binlog_cell_cls as string );
     }
 
     // get plot 
@@ -86,9 +88,9 @@ export class QuickPlot {
         //flip r 
             // r = BINSIZE**2 -  r * BINSIZE;
             // r = Math.floor( r/ BINSIZE) ;
-            r = BINSIZE - r;
-            while (r < BINSIZE) {
-                const pos = r * BINSIZE + c;
+            r = binsize- r;
+            while (r < binsize) {
+                const pos = r * binsize + c;
                 const binCell = this.bin_log.childNodes[pos] as HTMLSpanElement;
                 // binCell.dataset.on = '1';
                 cells.push(binCell);

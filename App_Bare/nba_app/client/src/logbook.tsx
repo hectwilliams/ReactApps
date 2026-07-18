@@ -1,14 +1,22 @@
-import {
-    table_log_cls,
-    maindiv_log_cls,
-    table_row_cls,
-    log_message_cls,
-    log_message_label_cls,
-    log_header_cls2,
-    log_header_cls1,
-} from './static/css/logbook.css';
+// import {
+//     table_log_cls,
+//     maindiv_log_cls,
+//     table_row_cls,
+//     log_message_cls,
+//     log_message_label_cls,
+//     log_header_cls2,
+//     log_header_cls1,
+// } from './static/css/logbook.css';
 
-import {logbook_in_dashboad_cls} from './static/css/dashboard.css';
+import * as log_css_record from './static/css/LogBook.module.css';
+const log_css_record_eff :  Record<string, boolean | string | unknown > = log_css_record;
+
+
+import * as dashboard_css_record from './static/css/Dashboard.module.css';
+const dashboard_css_eff :  Record<string, boolean | string | unknown > = dashboard_css_record;
+
+// logbook_in_dashboad_cls
+
 import { dashboard } from './dashboard';
 
 type  handleMouseMove =  (event:MouseEvent) => void;
@@ -35,11 +43,11 @@ class LogBook {
     constructor() {
         this.holding = false;  
         this.top = document.createElement('div');
-        this.top.className = logbook_in_dashboad_cls;
+        this.top.className = dashboard_css_eff.logbook_in_dashboad_cls as string;
         this.top.dataset.show="0";
         this.exit = document.createElement('span');
         this.div = document.createElement('div');
-        this.div.className = maindiv_log_cls;
+        this.div.className = log_css_record_eff.maindiv_log_cls as string ;
         this.top.append(this.exit);
         this.top.append(this.div);
         this.refMouseMove = this.handleMouseMove.bind(this)
@@ -47,15 +55,13 @@ class LogBook {
         this.mouseDownEntered = false;
         this.a = this.b = "";
         this.c = this.d = this.e = this.f = "";
-        this.top.addEventListener('dblclick', this.handleDoubleClick.bind(this));
-        this.top.addEventListener('mousedown', this.handleMouseDown.bind(this));
-
+      
         this.exit.onclick =  () => {
             logbookInst.close();
         }
 
         this.table = document.createElement('table');
-        this.table.className = table_log_cls;
+        this.table.className = log_css_record_eff.table_log_cls as string;
 
         this.posX = 0;
         this.posY = 0;
@@ -64,17 +70,17 @@ class LogBook {
         const tr = document.createElement('tr');
         const header1 = document.createElement('th');
         const header2 = document.createElement('th');
-        header1.className =log_header_cls1;
+        header1.className = log_css_record_eff.log_header_cls1 as string ;
         header1.innerText = "Date";
-        header2.className =log_header_cls2;
+        header2.className = log_css_record_eff.log_header_cls2 as string ;
         header2.innerText = "Message";
 
         tr.append(header1, header2);
-        tr.className = table_row_cls;
+        tr.className = log_css_record_eff.table_row_cls as string;
         
         const label = document.createElement('label');
         label.innerText = "Log"; 
-        label.className = log_message_label_cls;
+        label.className = log_css_record_eff.log_message_label_cls as string;
         this.div.append(this.table)
         
         this.table.append(label)
@@ -90,10 +96,17 @@ class LogBook {
 
     close () {
         this.top.dataset.show="0";
+        this.top.removeEventListener('dblclick', this.handleDoubleClick.bind(this));
+        this.top.removeEventListener('mousedown', this.handleMouseDown.bind(this));
+        this.top.removeEventListener('mousemove', this.handleMouseMove.bind(this));
+        console.log('closed it');
+
     }
 
     open () {
         this.top.dataset.show="1";
+        this.top.addEventListener('dblclick', this.handleDoubleClick.bind(this));
+        this.top.addEventListener('mousedown', this.handleMouseDown.bind(this));
     }
 
     get()  : HTMLDivElement {
@@ -108,21 +121,20 @@ class LogBook {
     add(message: string) {
 
         const tr = document.createElement('tr');
-        tr.className = table_row_cls;
+        tr.className = log_css_record_eff.table_row_cls as string;
         
         const d1 = document.createElement('td');
-        d1.className = log_message_cls;
+        d1.className = log_css_record_eff.log_message_cls as string;
         d1.innerText = (new Date()).toISOString()
         
         const d2 = document.createElement('td');
         d2.innerText = `${message}`;
-        d2.className = log_message_cls;
+        d2.className = log_css_record_eff.log_message_cls as string;
         
         tr.append(d1);
         tr.append(d2);
         
         this.table.append(tr)
-
     }
 
     addTodashoard() {
