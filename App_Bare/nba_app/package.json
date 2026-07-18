@@ -35,6 +35,6 @@
     "ts-dev": "webpack",
     "server-dev": "node server/server.ts",
     "lint": "eslint . --ext .ts",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --detectOpenHandles "
   }
 }
