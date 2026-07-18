@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, master, lint ]
+    branches: [ main, master, lint, jest ]
   pull_request:
-    branches: [ main, master, lint ]
+    branches: [ main, master, lint, jest ]
 
 jobs:
 
