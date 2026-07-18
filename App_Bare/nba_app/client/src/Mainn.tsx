@@ -22,7 +22,8 @@ export function setRoot(root: HTMLDivElement, c : string | undefined = undefined
 export function setBody(body: HTMLBodyElement, c: string | undefined = undefined)  {
     if (c == undefined) {
 
-        body.className = styles_main_css_eff.body_cls as string;
+        //
+        let x = 22;
 
     } else {
 
