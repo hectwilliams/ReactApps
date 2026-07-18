@@ -24,7 +24,7 @@ export function setBody(body: HTMLBodyElement, c: string | undefined = undefined
 
         //
         let x = 22;
-
+        const y = 100;
     } else {
 
         body.className = c;
