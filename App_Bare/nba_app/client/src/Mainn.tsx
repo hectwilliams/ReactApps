@@ -1,4 +1,4 @@
-import '../src/Init';
+import './Init';
 
 // import  * as loopbook_css  from './logbook';
 // const view_button_css_eff :  Record<string, any> = loopbook_css;
@@ -20,11 +20,9 @@ export function setRoot(root: HTMLDivElement, c : string | undefined = undefined
 }
 
 export function setBody(body: HTMLBodyElement, c: string | undefined = undefined)  {
+    
     if (c == undefined) {
 
-        //
-        let x = 22;
-        let p = 1000;
         body.className = styles_main_css_eff.body_cls as string;
 
     } else {
