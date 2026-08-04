@@ -100,6 +100,8 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                     // add logbook to dom 
                      logbookInst.addTodashoard();
 
+                
+
                 }).catch((err)=>{
 
                     console.log(err, "Process data failed ");
@@ -111,6 +113,10 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                 return true;
             
             case "binny":
+                
+                dashboard.replaceChildren();
+
+                console.log('hello world');
 
                 throw new Error("do nothing, monitor metrics not available yet");
 

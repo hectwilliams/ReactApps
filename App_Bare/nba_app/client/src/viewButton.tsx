@@ -4,6 +4,7 @@ const view_button_css_eff :  Record<string, boolean | string | unknown > = view_
 
 import { fetchPagesHelper } from "./handlers";
 import { logbookInst } from './logbook';
+import { activePowerButtons, PowerButton } from './powerButton';
 
 export function getServiceName(node: HTMLSpanElement) {
     if (!node) {
@@ -73,10 +74,24 @@ export class  ViewButton {
             const currentNode = event.currentTarget as HTMLSpanElement;
 
             if ( this.prev == currentNode) {
+
                 return;
+
             } else {
 
                 const name = getServiceName(currentNode);
+
+                // turn power switch and views off for others services 
+                for(let i = 0; i < activeViewButtons.length; i++ ) {
+
+                    let viewRecord = activeViewButtons[i] as ViewButton;
+                    let powerRecord = activePowerButtons[i] as PowerButton;
+
+                    if (name != viewRecord.name && viewRecord.name != 'monitor') {
+                        viewRecord.disable();
+                        powerRecord.disable();
+                    }
+                }
 
                 if (name) {
                 
