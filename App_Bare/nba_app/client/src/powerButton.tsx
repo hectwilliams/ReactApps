@@ -107,13 +107,13 @@ export class PowerButton {
         this.switch = document.createElement('span');
         this.configured = false ;        
         this.switch.append(document.createElement('span'));
-        // this.configure.bind(this)(); // bind floating/lost object to method
+        this.configure.bind(this)(); // bind floating/lost object to method
         this.name = name;
         this.model = document.createElement('div');
     }
 
      configure() : void {
-
+        console.log('test');
         // if(this.configured) {
         //     // console.log('already configured');
         //     return;
