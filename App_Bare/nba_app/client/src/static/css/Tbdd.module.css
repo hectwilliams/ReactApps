@@ -1,0 +1,41 @@
+.main_cls {
+
+    /* working within a flex container */
+    grid-row: 1 / span 100;
+    grid-column: 1 / span 100;
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+}
+
+.plot_cls {
+    width: 100%;
+    height: 100%;
+    grid-row: 3 / span 45;
+    grid-column: 20 / span 60;
+    border: 2px red solid;
+}
+
+.options_cls {
+    width: 100%;
+    height: 100%;
+    grid-row: 52 / span 10;
+    grid-column: 1 / span 99;
+    border: 2px red solid;
+}
+
+.logic_cls {
+    width: 100%;
+    height: 100%;
+    grid-row: 63 / span 97;
+    grid-column: 1 / span 60;
+    border: 2px orange solid;
+}
+
+.measure_cls {
+    width: 100%;
+    height: 100%;
+    grid-row: 63 / span 97;
+    grid-column: 61 / span 97;
+    border: 2px yellow solid;
+}

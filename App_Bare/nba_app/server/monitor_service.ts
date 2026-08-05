@@ -28,6 +28,82 @@ async function loadServices() :Promise<MonitorInterface> {
     return json;
 }
 
+function pidExists(serviceName : string, processTable: Record<string, Record<string, number> >) :boolean {
+     const table = processTable["pid"] as Record<string, number>;
+     const pid: number = table[serviceName] as number;
+
+     console.log(pid);
+
+     if (pid)
+        return true;
+
+     return false; 
+}
+
+async function startProcess(service_name: string, response: FastifyReply) {
+    
+    const filepath = path.join(process.cwd(), `./server/run_servers.sh ${service_name}`);
+    
+    exec(`${filepath} ${service_name}`, (error: ExecException | null, stdout: string) => { 
+
+        if(error) {
+
+            throw new Error(`${error}`);
+
+        } else {
+
+            const effPID = parseInt(stdout.trim());
+            floatingProcess.push(effPID); // TODO handle faults / reset and still persists -- needs to be deleted 
+            (processList['pid'] as Record<string, number>)[(service_name as string)]= effPID as number;
+            response.status(200);
+
+        }
+
+    });
+
+
+}
+
+async function killProcess(service_name: string, processTable: Record<string, Record<string, number> >, response: FastifyReply| undefined = undefined) { 
+    
+    if (!pidExists(service_name, processTable)) {
+        return;
+    }
+
+    const filepath = path.join(process.cwd(), `./server/stop_servers.sh`);
+
+    const kill_pid = (processList['pid'] as Record<string, number>)[service_name as string] as number; 
+
+    exec(`${filepath} ${service_name}  ${kill_pid}`, (error) =>{ 
+        
+        if(error) {
+            throw new Error(`${error}`);
+        } else {
+            
+            // delete server process successful 
+
+            const obj = processList['pid'] as Record<string, number>;
+
+            service_name = service_name.trim();
+
+            if (service_name.trim() == 'nba') {
+                
+                delete obj.nba;
+
+            } else if (service_name == 'binny') {
+                
+                delete obj.binny;
+                
+            }
+            
+            if (response)
+                response.send({msg: `process deleted ${ Object.entries(kill_pid).toString() } `});
+        }
+    });
+
+
+}
+
 const fastify = Fastify({logger: true});
 const workDir = process.cwd();
 const processList = {pid:{}} as Record< string, Record<string, number>>;
@@ -82,60 +158,31 @@ fastify.get('/services', (request : FastifyRequest, reply: FastifyReply)=>{
 /* Enable webservers */
 fastify.post('/power',  async (request, response) => {
     
-    const name = (request.body as Record<string, string>)['name']; 
-    const enable = (request.body as Record<string, string>)['enable'];
-    let filepath;
-
+    const name = (request.body as Record<string, string>)['name'] as string; 
+    const enable = (request.body as Record<string, string>)['enable'] as string;
+    
     try {
-        if (enable === "1") {
-            // turn on server 
 
-            if ((name as string) in  (processList['pid'] as Record<string, number>) ) {
-                // server already running
-                return; 
+        if (enable === "1") {
+
+            if (pidExists(name , processList))  {
+                
+                await killProcess(name, processList);
+
             }
             
-            filepath = path.join(process.cwd(), `./server/run_servers.sh ${name}`);
-            
-            exec(`${filepath} ${name}`, (error: ExecException | null, stdout: string) =>{ 
-    
-                if(error) {
-                    throw new Error(`${error}`);
-                } else {
-                    const effPID = parseInt(stdout.trim());
-        
-                    floatingProcess.push(effPID); // TODO handle faults / reset and still persists -- needs to be deleted 
-                    (processList['pid'] as Record<string, number>)[(name as string)]= effPID as number;
-                    console.log(processList);
-                    response.status(200); 
-                }
-            });
+            // turn on server 
+            console.log('POWER ON MONITOR SERVICE');
+
+            await startProcess(name, response);
             
         } else if (enable === "0") {
             // shutdown server 
-                        
-            let kill_pid :number; 
 
-            filepath = path.join(process.cwd(), './server/stop_servers.sh');
-            
-            if ( (name as string) in (processList['pid']  as Record<string, number>) ) {
-                // kill server already running
-                
-                kill_pid = (processList['pid'] as Record<string, number>)[name as string] as number; 
+            console.log('POWER DOWN MONITOR SERVICE');
 
-                exec(`${filepath} ${name}  ${kill_pid}`, (error) =>{ 
-                    
-                    if(error) {
-                        throw new Error(`${error}`);
-                    } else {
-                        // delete server process successful 
-                        // console.log(stdout)
-                        const obj = processList['pid'] as Record<string, number>;
-                        delete obj.nba;
-                        response.status(200); 
-                    }
-                });
-            }
+            await killProcess(name as string, processList , response);
+         
         }
 
     } catch (err) {

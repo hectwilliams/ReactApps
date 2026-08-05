@@ -3,99 +3,102 @@ import { storeInst } from './store';
 import { servicesInstr } from "./services";
 import { logbookInst } from './logbook';
 
-const powerButtonClickHandler  = (event: MouseEvent)=>{
+export const powerButtonClickHandler  = (event: MouseEvent)=>{
 
-            const nodeTest = event.currentTarget as HTMLSpanElement;
-            
-            const parent = nodeTest.parentNode as HTMLDivElement;
-            
-            const powerStatus = nodeTest.dataset.status as string;
-            
-            const view = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement);
+    const nodeTest = event.currentTarget as HTMLSpanElement;
+    
+    const parent = nodeTest.parentNode as HTMLDivElement;
+    
+    const powerStatus = nodeTest.dataset.status as string;
+    
+    const view = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement);
 
-            const viewStatus = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement).dataset.on;
+    const viewStatus = (nodeTest.parentNode?.childNodes[1] as HTMLSpanElement).dataset.on;
+    
+    const name = (nodeTest.parentNode?.childNodes[0] as HTMLSpanElement).innerText;
+
+    if (viewStatus === "undef" && name == 'monitor') {
+
+        if (powerStatus === 'on1') {
+                // console.log('shut down monitor');
+                // nodeTest.dataset.status = "off";
+        } else {
+                nodeTest.dataset.status = "on1";
+                // console.log('start monitor server');
+        }
+
+        return;
+    } 
+    
+    if (powerStatus === 'on') {
+        
+        parent.dataset.loading="1";
+
+        
+        // turn off server 
+        servicesInstr.shutdown(name)
+        .then((msg) => {
             
-            const name = (nodeTest.parentNode?.childNodes[0] as HTMLSpanElement).innerText;
+            console.log('DEBUG',msg);
 
-            if (viewStatus === "undef" && name == 'monitor') {
+            // request to turn on server succeeded 
+            
+            nodeTest.dataset.status = "off";
+            
+            // turn off view 
+            view.dataset.on = "0";
+            
+            logbookInst.add(`Service ${name} shutdown`);
 
-                if (powerStatus === 'on1') {
-                        // console.log('shut down monitor');
-                        // nodeTest.dataset.status = "off";
-                } else {
-                        nodeTest.dataset.status = "on1";
-                        // console.log('start monitor server');
+            if (storeInst.service == name) {
+                // new view request
+                bookletInst.disable();
+            }
+        
+            parent.dataset.loading="0";
+        })
+
+        .catch(()=>{
+            // request to turn on server on failed 
+            parent.dataset.loading="0";
+            nodeTest.dataset.status = "on"; // keep on
+
+        })
+        
+
+    } else if (powerStatus == "off") {
+        
+        // view.dataset.on = "0";
+        parent.dataset.loading="1";
+
+        // turn on switch 
+        servicesInstr.start(name)
+            .then(() => {
+            
+            nodeTest.dataset.status = "on";
+                
+                // turn on view
+                view.dataset.on = "1";
+
+            logbookInst.add(`Service ${name} powered on`);
+
+                if (storeInst.service == name) {
+                    // new view request
+                    bookletInst.enable();
                 }
 
-                return;
-            } 
-            
-            if (powerStatus === 'on') {
-                
-                parent.dataset.loading="1";
+                parent.dataset.loading="0";
+        })
+        
+        .catch(()=>{
+            parent.dataset.loading="0";
+            nodeTest.dataset.status = "off";
 
-                // turn off server 
-                servicesInstr.shutdown(name)
-                .then(() => {
-                    
-                    // request to turn on server succeeded 
-                    
-                    nodeTest.dataset.status = "off";
-                    
-                    // turn off view 
-                    view.dataset.on = "0";
-                    
-                    logbookInst.add(`Service ${name} shutdown`);
-    
-                    if (storeInst.service == name) {
-                        // new view request
-                        bookletInst.disable();
-                    }
-                
-                    parent.dataset.loading="0";
-                })
+        })
 
-                .catch(()=>{
-                    // request to turn on server on failed 
-                    parent.dataset.loading="0";
-                    nodeTest.dataset.status = "on"; // keep on
+    }
 
-                })
-                
-
-            } else if (powerStatus == "off") {
-                
-                // view.dataset.on = "0";
-                parent.dataset.loading="1";
-
-                // turn on switch 
-                servicesInstr.start(name)
-                 .then(() => {
-                    
-                    nodeTest.dataset.status = "on";
-                     
-                     // turn on view
-                     view.dataset.on = "1";
-
-                    logbookInst.add(`Service ${name} powered on`);
-
-                     if (storeInst.service == name) {
-                         // new view request
-                         bookletInst.enable();
-                     }
-
-                     parent.dataset.loading="0";
-                })
-                
-                .catch(()=>{
-                    parent.dataset.loading="0";
-                    nodeTest.dataset.status = "off";
-
-                })
-
-            }
-
-        }
+}
 export class PowerButton {
     
     switch: HTMLSpanElement;
@@ -149,6 +152,10 @@ export class PowerButton {
         } else {
             this.switch.dataset.status = "on";
         }
+    }
+
+    is_on(): boolean {
+        return this.switch.dataset.status == "on";
     }
 
     clear() {
