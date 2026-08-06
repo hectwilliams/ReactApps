@@ -1,8 +1,8 @@
+import { tbddfconstants } from './tbddf';
 
 
 import * as tbdd_css from './static/css/Tbdd.module.css';
 const tbdd_css_eff :  Record<string, boolean | string | unknown > = tbdd_css;
-
 
 const sectionPlot = (): HTMLDivElement=> {
     const div = document.createElement('div');
@@ -18,7 +18,16 @@ const sectionOptions = (): HTMLDivElement=> {
 
 const sectionLogs = (): HTMLDivElement => {
     const div = document.createElement('div');
-    div.className = tbdd_css_eff.logic_cls as string;
+    // div.className = tbdd_css_eff.logic_cls as string;
+
+    div.classList.add (tbdd_css_eff.logic_cls as string)
+
+    div.innerHTML =  tbddfconstants['table'];
+
+    console.log(div.firstChild);
+
+    console.log(div);
+
     return div;
 }
 
