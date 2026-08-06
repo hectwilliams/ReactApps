@@ -40,6 +40,8 @@
     display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
+
+    cursor: pointer;
 }
 
 .logic_cls {
@@ -124,14 +126,17 @@
     border-color: green;
 }
 
-.measure_cls > span[data-init="1"] {
+/* .measure_cls > span[data-init="1"] {
     background-color: blue;
 }
 
 .measure_cls > span[data-init="0"] {
     background-color: red;
-}
+} */
 
+.measure_cls > span {
+    background-color: blue;
+}
 
 
 /* 

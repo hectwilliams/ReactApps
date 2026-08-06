@@ -1,6 +1,7 @@
 
+export const WATERFALL_US = 250;
 
-export const setButton = (node: HTMLButtonElement) => {
+export const setButton = (node: HTMLButtonElement): void => {
     const rd = node.dataset.enabled;
 
     const en = rd == "0" ? "1" : "0";
@@ -10,10 +11,53 @@ export const setButton = (node: HTMLButtonElement) => {
     node.onclick = buttonToggle;
 }
 
-const buttonToggle = (event: MouseEvent) => {
+const buttonToggle = (event: MouseEvent) : void => {
     const node = event.currentTarget as HTMLButtonElement;
     setButton(node);
+}
 
+export const ten_numbers = () => {
+    const b = Array(10).fill('N/A');
+    const out = {} as Record<number, boolean>;
+
+    for (let i = 0; i < 10; i++) {
+        
+        b[i] = Math.floor(Math.random() * 100) as number;
+
+        out[b[i]] = true ;
+
+    }
+
+    return out;
+
+}
+
+const rand_rbg = () : Array<number>  => {
+    
+    // const value = Math.floor(Math.random() * 2**24) ;
+    const max = 33023;
+    const min =15;
+    const value =  Math.floor(Math.random() * (max - min + 1)) + min;
+    const bytes_ones = (2**8) - 1; 
+
+    const blue = bytes_ones & value;
+
+    const green  =( (bytes_ones << 8  ) & value) >> 8;
+
+    const red = (( bytes_ones  << 16 ) & value) >> 16;
+
+    return [red, blue, green];
+
+}
+
+export const n_rand_rbg = (n: number = 1) : Array<Array<number>>  => {
+    const out = Array(n).fill('N/A');
+
+    for (let i = 0; i < n; i++) {
+        out[i] = rand_rbg();
+    }
+
+    return out; 
 }
 
 const mock = () => {

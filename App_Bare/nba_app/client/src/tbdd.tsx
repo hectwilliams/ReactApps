@@ -1,4 +1,4 @@
-import { tbddfconstants, setButton } from './tbddf';
+import { tbddfconstants, setButton, n_rand_rbg, ten_numbers, WATERFALL_US} from './tbddf';
 
 
 import * as tbdd_css from './static/css/Tbdd.module.css';
@@ -32,11 +32,6 @@ const sectionMeasure = (): HTMLDivElement =>  {
     const n = 100;
     for (let i = 0 ; i < n**2; i++) {
         let spanElement = document.createElement('span');
-        if (i == 0)
-            spanElement.dataset.init = '0';
-        else 
-            spanElement.dataset.init = '1';
-
         div.append(spanElement);
     }
     return div;
@@ -47,25 +42,12 @@ const sectionLogs = (): HTMLDivElement => {
 
     div.className = tbdd_css_eff.logic_cls as string;
 
-    // const htmlString = `<button id="dynamic-btn">Click Me</button>`;
     const htmlString =  tbddfconstants['table'];
-
-    // // 1. Create the parser instance
-    // const parser = new DOMParser();
-
-    // // 2. Parse the string into a temporary DOM document
-    // const doc = parser.parseFromString(htmlString, 'text/html');
-
-    // // 3. Extract the element object from the temporary document
-    // const newTable = doc.body.firstChild as HTMLTableElement;
-
-    // div.append(newTable );
 
     div.innerHTML = htmlString;
 
     return  div;
 }
-
 
 const setMain = (div: HTMLDivElement): void => {
 
@@ -76,16 +58,70 @@ const setMain = (div: HTMLDivElement): void => {
     div.append(sectionPlot());
 }
 
-class TBDD {
+ function waterfall (this: TBDD): NodeJS.Timeout{
+    const  n = 100;
+    // const threshold  = 1000;
+    // let counter = 0;
+
+    const node: HTMLDivElement = this.sectionMeasure;
+
+    const inner = ():  NodeJS.Timeout =>{
+
+        this.measureRef  = setInterval( ()=>{
+            
+            let items = Array.from(node.childNodes).slice(-n) as Array<HTMLSpanElement>;
+            let random_colors = n_rand_rbg(n);
+    
+            items.forEach ( (item) => {
+                node.removeChild( item  );
+            });
+            
+            const active_signatures = ten_numbers();
+            for (let i =0; i < n; i++) {
+                let spanElement = document.createElement('span');
+                const c = random_colors[i] as number[];
+                if (Math.random() < 0.5 &&  (i in active_signatures) ) {
+                    spanElement.style.backgroundColor = `rgb(${ c[0] }, ${ c[1] }, ${ c[2] })`;
+                }
+                node.prepend(spanElement);
+            }
+            
+            // counter++;
+                // clearInterval(this.measureRef as NodeJS.Timeout );
+    
+        }, WATERFALL_US)
+        
+        return this.measureRef;
+    }
+
+    return inner();
+}
+
+export class TBDD {
 
     name: string
     main: HTMLDivElement;
+    sectionLog: HTMLDivElement;
+    sectionMeasure: HTMLDivElement;
+    measureRef:  NodeJS.Timeout | null ;
 
     constructor() {
         this.name = "binny";
         this.main = document.createElement('div');
+        this.measureRef = null;
         
         setMain(this.main);
+        this.sectionLog = this.main.childNodes[1] as HTMLDivElement;
+        this.sectionMeasure = this.main.childNodes[0] as HTMLDivElement;
+        this.sectionMeasure.ondblclick = () =>{
+            if (!this.measureRef ) {
+                this.measureRef = waterfall.call(this);
+            } else {
+
+                clearTimeout(this.measureRef);
+                this.measureRef = null;
+            }
+        }
     }
 
     get() {return this.main}
