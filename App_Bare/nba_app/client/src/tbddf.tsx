@@ -1,50 +1,85 @@
 
 
+export const setButton = (node: HTMLButtonElement) => {
+    const rd = node.dataset.enabled;
 
-import * as tbdd_css from './static/css/Tbdd.module.css';
-const tbdd_css_eff :  Record<string, boolean | string | unknown > = tbdd_css;
+    const en = rd == "0" ? "1" : "0";
 
+    node.dataset.enabled = en;
+
+    node.onclick = buttonToggle;
+}
+
+const buttonToggle = (event: MouseEvent) => {
+    const node = event.currentTarget as HTMLButtonElement;
+    setButton(node);
+
+}
+
+const mock = () => {
+
+    let data  = "";
+
+    for (let i = 0; i < 5; i++) {
+        
+        let s = `<tr> 
+            
+            <td> ${i ==0 ? "START" : i == 1?  "EVENT" : i == 4 ? "STOP" : "EVENT" }  </td>
+
+            <td> ${new Date().toISOString()}   </td>
+
+            <td>Ever fallen in love (with someone you shouldn't've) </td> 
+
+            </tr>`;
+
+        data += s;
+
+    }
+
+    const s3 = `<table>
+
+        <caption>
+            System Logs
+        </caption>
+
+        <thead>
+            <tr>
+                <th scope="col">MNEM</th>
+                <th scope="col">DATETIME</th>
+                <th scope="col">MSG</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            ${data}
+         
+        </tbody>
+
+     
+     
+        </table>`
+
+    return s3;
+
+}
+
+//    <tfoot>
+//             <tr>
+//             <th scope="row" colspan="2">Total albums</th>
+//             <td colspan="2">77</td>
+//             </tr>
+        // </tfoot>
+
+    // <colgroup>
+        //     <col span="1" />
+        //     <col span="1" />
+        //     <col class=${tbdd_css_eff.background_column} />
+        // </colgroup>
+
+
+
+        // `<table><tr><th>MNEN</th><th>DATE</th><th>MSG</th></tr>${mock()} </table>`
 export const tbddfconstants = {
-    'table': `<table class= ${tbdd_css_eff.table_cls} >
-    
-    <colgroup>
-        <col span="1" />
-        <col span="1" />
-        <col class="column-background" />
-        <col class="column-fixed-width" />
-        <col class="column-background" />
-        <col class="column-background-border" />
-        <col span="2" class="column-fixed-width" />
-      </colgroup>
-      
-      <tr>
-        <th>MNEN</th>
-        <th>DATE</th>
-        <th>MSG</th>
-      </tr>
-      
-      <tr>
-        <td>START</td>
-        <td> ${ new Date().toISOString() }</td>
-        <td> ${" \"timestamp\" \: \"2026-06-06T14:32:10Z\" } "} </td>
-      </tr>
-
-       <tr>
-        <td>START</td>
-        <td> ${ new Date().toISOString() }</td>
-        <td> ${" \"timestamp\" \: \"2026-06-06T14:32:10Z\" } "} </td>
-      </tr>
-
-
-         <tr>
-        <td>START</td>
-        <td> ${ new Date().toISOString() }</td>
-        <td> ${" \"timestamp\" \: \"2026-06-06T14:32:10Z\" } "} </td>
-      </tr>
-
-
-      
-
-
-    </table>`
+    'table': mock()
 } 

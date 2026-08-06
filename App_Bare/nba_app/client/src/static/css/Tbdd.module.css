@@ -6,6 +6,8 @@
     display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 .plot_cls {
@@ -21,85 +23,124 @@
     height: 100%;
     grid-row: 52 / span 10;
     grid-column: 1 / span 99;
-    border: 2px red solid;
-}
 
-.logic_cls {
-    width: 100%;
-    height: 100%;
-    grid-row: 63 / span 97;
-    grid-column: 1 / span 60;
-    border: 2px orange solid;
-    background-color: gray;
+    display: flex;
+    gap: 12px;              /* Controls spacing between buttons without margins */
+  justify-content: style; /* Controls alignment along the row (see variants below) */
+  
 }
 
 .measure_cls {
     width: 100%;
     height: 100%;
-    grid-row: 63 / span 97;
-    grid-column: 61 / span 97;
-    border: 2px yellow solid;
+    grid-row: 63 / span 35;
+    grid-column: 61 / span 39;
+    /* border: 2px purple solid; */
+    border: 2px silver solid;
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
 }
 
-/* .column-background {
-  background-color: #97db9a;
-}
-
-.column-fixed-width {
-  width: 40px;
-}
-
-.column-background-border {
-  background-color: #dcc48e;
-  border: 4px solid #c1437a;
-} */
-
-.table_cls {
-        width: 100%;
-        height: 100%;
-
-    color: black;
-
+.logic_cls {
+    width: 100%;
+    height: 100%;
+    grid-row: 63 / span 35;
+    grid-column: 1 / span 60;
+    background-color: gray;
     overflow-y: auto;
-}
-
-.table_cls > colgroup > col:nth-child(1),
-.table_cls > colgroup > col:nth-child(2) {
-    
-    /* column background */
-    
-    background-color: #97db9a;
-    color: black;
+    overflow-x: auto;
+    /* grid-template-columns: 20% 20% 60%;   */
+     grid-template-columns: repeat(100, 1fr);  
+     grid-template-rows: repeat(100, 1fr);  
+  border-bottom: 2px silver solid;
 
 }
 
-.table_cls > colgroup > col:nth-child(3){
-    
-    /* column fixed width */
-
-    background-color: #97db9a;
-
-}
-
-/* .table_cls > colgroup > col:nth-child(5){
-    
-    /* .column-background-border  */
-
-  background-color: #dcc48e;
-  border: 4px solid #c1437a;
+/* .logic_cls > table  {
+    width: 100%;
+    height: 100%;
+    border: 2px yellow solid;
 } */
 
-.table_cls > tr:nth-child(1) {
-    height: 10vh;
+.logic_cls > table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+
 }
 
-.table_cls > tr:nth-child(n + 2) {
-    height: 60vh;
+.logic_cls > table > thead > tr  {
+    margin-left: 10px;
+  border-bottom: 2px black solid;
+
 }
 
-/* .table_cls > tr > td {
+.logic_cls > table > tbody > tr  {
+    height: 6dvh;
+  border-bottom: 2px black solid;
+  text-align: center;
+}
 
-    height: 80vh;
-    width: 80vh; */
+.logic_cls > table > thead > tr > th:nth-child(1) {
+    width: 12dvh;
+} 
 
-/* } */
+.logic_cls > table > tfoot > tr  {
+  /* border: 2px black solid; */
+  text-align: center;
+  font-size: smaller;
+}
+
+.logic_cls > table > tfoot   {
+    visibility: hidden;
+}
+
+
+.logic_cls > table > caption  {
+  /* border: 2px solid #ccc; */
+  position: relative;
+  top:0;
+  left: 0;;
+  width: fit-content;
+  height: fit-content;
+  font-size: smaller;
+
+}
+
+.options_cls  > button {
+  padding: 10px 20px; 
+  border: 2px solid #ccc;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.options_cls  > button[data-enabled='0'] {
+    border-color: red;
+}
+
+.options_cls  > button[data-enabled='1'] {
+    border-color: green;
+}
+
+.measure_cls > span[data-init="1"] {
+    background-color: blue;
+}
+
+.measure_cls > span[data-init="0"] {
+    background-color: red;
+}
+
+
+
+/* 
+   <tfoot>
+
+            <tr>
+                    <td> -- </td>
+                    <td> -- </td>
+                    <td> -- </td>
+            </tr>
+
+        </tfoot> */
