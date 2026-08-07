@@ -10,8 +10,9 @@ CREATE ROLE htron LOGIN PASSWORD 'abcd';
 -- SU changes database owenership 
 ALTER DATABASE sport_db OWNER TO htron;
 
--- SU changes schema ownership
+-- SU changes schema ownership (to htron)
 ALTER SCHEMA nba OWNER TO htron;
+ALTER SCHEMA binny OWNER TO htron;
 
 -- SU grants user privlege for htron to connect to database (sign in)
 GRANT CONNECT ON DATABASE sport_db TO htron;
@@ -27,6 +28,7 @@ GRANT CREATE ON DATABASE sport_db TO htron;
 
 -- SU revoke user to create on schema (user must own schema)
 REVOKE CREATE ON SCHEMA nba FROM htron;
+REVOKE CREATE ON SCHEMA binny FROM htron;
 
 
 

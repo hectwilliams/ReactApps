@@ -90,7 +90,7 @@ const mock = () => {
             <tr>
                 <th scope="col">MNEM</th>
                 <th scope="col">DATETIME</th>
-                <th scope="col">MSG</th>
+                <th scope="col"> TEMP MSG </th>
             </tr>
         </thead>
 
@@ -108,22 +108,6 @@ const mock = () => {
 
 }
 
-//    <tfoot>
-//             <tr>
-//             <th scope="row" colspan="2">Total albums</th>
-//             <td colspan="2">77</td>
-//             </tr>
-        // </tfoot>
-
-    // <colgroup>
-        //     <col span="1" />
-        //     <col span="1" />
-        //     <col class=${tbdd_css_eff.background_column} />
-        // </colgroup>
-
-
-
-        // `<table><tr><th>MNEN</th><th>DATE</th><th>MSG</th></tr>${mock()} </table>`
 export const tbddfconstants = {
     'table': mock()
 } 

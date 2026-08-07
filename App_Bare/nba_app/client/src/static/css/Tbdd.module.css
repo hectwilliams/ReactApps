@@ -14,9 +14,61 @@
     width: 100%;
     height: 100%;
     grid-row: 3 / span 45;
-    grid-column: 20 / span 60;
-    border: 2px red solid;
+    grid-column: 10 / span 80;
+    /* border: 2px red solid; */
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+
 }
+
+.plot_cls > div:nth-child(1) {
+    width: 100%;
+    height: 100%;
+    
+    grid-row: 1 / span 99;
+    grid-column: 1 / span 9;
+
+    display: flex;
+    flex-direction: column;
+    column-gap: 6px;
+    justify-content: style;
+    border: 1px black solid; 
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+}
+.plot_cls > div:nth-child(1)  > button {
+    width: 10vh;
+    height: 5vh;
+
+}
+
+.plot_cls > div:nth-child(2)  {
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);  
+    grid-template-rows: repeat(100, 1fr);  
+}
+
+.plot_cls > div:nth-child(2) > span {
+    background-color: white;
+    border: 0.2px white solid;
+}
+
+.plot_cls > div:nth-child(2) > span[data-on="1"] {
+
+    border-radius: 50%;
+    background-color: blue;
+    
+}
+
+.plot_cls > div:nth-child(2) {
+        width: 100%;
+    height: 100%;
+     grid-row: 1 / span 99;
+    grid-column: 10 / span 99;
+        border: 1px black solid;
+}
+
 
 .options_cls {
     width: 100%;
@@ -118,6 +170,10 @@
   border-radius: 4px;
 }
 
+.options_cls  > button {
+    pointer-events: none;
+    opacity: 0.4;
+}
 .options_cls  > button[data-enabled='0'] {
     border-color: red;
 }
