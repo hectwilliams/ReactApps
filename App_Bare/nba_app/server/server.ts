@@ -218,12 +218,13 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
     
             reply
             .send({ data: result.rows})
-            .send(200);
+            .status(200);
 
             client.release();
         
         } else {
-            throw new Error('server request failed')
+            reply
+            .send(401);
 
         }
         

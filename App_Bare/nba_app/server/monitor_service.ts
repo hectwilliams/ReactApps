@@ -206,6 +206,18 @@ fastify.get('/start_history:key', async (request:FastifyRequest, reply: FastifyR
 
 });
 
+fastify.get('/binnytemp', async (request:FastifyRequest, reply: FastifyReply)=> {
+    reply.redirect(`http://127.0.0.1:50216/binnytemp`, 301) ; // greeedy 
+
+});
+
+fastify.get('/binnyhisto', async (request:FastifyRequest, reply: FastifyReply)=> {
+
+    reply.redirect(`http://127.0.0.1:50216/binnyhisto`, 301) ; // greeedy 
+
+});
+
+
 // fastify.post('/binnyon',  async (request, response) => {
 //     try {
 //         await fs.promises.access('./server2.ts');

@@ -33,40 +33,77 @@
     flex-direction: column;
     column-gap: 6px;
     justify-content: style;
-    border: 1px black solid; 
+    /* border: 1px black solid;  */
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
 }
 .plot_cls > div:nth-child(1)  > button {
     width: 10vh;
     height: 5vh;
-
 }
 
-.plot_cls > div:nth-child(2)  {
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="1"] {
+    background-color: blue;
+}
+
+
+.plot_cls > div:nth-child(2) {
+    width: 100%;
+    height: 100%;
+    grid-row: 1 / span 99;
+    grid-column: 10 / span 99;
+    border: 1px black solid;
+}
+
+.plot_cls > div:nth-child(2) > span {
+    background-color: antiquewhite;
+}
+
+.plot_cls > div:nth-child(2)[data-mode="1"] {
     display: grid;
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
 }
 
-.plot_cls > div:nth-child(2) > span {
-    background-color: white;
-    border: 0.2px white solid;
+.plot_cls > div:nth-child(2)[data-mode="1"] > span {
+    border: 1px orange solid;
 }
 
-.plot_cls > div:nth-child(2) > span[data-on="1"] {
-
-    border-radius: 50%;
-    background-color: blue;
-    
+.plot_cls > div:nth-child(2)[data-mode="1"] > span:hover {
+    background-color: lightgreen;
 }
 
-.plot_cls > div:nth-child(2) {
-        width: 100%;
-    height: 100%;
-     grid-row: 1 / span 99;
-    grid-column: 10 / span 99;
-        border: 1px black solid;
+.plot_cls > div:nth-child(2)[data-mode="1"] > span::after {
+    content: attr(data-hover); /* Pulls data from HTML */
+    position: absolute;
+    /* transform: translateX(-50%); */
+    background-color: #333;
+    color: #fff;
+    margin: 12px 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+    width: fit-content;
+    height: fit-content;
+    z-index: 2;
+    font-size: x-small;
+}
+
+.plot_cls > div:nth-child(2)[data-mode="1"] > span:hover::after {
+    opacity: 1;
+    visibility: visible;
+    background-color: green;
+}
+
+.plot_cls > div:nth-child(2):empty {
+    background-color: antiquewhite;
+}
+
+.plot_cls > div:nth-child(2)  {
+    background-color: antiquewhite;
+    display: grid;
+    grid-template-columns: repeat(101, 0.990fr);  
+    grid-template-rows: repeat(100, 1fr);  
 }
 
 

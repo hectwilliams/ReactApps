@@ -1,45 +1,17 @@
-import { tbddfconstants, setButton, n_rand_rbg, ten_numbers, WATERFALL_US} from './tbddf';
+import { tbddfconstants, setButton, n_rand_rbg, ten_numbers, WATERFALL_US, setPlot, temperatureDB, histogramDB} from './tbddf';
 
 
 import * as tbdd_css from './static/css/Tbdd.module.css';
 const tbdd_css_eff :  Record<string, boolean | string | unknown > = tbdd_css;
 
+const X_N_SAMPLES = 100
+const Y_N_SAMPLES = 100
+
 const sectionPlot = (): HTMLDivElement=> {
     const div = document.createElement('div');
     div.className = tbdd_css_eff.plot_cls as string;
-
-    const suboptions1 = document.createElement('div');
-    const raw = document.createElement('button');
-    const histo = document.createElement('button');
-    
-    suboptions1.append(raw, histo);
-
-    raw.innerText = "Raw";
-
-    histo.innerText = "Histo";
-
-    const  subplot = document.createElement('div');
-
-    const n = 100;
-    for (let i = 0 ; i < n**2; i++) {
-        let spanElement = document.createElement('span');
-        subplot.append(spanElement);
-    }
-
-    const row = 5;
-
-    const col = 5;
-
-    const testNode = subplot.childNodes[row * n + col] as HTMLSpanElement;
-
-    testNode.dataset.on = "1";
-
-    div.append(suboptions1);
-
-    div.append(subplot);
-
+    setPlot(div);
     return div;
-    
 }
 
 const sectionOptions = (): HTMLDivElement=> {
@@ -135,6 +107,8 @@ export class TBDD {
     main: HTMLDivElement;
     sectionLog: HTMLDivElement;
     sectionMeasure: HTMLDivElement;
+    sectionplot: HTMLDivElement;
+
     measureRef:  NodeJS.Timeout | null ;
 
     constructor() {
@@ -154,6 +128,20 @@ export class TBDD {
                 this.measureRef = null;
             }
         }
+        this.sectionplot = this.main.childNodes[3] as HTMLDivElement;
+
+        // set up action clicking raw button
+        ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
+                
+            temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
+        }
+
+        // set up action clicking histo button
+        ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
+                
+            temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
+        }
+
     }
 
     get() {return this.main}
