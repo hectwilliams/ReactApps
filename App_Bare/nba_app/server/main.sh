@@ -1,1 +1,2 @@
-node ${PWD}/server/monitor_service.ts  &> /dev/null
+
+node ${PWD}/server/monitor_service.ts &

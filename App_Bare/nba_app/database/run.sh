@@ -49,6 +49,7 @@ echo $CONTAINER_ID
 # copy .sql script into container 
 docker cp ./pgfiles/index0.sql "${CONTAINER_ID}":/root/work/index0.sql
 docker cp ./pgfiles/index1.sql "${CONTAINER_ID}":/root/work/index1.sql
+docker cp ./pgfiles/index2.sql "${CONTAINER_ID}":/root/work/index2.sql
 docker cp ./pgfiles/createdb.sh "${CONTAINER_ID}":/root/work/createdb.sh
 docker cp ./pgfiles/copyteams.sh "${CONTAINER_ID}":/root/work/copyteams.sh
 docker cp ./pgfiles/copyraces.sh "${CONTAINER_ID}":/root/work/copyraces.sh
@@ -59,6 +60,7 @@ docker cp ./pgfiles/copypts.sh "${CONTAINER_ID}":/root/work/copypts.sh
 docker cp ./pgfiles/copyplayed.sh "${CONTAINER_ID}":/root/work/copyplayed.sh
 docker cp ./pgfiles/copyplayers.sh "${CONTAINER_ID}":/root/work/copyplayers.sh
 docker cp ./pgfiles/copyimages.sh "${CONTAINER_ID}":/root/work/copyimages.sh
+docker cp ./pgfiles/copyweather.sh "${CONTAINER_ID}":/root/work/copyweather.sh
 
 # copy csv files  into container 
 docker cp ./pgfiles/nbateams.csv "${CONTAINER_ID}":/root/work/nbateams.csv
@@ -67,6 +69,7 @@ docker cp ./pgfiles/race.csv "${CONTAINER_ID}":/root/work/race.csv
 docker cp ./pgfiles/plot_pts.csv "${CONTAINER_ID}":/root/work/plot_pts.csv
 docker cp ./pgfiles/plot_played.csv "${CONTAINER_ID}":/root/work/plot_played.csv
 docker cp ./pgfiles/images_list.csv "${CONTAINER_ID}":/root/work/images_list.csv
+docker cp ./pgfiles/weatherdata.csv "${CONTAINER_ID}":/root/work/weatherdata.csv
 
 # copy image files to container 
 docker cp ./pgfiles/media/images/players  "${CONTAINER_ID}":/root/work/media/images/players                 
@@ -90,6 +93,7 @@ docker exec "${CONTAINER_ID}" psql -U "${ADMIN_DB}" -f /root/work/index0.sql
 DB=sport_db
 USER=htron
 docker exec "${CONTAINER_ID}" psql -d "${DB}"  --username "${USER}" -f /root/work/index1.sql
+docker exec "${CONTAINER_ID}" psql -d "${DB}"  --username "${USER}" -f /root/work/index2.sql
 
 # add/run script to container-sport_db
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyteams.sh);
@@ -143,4 +147,9 @@ stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyplayed.sh & )
 echo $stdout
 
 stdout=$(docker exec "${CONTAINER_ID}"  ./root/work/copyimages.sh & ) # cpy images link  table to  database 
+echo $stdout
+
+# Binny 
+stdout=$(docker exec "${CONTAINER_ID}" \
+ ./root/work/copyweather.sh & ) 
 echo $stdout

@@ -7,12 +7,13 @@ serverName=$1
 processID=$2
 
 if [[ "$1" == "nba" ]]; then 
-    # echo "${processID}.  ${serverName}"
+    echo "${processID}.  ${serverName}"
     msg=$(kill  "${processID}")
-    echo msg
+    # echo $msg
     # node ./server/server.ts > tmp 2> tmpe &
 elif [[ "$1" == "binny" ]]; then 
-    echo ""
+    msg=$(kill  "${processID}")
+    echo $msg
 else 
     echo ""
 fi 

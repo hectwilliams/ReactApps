@@ -34,8 +34,6 @@ CREATE TABLE  nba.teams (
     tmpic text 
 );
 
-
-
 CREATE TABLE  nba.info (
     npages integer,
     nlastpage integer ,

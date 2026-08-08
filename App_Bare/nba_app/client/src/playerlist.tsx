@@ -136,42 +136,39 @@ playerlist.className = playerlistcss_ff.top_level_list_container_container_cls a
             values = values.slice(0, binsize );
         }
 
+        const barrierNode = document.createElement('div');
+        const node = document.createElement('div');
+        const node2 = document.createElement('div');
+        const overlayNode = document.createElement('div');
 
-            const barrierNode = document.createElement('div');
-            const node = document.createElement('div');
-            const node2 = document.createElement('div');
-            const overlayNode = document.createElement('div');
+        node.className = quickplot_css_eff.binlog_container_cls as string; 
+        node2.className = quickplot_css_eff.binlog2_container_cls as string;
 
-            node.className = quickplot_css_eff.binlog_container_cls as string; 
-            node2.className = quickplot_css_eff.binlog2_container_cls as string;
+        overlayNode.className = quickplot_css_eff.binlog_overlay__cls as string; 
+        barrierNode.className = playerlistcss_ff.player_container_plot_cls as string; // barrier wraps bin log
+        
+        // nodde -> overlayNode -> barrier -> chain container 
+        plotsChainContainer.append(barrierNode);
 
-            overlayNode.className = quickplot_css_eff.binlog_overlay__cls as string; 
-            barrierNode.className = playerlistcss_ff.player_container_plot_cls as string; // barrier wraps bin log
-            
-            // nodde -> overlayNode -> barrier -> chain container 
-            plotsChainContainer.append(barrierNode);
+        barrierNode.append(overlayNode);
 
-            barrierNode.append(overlayNode);
+        overlayNode.append(node);
+        overlayNode.append(node2);
+        
+        // fill 
+        fillUnweightedCell(node, quickplot_css_eff.binlog_cell_cls as string);
+        fillUnweightedCell(node2, quickplot_css_eff.test_cls as string);
 
-            overlayNode.append(node);
-            overlayNode.append(node2);
-            
-            // fill 
-            fillUnweightedCell(node, quickplot_css_eff.binlog_cell_cls as string);
-            fillUnweightedCell(node2, quickplot_css_eff.test_cls as string);
+        // let qplot =  new QuickPlot(node);
+        const numbers = values;
+        // qplot.setPlot(numbers);
+        
+        setPeakCells (node2, quickplot_css_eff.test_cls as string, numbers);
+        setBarCells (node, numbers);
 
-            // let qplot =  new QuickPlot(node);
-
-            const numbers = values;
-            
-            // qplot.setPlot(numbers);
-            
-            setPeakCells (node2, quickplot_css_eff.test_cls as string, numbers);
-            setBarCells (node, numbers);
-
-            const c = node.className;
-            void node.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
-            node.className = c;
+        const c = node.className;
+        void node.offsetHeight;  // trigger reflow by evaluating (i.e. noop on DOM causing refresh of internals)
+        node.className = c;
 
     });
 
@@ -187,7 +184,6 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
         const code = String(data.players);
 
          if (storeInst.players === code) {
-            // console.log('request does not change gui state');
             throw new Error(""); 
         }  
 
@@ -204,7 +200,6 @@ export async function processData (data: ServerRecordInterface): Promise<boolean
         if (data.players.length) {
             
             storeInst.hash = newHash;
-
             // update booket 
             bookletInst.enable();
             // console.log('RETURNED')

@@ -1,9 +1,13 @@
 // import {view_button_on} from './static/css/viewButton.css';
-import * as view_button_css from './static/css/ViewButton.module..css';
-const view_button_css_eff :  Record<string, boolean | string | unknown > = view_button_css;
-
+import * as view_button_css from './static/css/ViewButton.module.css';
 import { fetchPagesHelper } from "./handlers";
 import { logbookInst } from './logbook';
+// import { activePowerButtons, PowerButton } from './powerButton';
+import { storeInst } from './store';
+
+const SPAN_PLACEHOLDER = document.createElement('span');
+
+const view_button_css_eff :  Record<string, boolean | string | unknown > = view_button_css;
 
 export function getServiceName(node: HTMLSpanElement) {
     if (!node) {
@@ -74,9 +78,58 @@ export class  ViewButton {
 
             if ( this.prev == currentNode) {
                 return;
+
             } else {
 
                 const name = getServiceName(currentNode);
+
+                // turn power switch and views off for others services 
+                for(let i = 0; i < activeViewButtons.length; i++ ) {
+
+                    // let powerRecord = activePowerButtons[i] as PowerButton;
+                    const viewRecord = activeViewButtons[i] as ViewButton;
+                    // let s = powerRecord.get();
+
+                    if (name != viewRecord.name && viewRecord.name != 'monitor') {
+
+                        viewRecord.prev = SPAN_PLACEHOLDER;
+
+                        if (viewRecord.name == 'nba') {
+                            // clear cached records 
+                            storeInst.clear();
+                        }
+                        // viewRecord.disable();
+                        
+                        // // 2. Create a new native MouseEvent
+                        // const clickEvent = new MouseEvent("click", {
+                        //     bubbles: true,
+                        //     cancelable: true,
+                        //     view: window
+                        // });
+
+                        // const node = powerRecord.get() as HTMLSpanElement;
+                        
+                        // add event listener
+                        // node.addEventListener('click', powerButtonClickHandler);
+                        
+                        // // remove event listener
+                        // node.dispatchEvent(clickEvent);
+
+                        // node.removeEventListener('click', powerButtonClickHandler)
+                                
+
+                        //         // if (powerRecord.is_on()) {
+                                    
+                        //         //     console.log(s);
+                        //         //     console.log('server will be shutdown shortly');
+
+                        //         // }
+
+
+                        //         // powerRecord.disable();
+                        
+                    }
+                }
 
                 if (name) {
                 

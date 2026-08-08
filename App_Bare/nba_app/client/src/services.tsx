@@ -60,11 +60,10 @@ async function loadServicesDom(services: Array<string>, container: HTMLDivElemen
         activeViewButtons.push(newViewButton);
         const cloneMoreViewSymbol = newViewButton.get();
         
-        console.log(serviceName);
+        // console.log(serviceName, __filename);
         
         cloneMoreViewSymbol.dataset.name = serviceName;
         
-
         if (serviceName == 'monitor') {
             
             clonePowerSwitch.dataset.status='on1';
@@ -179,6 +178,8 @@ class Services  {
             
             if (!response.ok) {
                 throw new Error("HTTP Error!");
+            } else {
+                console.log(response);
             }
             
             return true;

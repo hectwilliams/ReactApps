@@ -5,6 +5,7 @@ import { bookletInst } from "./pageShifter";
 import { playerlist, processData } from "./playerlist";
 import { storeInst } from './store';
 import { logbookInst } from './logbook';
+import { tbdd } from './tbdd';
 
 export function findNodeByDataset(parentNode: HTMLElement, datasetKey: string, datasetName: string) : HTMLElement | undefined {
     // let returnNode = undefined;
@@ -39,7 +40,6 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
     }
     
     const params = new URLSearchParams({page: `${page}`});
-    
     const path = `${window.location.origin}/${params}`;
     
     try {
@@ -60,16 +60,19 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
 
 export async function fetchPagesHelper( name: string, page?: number) : Promise<boolean>{
 
+
     try {
         
         switch(name) {
-            
+
             case "monitor":
                 
                 throw new Error("do nothing, monitor metrics not available yet");
                 
             case "nba": 
                 
+                dashboard.replaceChildren();
+
                 const data = await fetchPages(page);
 
                 if (!data) 
@@ -98,7 +101,7 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                     bookletInst.enable();
 
                     // add logbook to dom 
-                     logbookInst.addTodashoard();
+                    logbookInst.addTodashoard();
 
                 }).catch((err)=>{
 
@@ -111,8 +114,17 @@ export async function fetchPagesHelper( name: string, page?: number) : Promise<b
                 return true;
             
             case "binny":
+                    
+                dashboard.replaceChildren();
 
-                throw new Error("do nothing, monitor metrics not available yet");
+                // throw new Error("do nothing, monitor metrics not available yet");
+
+                const node = tbdd.getHtmlElement()
+
+                if (dashboard.firstElementChild != node)
+                    dashboard.append(node);
+
+                return true;
 
             default:
 
