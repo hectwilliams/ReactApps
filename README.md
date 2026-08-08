@@ -4,7 +4,7 @@ Applications built using (React | Javascript | Typescript) --- (Flask | Fastify 
 ## Project Images/Videos 
 
 - Binny Service
-![](./App_Bare/nba_app/docs/services_app/image1.png)
+![](./App_Bare/nba_app/docs/services_app/image2.png)
 - Player Service
 ![](./App_Bare/nba_app/snapshots/image4.png)
 ![](./App_Bare/nba_app/snapshots/video.gif)
