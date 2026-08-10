@@ -1,4 +1,4 @@
-import { tbddfconstants, setButton, n_rand_rbg, ten_numbers, WATERFALL_US, setPlot, temperatureDB, histogramDB} from './tbddf';
+import { tbddfconstants, setButton, n_rand_rbg, ten_numbers, WATERFALL_US, setPlot, aiButtonPredict} from './tbddf';
 
 
 import * as tbdd_css from './static/css/Tbdd.module.css';
@@ -7,10 +7,12 @@ const tbdd_css_eff :  Record<string, boolean | string | unknown > = tbdd_css;
 const X_N_SAMPLES = 100
 const Y_N_SAMPLES = 100
 
-const sectionPlot = (): HTMLDivElement=> {
+const sectionPlot = (aibutton: HTMLButtonElement): HTMLDivElement=> {
     const div = document.createElement('div');
     div.className = tbdd_css_eff.plot_cls as string;
     setPlot(div);
+
+    setButton(aibutton, undefined);
     return div;
 }
 
@@ -20,12 +22,11 @@ const sectionOptions = (): HTMLDivElement=> {
 
     // const btn1 = document.createElement('button');
     // btn1.innerText = "LOGS";
-    const btn2 = document.createElement('button');
-    btn2.innerText = "AI-PREDICT";
-    // div.append(btn1);
-    div.append(btn2);
-    // setButton(btn1);
-    setButton(btn2);
+    const btn = document.createElement('button');
+    btn.innerText = "AI-PREDICT";
+    btn.dataset.ai = "";
+    btn.onclick = null;
+    div.append(btn);
     return div;
 }
 
@@ -59,7 +60,7 @@ const setMain = (div: HTMLDivElement): void => {
     div.append(sectionMeasure());
     div.append(sectionLogs());
     div.append(sectionOptions());
-    div.append(sectionPlot());
+    div.append(sectionPlot((div.lastChild as HTMLDivElement).firstChild as HTMLButtonElement));
 }
 
  function waterfall (this: TBDD): NodeJS.Timeout{
@@ -108,15 +109,15 @@ export class TBDD {
     sectionLog: HTMLDivElement;
     sectionMeasure: HTMLDivElement;
     sectionplot: HTMLDivElement;
-
+    sectionOptions: HTMLDivElement;
     measureRef:  NodeJS.Timeout | null ;
 
     constructor() {
         this.name = "binny";
         this.main = document.createElement('div');
         this.measureRef = null;
-        
         setMain(this.main);
+        this.sectionOptions = this.main.childNodes[2] as HTMLDivElement;
         this.sectionLog = this.main.childNodes[1] as HTMLDivElement;
         this.sectionMeasure = this.main.childNodes[0] as HTMLDivElement;
         this.sectionMeasure.ondblclick = () =>{
@@ -131,16 +132,20 @@ export class TBDD {
         this.sectionplot = this.main.childNodes[3] as HTMLDivElement;
 
         // set up action clicking raw button
-        ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
+        // ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
                 
-            temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
-        }
+        //     temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
+        // }
 
-        // set up action clicking histo button
-        ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
+        // // set up action clicking histo button
+        // ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
                 
-            temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
-        }
+        //     temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
+        // }
+
+        // if (true) {
+        //      this.sectionOptions.dataset.ai = '1'; 
+        // }
 
     }
 

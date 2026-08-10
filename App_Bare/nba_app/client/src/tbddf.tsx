@@ -1,45 +1,54 @@
 
 export const WATERFALL_US = 250;
-const X_N_SAMPLES = 100
-const Y_N_SAMPLES = 100
+const X_N_SAMPLES = 101
+const Y_N_SAMPLES = 101
 
 export const temperatureDB = async (node: HTMLDivElement) :Promise<boolean> => {
     node.replaceChildren();
-
     node.dataset.mode = "0";
-    node.style.gridTemplateColumns = "repeat(100, 1fr)";
-    node.style.gridTemplateRows = "repeat(100, 1fr)";
+    node.style.gridTemplateColumns = `repeat(101, ${101/101}fr)`;
+    node.style.gridTemplateRows = `repeat(101, ${101/101}fr)`;
 
     const path = 'http://127.0.0.1:50214/binnytemp';
     
     try {
         
         const response = await fetch(path);
+        
         if (!response.ok) {
             throw new Error("HTTP Error!");
         }
         const data = await response.json();
 
+
+        
         for (let i = 0 ; i < X_N_SAMPLES; i++) {
-            for (let j = 0; j < Y_N_SAMPLES; j++) {
+            
+            for (let j = 0; j < Y_N_SAMPLES ; j++) {
                 let spanElement = document.createElement('span');
                 node.append(spanElement);
                 
                 let amplitude = Math.floor(data.data[j]);
 
-                if (i == amplitude) {
+                if (i == (101 - amplitude)) {
                     spanElement.dataset.on = "1";
+                    spanElement.dataset.hover = `amp ->  ${  amplitude} `;
                 }
+
+
             }
 
         }
-
+        
         return true;
-
-    } catch {
+        
+    } catch(error) {
+        
+        console.log(error);
 
         return false;
     }
+
 
 }
 
@@ -119,7 +128,7 @@ export const histogramDB = async  (node: HTMLDivElement) :Promise<boolean> => {
          
         return true;
 
-    } catch {
+    } catch(error) {
 
         return false;
     }
@@ -132,49 +141,148 @@ export const setPlot = (node: HTMLDivElement) : void => {
     const raw = document.createElement('button');
     const histo = document.createElement('button');
 
-    suboptions1.append(raw, histo);
+    suboptions1.append(raw);
+    suboptions1.append(histo);
 
     raw.innerText = "Raw";
-
     histo.innerText = "Histo";
 
-    const  subplot = document.createElement('div');
-
+    const subplot1 = document.createElement('div');
+    
     const rows = Y_N_SAMPLES;
-    const cols = X_N_SAMPLES
+    const cols = X_N_SAMPLES;
+
     for (let i = 0 ; i < rows; i++) {
+
         for (let j = 0; j < cols; j++) {
+            
             let spanElement = document.createElement('span');
-            subplot.append(spanElement);
+
+            subplot1.append(spanElement);
+
         }
+
     }
-
-    const row = 5;
-
-    const col = 5;
-
-    const testNode = subplot.childNodes[row * Y_N_SAMPLES + col] as HTMLSpanElement;
-
-    testNode.dataset.on = "1";
 
     node.append(suboptions1);
 
-    node.append(subplot);
+    node.append(subplot1);
 
     raw.onclick = async () => {
-        const resp: boolean = await temperatureDB(subplot);
+        
+        const resp: boolean = await temperatureDB(subplot1);
+        
+        let parent = node.parentNode as HTMLDivElement;
+        let optionContainer = parent.childNodes[2] as HTMLDivElement;
+        let buttonAI = optionContainer.firstChild as HTMLButtonElement;
+        
         if (resp) {
             
-            console.log('temp request successful');
+            console.log('raw request successful');
+
+            buttonAI.dataset.ai = "0";
+            
+        } else {
+            
+            console.log('raw request failed');
 
         }
+        
     }
 
     histo.onclick = async () => {
-        const resp: boolean = await histogramDB(subplot);
+        const resp: boolean = await histogramDB(subplot1);
+        
         if (resp) {
             
             console.log('histo request successful');
+            
+        } else {
+
+            console.log('histo request failed');
+
+        }
+        
+        let parent = node.parentNode as HTMLDivElement;
+        let optionContainer = parent.childNodes[2] as HTMLDivElement;
+        let buttonAI = optionContainer.firstChild as HTMLButtonElement;
+        buttonAI.dataset.ai = "";
+    }
+
+}
+
+export const setButton = (node_button: HTMLButtonElement, node_plot: HTMLDivElement | undefined ): void => {
+
+    let parent = node_button.parentNode as HTMLDivElement;
+    const rd = node_button.dataset.ai;
+
+    node_button.onclick = (event: MouseEvent) =>  { 
+        // buttonToggle() 
+        const node = event.currentTarget as HTMLButtonElement;
+        setButton(node, parent); // ai button 
+    };
+
+    if (rd == "")
+        return ;
+
+    const en = rd == "0" ? "1" : "0";
+    
+    node_button.dataset.ai = en;
+
+    let optionContainer = (node_plot?.parentNode as HTMLDivElement).childNodes[3] as HTMLDivElement;
+
+    let plot_node = optionContainer.lastChild as HTMLButtonElement;
+    
+    if (!plot_node)
+        return; 
+
+    if (en == "1") {
+
+        plot_node.style.gridTemplateColumns = `repeat(101, ${101/101}fr)`;
+        plot_node.style.gridTemplateRows = `repeat(101, ${101/101}fr)`;
+        plot_node.style.transition = "opacity 0.5s ease-in-out";
+        plot_node.dataset.mode = "0";
+
+        let row = 0;
+        let estimation = 22;
+        let estimation_eff = 101 - 22;
+
+        while (row < 101) {
+
+            let idx = row * 101 + (101 -1);
+
+            let spanElement = (plot_node.childNodes[idx] as HTMLSpanElement)
+            if (row == estimation_eff ){
+                
+                spanElement.dataset.on = "3";
+                spanElement.dataset.hover = `amp ->  ${  estimation} `;
+                
+                console.log('element', spanElement);
+            }
+            
+            row++;
+        }
+
+    } 
+    
+    else if (en == "0") {
+
+        plot_node.style.gridTemplateColumns = `repeat(101, ${100/101}fr)`;
+        plot_node.style.gridTemplateRows = `repeat(101, ${100/101}fr)`;
+        plot_node.style.transition = "opacity 0.5s ease-in-out";
+        plot_node.dataset.mode = "0";
+
+        let row = 0;
+
+        for (let i = 100; i < 101 * 101 ; i+=101) {
+
+            if (row == 101- 22){
+                
+                (plot_node.childNodes[i] as HTMLSpanElement).dataset.on = '0';
+                
+            }
+
+            row++;
 
         }
 
@@ -182,19 +290,15 @@ export const setPlot = (node: HTMLDivElement) : void => {
 
 }
 
-export const setButton = (node: HTMLButtonElement): void => {
-    const rd = node.dataset.enabled;
+// node is raw plot 
+export const aiButtonPredict = (node: HTMLDivElement): void => {
 
-    const en = rd == "0" ? "1" : "0";
-
-    node.dataset.enabled = en;
-
-    node.onclick = buttonToggle;
 }
 
 const buttonToggle = (event: MouseEvent) : void => {
+    console.log(this)
     const node = event.currentTarget as HTMLButtonElement;
-    setButton(node);
+    // setButton(node); // ai button 
 }
 
 export const ten_numbers = () => {

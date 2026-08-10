@@ -40,9 +40,9 @@ function pidExists(serviceName : string, processTable: Record<string, Record<str
      return false; 
 }
 
-async function startProcess(service_name: string, response: FastifyReply) {
+async function startProcess(service_name: string, processTable: Record<string, Record<string, number> >, response: FastifyReply) {
     
-    const filepath = path.join(process.cwd(), `./server/run_servers.sh ${service_name}`);
+    const filepath = path.join(process.cwd(), `./server/run_servers.sh`);
     
     exec(`${filepath} ${service_name}`, (error: ExecException | null, stdout: string) => { 
 
@@ -51,6 +51,12 @@ async function startProcess(service_name: string, response: FastifyReply) {
             throw new Error(`${error}`);
 
         } else {
+
+            console.log('state', killProcess);
+
+            console.log('current table', processTable);
+            
+            console.log('new process', stdout);
 
             const effPID = parseInt(stdout.trim());
             floatingProcess.push(effPID); // TODO handle faults / reset and still persists -- needs to be deleted 
@@ -77,7 +83,9 @@ async function killProcess(service_name: string, processTable: Record<string, Re
     exec(`${filepath} ${service_name}  ${kill_pid}`, (error) =>{ 
         
         if(error) {
+
             throw new Error(`${error}`);
+
         } else {
             
             // delete server process successful 
@@ -167,6 +175,9 @@ fastify.post('/power',  async (request, response) => {
 
             if (pidExists(name , processList))  {
                 
+                console.log(processList)
+                console.log(request.body)
+
                 await killProcess(name, processList);
 
             }
@@ -174,7 +185,7 @@ fastify.post('/power',  async (request, response) => {
             // turn on server 
             console.log('POWER ON MONITOR SERVICE');
 
-            await startProcess(name, response);
+            await startProcess(name, processList, response);
             
         } else if (enable === "0") {
             // shutdown server 

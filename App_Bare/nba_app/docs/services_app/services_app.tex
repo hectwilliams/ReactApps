@@ -113,12 +113,24 @@
 
         \end{figure}
 
+
+        \begin{figure}[H]
+            
+            \includegraphics[width=1.0\textwidth, height=0.27\textheight]{image4}
+            
+            \caption{\textbf{GET } Model Prediction Service}
+        
+            \label{fig:forecast}
+
+        \end{figure}
+
+
     
     \newpagex
     \noindent 
     \section{Load Temperature Train Data into DB}
 
-    We used temperature data from Kaggle  \textit{\tiny\url{ https://www.kaggle.com/datasets/bhanupratapbiswas/weather-data?select=Weather+Data.csv} } to represent log data. The prediction model will be used predict potential future logs; this will be discussed in a future section.
+    We used temperature data from Kaggle  \textit{\tiny\url{ https://www.kaggle.com/datasets/bhanupratapbiswas/weather-data} } to represent log data. The prediction model will be used predict potential future logs; this will be discussed in a future section.
     
     \noindent 
     \subsection{Loading data into database}
@@ -222,3 +234,18 @@ sport_db=> select * from binny.temp;
     \end{itemize}
     
 \end{document}
+
+\newpagex
+\noindent 
+\section{Tensorflow Model Export}
+A tensorflow model in the binny service will be able to predict the next temperature sample on binny page 
+\begin{itemize}
+    \item Train temperaure data  \smallskip
+    \item Export model (tensorflow formatted model)\smallskip
+    \begin{itemize}
+        \item Google Collab free resource used to train forecasting model
+    \end{verbatim} 
+    \item Import model into service \smallskip
+    \item Infer using GET request  \smallskip
+    \item Verify binny table exist  \smallskip
+\end{verbatim} 
