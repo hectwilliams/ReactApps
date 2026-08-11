@@ -1,9 +1,14 @@
 
+import { TBDD } from "./tbdd";
+import type { RawInterfaceSub } from "./tbdd";
+
 export const WATERFALL_US = 250;
 const X_N_SAMPLES = 101
 const Y_N_SAMPLES = 101
 
-export const temperatureDB = async (node: HTMLDivElement) :Promise<boolean> => {
+
+
+export const temperatureDB = async (node: HTMLDivElement) :Promise<RawInterfaceSub | null> => {
     node.replaceChildren();
     node.dataset.mode = "0";
     node.style.gridTemplateColumns = `repeat(101, ${101/101}fr)`;
@@ -40,13 +45,13 @@ export const temperatureDB = async (node: HTMLDivElement) :Promise<boolean> => {
 
         }
         
-        return true;
+        return data;
         
     } catch(error) {
         
         console.log(error);
 
-        return false;
+        return  null
     }
 
 
@@ -135,7 +140,7 @@ export const histogramDB = async  (node: HTMLDivElement) :Promise<boolean> => {
 
 }
 
-export const setPlot = (node: HTMLDivElement) : void => {
+export const setPlot = (node: HTMLDivElement,  tbdd: TBDD) : void => {
 
     const suboptions1 = document.createElement('div');
     const raw = document.createElement('button');
@@ -151,6 +156,14 @@ export const setPlot = (node: HTMLDivElement) : void => {
     
     const rows = Y_N_SAMPLES;
     const cols = X_N_SAMPLES;
+
+      interface returnInterfaceSub  {
+            data: Array<number>,
+            min: number,
+            max: number
+        };
+
+
 
     for (let i = 0 ; i < rows; i++) {
 
@@ -170,7 +183,8 @@ export const setPlot = (node: HTMLDivElement) : void => {
 
     raw.onclick = async () => {
         
-        const resp: boolean = await temperatureDB(subplot1);
+        const resp: RawInterfaceSub | null= await temperatureDB(subplot1);
+
         
         let parent = node.parentNode as HTMLDivElement;
         let optionContainer = parent.childNodes[2] as HTMLDivElement;
@@ -178,6 +192,7 @@ export const setPlot = (node: HTMLDivElement) : void => {
         
         if (resp) {
             
+            tbdd.raw = resp;
             console.log('raw request successful');
 
             buttonAI.dataset.ai = "0";
@@ -191,6 +206,7 @@ export const setPlot = (node: HTMLDivElement) : void => {
     }
 
     histo.onclick = async () => {
+
         const resp: boolean = await histogramDB(subplot1);
         
         if (resp) {
@@ -211,7 +227,7 @@ export const setPlot = (node: HTMLDivElement) : void => {
 
 }
 
-export const setButton = (node_button: HTMLButtonElement, node_plot: HTMLDivElement | undefined ): void => {
+export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLDivElement | undefined , tbdd: TBDD): Promise<void> => {
 
     let parent = node_button.parentNode as HTMLDivElement;
     const rd = node_button.dataset.ai;
@@ -219,7 +235,7 @@ export const setButton = (node_button: HTMLButtonElement, node_plot: HTMLDivElem
     node_button.onclick = (event: MouseEvent) =>  { 
         // buttonToggle() 
         const node = event.currentTarget as HTMLButtonElement;
-        setButton(node, parent); // ai button 
+        setButton(node, parent, tbdd); // ai button 
     };
 
     if (rd == "")
@@ -247,21 +263,61 @@ export const setButton = (node_button: HTMLButtonElement, node_plot: HTMLDivElem
         let estimation = 22;
         let estimation_eff = 101 - 22;
 
-        while (row < 101) {
+       
 
-            let idx = row * 101 + (101 -1);
+        let s : RawInterfaceSub = tbdd.raw as RawInterfaceSub;   
 
-            let spanElement = (plot_node.childNodes[idx] as HTMLSpanElement)
-            if (row == estimation_eff ){
-                
-                spanElement.dataset.on = "3";
-                spanElement.dataset.hover = `amp ->  ${  estimation} `;
-                
-                console.log('element', spanElement);
+        // const params = new URLSearchParams({predict: `${tbdd.raw}`});
+        // const params = new URLSearchParams({predict: `${s}`});
+
+        const path = `http://127.0.0.1:50214/predict`;
+
+         const method = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                data: s.data,
+            } 
+        )};
+
+    
+        try {
+            
+            const response = await fetch(path, method);
+            
+            if (!response.ok) {
+                throw new Error("HTTP Error!");
             }
             
-            row++;
+            const model_prediction = await response.json();
+
+            console.log(model_prediction);
+
+        } catch(error) {
+
+            console.log(error);
+
         }
+
+        // while (row < 101) {
+
+        //     let idx = row * 101 + (101 -1);
+
+        //     let spanElement = (plot_node.childNodes[idx] as HTMLSpanElement)
+
+        //     if (row == estimation_eff ){
+                
+        //         spanElement.dataset.on = "3";
+        //         spanElement.dataset.hover = `amp ->  ${  estimation} `;
+                
+        //         console.log('element', spanElement);
+        //     }
+            
+        //     row++;
+        // }
 
     } 
     

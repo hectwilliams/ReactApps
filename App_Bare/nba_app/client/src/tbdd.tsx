@@ -7,12 +7,12 @@ const tbdd_css_eff :  Record<string, boolean | string | unknown > = tbdd_css;
 const X_N_SAMPLES = 100
 const Y_N_SAMPLES = 100
 
-const sectionPlot = (aibutton: HTMLButtonElement): HTMLDivElement=> {
+const sectionPlot = (aibutton: HTMLButtonElement,  tbdd: TBDD): HTMLDivElement=> {
     const div = document.createElement('div');
     div.className = tbdd_css_eff.plot_cls as string;
-    setPlot(div);
+    setPlot(div,   tbdd);
 
-    setButton(aibutton, undefined);
+    setButton(aibutton, undefined, tbdd);
     return div;
 }
 
@@ -54,13 +54,15 @@ const sectionLogs = (): HTMLDivElement => {
     return  div;
 }
 
-const setMain = (div: HTMLDivElement): void => {
+const setMain = (div: HTMLDivElement, tbdd: TBDD): void => {
 
     div.className = (tbdd_css_eff.main_cls as string); // set classname style componenet 
     div.append(sectionMeasure());
     div.append(sectionLogs());
     div.append(sectionOptions());
-    div.append(sectionPlot((div.lastChild as HTMLDivElement).firstChild as HTMLButtonElement));
+    div.append( 
+        sectionPlot(  ( div.lastChild as HTMLDivElement ).firstChild as HTMLButtonElement , tbdd) 
+    );
 }
 
  function waterfall (this: TBDD): NodeJS.Timeout{
@@ -102,6 +104,13 @@ const setMain = (div: HTMLDivElement): void => {
     return inner();
 }
 
+export interface RawInterfaceSub  {
+            data: Array<number>,
+            min: number,
+            max: number
+        };
+
+
 export class TBDD {
 
     name: string
@@ -111,12 +120,15 @@ export class TBDD {
     sectionplot: HTMLDivElement;
     sectionOptions: HTMLDivElement;
     measureRef:  NodeJS.Timeout | null ;
+    raw: RawInterfaceSub | null;
 
     constructor() {
         this.name = "binny";
         this.main = document.createElement('div');
         this.measureRef = null;
-        setMain(this.main);
+        this.raw = null
+
+        setMain(this.main,this);
         this.sectionOptions = this.main.childNodes[2] as HTMLDivElement;
         this.sectionLog = this.main.childNodes[1] as HTMLDivElement;
         this.sectionMeasure = this.main.childNodes[0] as HTMLDivElement;

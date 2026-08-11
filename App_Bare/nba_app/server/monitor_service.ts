@@ -5,7 +5,7 @@ import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import type {FastifyRequest, FastifyReply } from 'fastify';
 import fs from 'fs';
-// import cors from '@fastify/cors';
+import cors from '@fastify/cors';
  import type { ExecException } from 'node:child_process';
 
 interface MonitorInterface {
@@ -67,7 +67,9 @@ async function startProcess(service_name: string, processTable: Record<string, R
 
     });
 
+// [TypeError: Failed to parse URL from /Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/models/temperature/js_model/model.json] 
 
+// /Users/hectorwilliams/Documents/Dev/repos/ReactApps/App_Bare/nba_app/server/models/temperature/js_model
 }
 
 async function killProcess(service_name: string, processTable: Record<string, Record<string, number> >, response: FastifyReply| undefined = undefined) { 
@@ -128,10 +130,10 @@ fastify.register(fastifyStatic, {
     prefix: '/' ,
 });
 
-// fastify.register(cors, {
-//     origin: "http://127.0.0.1:50214", 
-//     methods: ['GET', 'POST']
-// });
+fastify.register(cors, {
+    origin: "http://127.0.0.1:50214", 
+    methods: ['GET', 'POST']
+});
 
 fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
      let obj = request.params  as Record<string, string>;
@@ -228,6 +230,81 @@ fastify.get('/binnyhisto', async (request:FastifyRequest, reply: FastifyReply)=>
 
 });
 
+fastify.post('/predict',  async (request: FastifyRequest, reply: FastifyReply) => {
+    
+    // let obj = request.params  as Record<string, string>;
+
+    // if (obj === Object.prototype /*strict compare; no coercion*/) {
+    //     obj = Object.assign({}, obj); // coonvert null prototype to normal object 
+    // }
+    // const data = obj.data as string;
+
+    // return reply.redirect(307, '/new-api-endpo   int');
+    
+    // console.log(request.body)
+
+    // reply.redirect(`http://127.0.0.1:50216/predict`, 301) ; // greeedy 
+
+    // console.log('hello world');
+
+    
+    // console.log(request.body)
+    // console.log( request.params )
+    // reply.redirect(`http://127.0.0.1:50216/predict=${(obj.data as string)}`, 301) ; 
+
+    // response
+    // .send({});
+
+    // Update the body data
+
+     interface PayLoadInterface  {
+        data: Array<number>,
+    };
+    
+    // // Forward internally using fastify.inject
+    // const response = await fastify.inject({
+    //     method: 'POST',
+    //     url: `http://127.0.0.1:50216/predict2`,
+    //     payload: request.body as PayLoadInterface,
+    //     headers: {
+    //         host: 'http://127.0.0.1:50216'
+    //     }
+    // });
+    
+    // console.log(response.json());
+    
+    // return reply.send({msg: response.json()})
+
+    // return response
+    // if (response)
+        // console.log(response.payload)
+    // reply
+    // // copy 
+    // .code(response.statusCode)
+    // .headers(response.headers)
+    // // new reponse 
+    // .send(response.payload);
+
+    // fastify.post(`http://127.0.0.1:50216/predict`,  async (request: FastifyRequest, reply: FastifyReply) => {
+
+
+    // });
+
+    return reply.redirect(`http://127.0.0.1:50216/predict2`, 307);
+
+    // return reply.status(200);
+
+});
+
+
+// fastify.get('/page=:pg', (request:FastifyRequest, reply: FastifyReply)=> {
+//      let obj = request.params  as Record<string, string>;
+
+//     if (obj === Object.prototype /*strict compare; no coercion*/) {
+//         obj = Object.assign({}, obj); // coonvert null prototype to normal object 
+//     }
+//     reply.redirect(`http://127.0.0.1:50215/page=${(obj.pg as string)}`, 301) ; // greeedy 
+// });
 
 // fastify.post('/binnyon',  async (request, response) => {
 //     try {

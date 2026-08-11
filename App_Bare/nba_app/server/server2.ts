@@ -12,6 +12,12 @@ import type {FastifyRequest, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import fastifyPostgres from '@fastify/postgres';
+// import * as tf from '@tensorflow/tfjs';
+import { pathToFileURL } from 'url'; // ESM
+
+import * as tf from  '@tensorflow/tfjs-node'
+// import 'node-fetch';
+// global.fetch = fetch;
 
 // interface SimpleCapture {import path from 'node:path';
 
@@ -194,24 +200,56 @@ fastify.get('/binnyhisto', async ( request: FastifyRequest, reply: FastifyReply 
     }
 });
 
-fastify.get('/predict', async ( request: FastifyRequest, reply: FastifyReply ) => {
+fastify.post('/predict2', async ( request: FastifyRequest, reply: FastifyReply ) =>  {
+    
+    interface Predict2BodyInterface {
+        data: number[]
+    };
 
     try {
 
-        let obj = request.params  as Record<string, string>;
- 
-        if (obj === Object.prototype /*strict compare; no coercion*/) {
-            
-            obj = Object.assign({}, obj); 
-        }
+        let temperatures = (request.body as Predict2BodyInterface).data;
+        // let obj = request.params  as Record<string, string>;
 
-        reply
-        .send({})
+        
+        // if (obj === Object.prototype /*strict compare; no coercion*/) {
+            
+        //     obj = Object.assign({}, obj); 
+        // }
+
+        // console.log(obj.data);
+        
+        const file_path = path.join(path.join(process.cwd(),'server', 'models', 'temperature', 'js_model', 'model.json'));
+
+        let file_path_url = pathToFileURL(file_path).href;
+
+        // file_path_url = file_path_url.replace('///', '//');
+
+        const model = await tf.loadGraphModel(file_path_url) ;
+
+        console.log(model.modelSignature)
+
+        let temperatures2 = temperatures.map((x) => {return [x]}) as Array<Array<number>>;
+        let temperatures3 = temperatures2.map((x) => {return [x]}) as Array<Array<Array<number>>>;
+
+        const model_tensor_input = tf.tensor3d( temperatures3);
+        // 
+        console.log(model_tensor_input);
+
+        // const pred2 = await model.predict(model_tensor_input);
+        
+        const pred = await model.executeAsync(model_tensor_input) 
+        
+         console.log(pred)
+
+        return reply.send({name: pred})
 
     }  catch(err) {
-        
-        reply
-        .send(401);
+
+        console.log(err);
+
+        return reply.send({errMessage: "Model error, check subsystem logic. "}).status(401);
+
     }
 
 });
