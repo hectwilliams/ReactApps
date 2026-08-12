@@ -228,8 +228,10 @@ export const setPlot = (node: HTMLDivElement,  tbdd: TBDD) : void => {
 }
 
 export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLDivElement | undefined , tbdd: TBDD): Promise<void> => {
+    let ref_value = {data:0};
 
-    let parent = node_button.parentNode as HTMLDivElement;
+
+        let parent = node_button.parentNode as HTMLDivElement;
     const rd = node_button.dataset.ai;
 
     node_button.onclick = (event: MouseEvent) =>  { 
@@ -292,9 +294,34 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
                 throw new Error("HTTP Error!");
             }
             
-            const model_prediction = await response.json();
+            const record = await response.json();
 
-            console.log(model_prediction);
+            console.log(record.prediction);
+
+            let est = record.prediction;
+            
+            let est_eff = Math.round(101 - est); 
+            
+            // ref_value.data = est ;
+            tbdd.recent_prediction = est;
+
+            while (row < 101) {
+    
+                let idx = row * 101 + (101 -1);
+    
+                let spanElement = (plot_node.childNodes[idx] as HTMLSpanElement)
+    
+                if (row == est_eff ){
+                    
+                    spanElement.dataset.on = "3";
+
+                    spanElement.dataset.hover = `amp ->  ${  estimation} `;
+                    
+                    console.log('element', spanElement);
+                }
+                
+                row++;
+            }
 
         } catch(error) {
 
@@ -302,22 +329,6 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
 
         }
 
-        // while (row < 101) {
-
-        //     let idx = row * 101 + (101 -1);
-
-        //     let spanElement = (plot_node.childNodes[idx] as HTMLSpanElement)
-
-        //     if (row == estimation_eff ){
-                
-        //         spanElement.dataset.on = "3";
-        //         spanElement.dataset.hover = `amp ->  ${  estimation} `;
-                
-        //         console.log('element', spanElement);
-        //     }
-            
-        //     row++;
-        // }
 
     } 
     
@@ -329,10 +340,10 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
         plot_node.dataset.mode = "0";
 
         let row = 0;
-
+        
         for (let i = 100; i < 101 * 101 ; i+=101) {
 
-            if (row == 101- 22){
+            if (row == Math.round(101- tbdd.recent_prediction ) ){
                 
                 (plot_node.childNodes[i] as HTMLSpanElement).dataset.on = '0';
                 
@@ -343,6 +354,8 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
         }
 
     }
+
+    
 
 }
 

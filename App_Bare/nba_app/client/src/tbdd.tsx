@@ -110,9 +110,9 @@ export interface RawInterfaceSub  {
             max: number
         };
 
-
 export class TBDD {
 
+    recent_prediction: number;
     name: string
     main: HTMLDivElement;
     sectionLog: HTMLDivElement;
@@ -142,22 +142,7 @@ export class TBDD {
             }
         }
         this.sectionplot = this.main.childNodes[3] as HTMLDivElement;
-
-        // set up action clicking raw button
-        // ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
-                
-        //     temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
-        // }
-
-        // // set up action clicking histo button
-        // ((this.sectionplot.childNodes[0] as HTMLDivElement).childNodes[0] as HTMLButtonElement).onclick = ()=>{
-                
-        //     temperatureDB(this.sectionplot.childNodes[1] as HTMLDivElement);
-        // }
-
-        // if (true) {
-        //      this.sectionOptions.dataset.ai = '1'; 
-        // }
+        this.recent_prediction = -1;
 
     }
 

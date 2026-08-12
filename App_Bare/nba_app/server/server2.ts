@@ -12,10 +12,11 @@ import type {FastifyRequest, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import fastifyPostgres from '@fastify/postgres';
-// import * as tf from '@tensorflow/tfjs';
+import * as tf2 from '@tensorflow/tfjs';
 import { pathToFileURL } from 'url'; // ESM
+import * as tf from  '@tensorflow/tfjs-node';
 
-import * as tf from  '@tensorflow/tfjs-node'
+// import * from  '@tensorflow/tfjs-tfdf'
 // import 'node-fetch';
 // global.fetch = fetch;
 
@@ -180,19 +181,6 @@ fastify.get('/binnyhisto', async ( request: FastifyRequest, reply: FastifyReply 
             .send({msg: result.rows})
             .status(200);
 
-
-
-
-        // }
-            /*
-            (val_column - MIN(val_column) OVER ()) / 
-            NULLIF(MAX(val_column) OVER () - MIN(val_column) OVER (), 0) AS normalized_val
-            ( CAST(temp as numeric)  - stats.min_val ) OVER ()) / NULLIF( stats.max_val OVER () - stats.min_val OVER (), 0) AS normalized_val
-            */
-
-                    // console.log(result.rows);
-        
-     
     } catch (err) {
             
         reply
@@ -206,43 +194,41 @@ fastify.post('/predict2', async ( request: FastifyRequest, reply: FastifyReply )
         data: number[]
     };
 
+    /* Forecasting limited to vector of 100 numbers  */
+
     try {
 
         let temperatures = (request.body as Predict2BodyInterface).data;
-        // let obj = request.params  as Record<string, string>;
+        let obj = request.params  as Record<string, string>;
 
-        
-        // if (obj === Object.prototype /*strict compare; no coercion*/) {
+        if (obj === Object.prototype /*strict compare; no coercion*/) {
             
-        //     obj = Object.assign({}, obj); 
-        // }
+            obj = Object.assign({}, obj); 
+        }
 
-        // console.log(obj.data);
-        
-        const file_path = path.join(path.join(process.cwd(),'server', 'models', 'temperature', 'js_model', 'model.json'));
-
+        const file_path = path.join(path.join(process.cwd(),'server', 'models', 'model.json'));
         let file_path_url = pathToFileURL(file_path).href;
-
-        // file_path_url = file_path_url.replace('///', '//');
-
         const model = await tf.loadGraphModel(file_path_url) ;
+        const tensor_temperatures  = tf.tensor([temperatures]);
+        const outputNodeNames = ['Identity', 'output_0']; // required to compute graph's output node upone request 
+        const results =  model.execute(  tensor_temperatures , outputNodeNames );
 
-        console.log(model.modelSignature)
+        if (Array.isArray(results)) {
+            
+            let data = await (results[0] as tf.Tensor).data();
+            let zero = tf.tensor([0]).data() ;
 
-        let temperatures2 = temperatures.map((x) => {return [x]}) as Array<Array<number>>;
-        let temperatures3 = temperatures2.map((x) => {return [x]}) as Array<Array<Array<number>>>;
+            let data_value =  (data as Float32Array)[0]  as number
+            let zero_value =  (data as Float32Array)[0]  as number
 
-        const model_tensor_input = tf.tensor3d( temperatures3);
-        // 
-        console.log(model_tensor_input);
+            if (data_value <= zero_value) {
+                data_value  = zero_value
+            } 
 
-        // const pred2 = await model.predict(model_tensor_input);
-        
-        const pred = await model.executeAsync(model_tensor_input) 
-        
-         console.log(pred)
+            reply.send( { prediction: data_value } );
 
-        return reply.send({name: pred})
+            model.dispose();
+        }
 
     }  catch(err) {
 

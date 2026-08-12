@@ -27,6 +27,9 @@
   "dependencies": {
     "@fastify/cors": "^11.2.0",
     "@fastify/postgres": "^6.0.2",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "@tensorflow/tfjs-tfdf": "^0.0.1-alpha.29",
     "fastify": "^5.8.5",
     "pg": "^8.22.0",
     "save-dev": "^0.0.1-security"
