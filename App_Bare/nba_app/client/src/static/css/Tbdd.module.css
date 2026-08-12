@@ -22,6 +22,8 @@
 
 }
 
+/* plot buttons */
+
 .plot_cls > div:nth-child(1) {
     width: 100%;
     height: 100%;
@@ -37,6 +39,7 @@
     grid-template-columns: repeat(100, 1fr);  
     grid-template-rows: repeat(100, 1fr);  
 }
+
 .plot_cls > div:nth-child(1)  > button {
     width: 10vh;
     height: 5vh;
@@ -44,17 +47,102 @@
 
 .plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="1"] {
     background-color: blue;
+    height: 2px;
+}
+
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="1"]:hover {
+    background-color: red;
+}
+
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="1"]::after {
+    content: attr(data-hover); /* Pulls data from HTML */
+    position: absolute;
+    /* transform: translateX(-50%); */
+    background-color: #333;
+    color: #fff;
+    margin: 12px 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+    width: fit-content;
+    height: fit-content;
+    z-index: 2;
+    font-size: x-small;
+}
+
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="1"]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    background-color: green;
+}
+
+@keyframes colorShift {
+  0%, 100% {
+    background-color: #db4734; /* Starting & ending color (Blue) */
+    border-radius: 50%;
+  
+  }
+
+  50% {
+    background-color: #2ecc48; /* Midpoint color (Green) */
+  }
 }
 
 
-.plot_cls > div:nth-child(2) {
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="3"] {
+    background-color: pink;
+    animation: colorShift  2s infinite ease-in-out;    
+    width: 5px;
+    height: 5px;
+    border: 0;
+}
+
+/* .plot_cls > div:nth-child(2)[data-mode="1"] > span {
+    border: 1px orange solid;
+} */
+
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="3"]:hover {
+    background-color: red;
+}
+
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="3"]::after {
+    content: attr(data-hover); /* Pulls data from HTML */
+    position: absolute;
+    /* transform: translateX(-50%); */
+    background-color: #333;
+    color: #fff;
+    margin: 12px 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 2;
+    font-size: x-small;
+}
+
+.plot_cls > div:nth-child(2)[data-mode="0"] > span[data-on="3"]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    background-color: green;
+}
+
+
+/*  */
+
+.plot_cls > div:nth-child(2)  {
     width: 100%;
     height: 100%;
     grid-row: 1 / span 99;
-    grid-column: 10 / span 99;
+    grid-column: 10 / span 100;
     border: 1px black solid;
+
+    background-color: antiquewhite;
+    display: grid;
+    grid-template-columns: repeat(101, 1fr);  
+    grid-template-rows: repeat(101, 1fr);  
+
 }
 
+/* plot cells */
 .plot_cls > div:nth-child(2) > span {
     background-color: antiquewhite;
 }
@@ -99,12 +187,7 @@
     background-color: antiquewhite;
 }
 
-.plot_cls > div:nth-child(2)  {
-    background-color: antiquewhite;
-    display: grid;
-    grid-template-columns: repeat(101, 0.990fr);  
-    grid-template-rows: repeat(100, 1fr);  
-}
+
 
 
 .options_cls {
@@ -199,38 +282,40 @@
 
 }
 
-.options_cls  > button {
+.options_cls  > button:nth-child(1) {
   padding: 10px 20px; 
   border: 2px solid #ccc;
   background-color: #f0f0f0;
   cursor: pointer;
   border-radius: 4px;
+  width: fit-content;
 }
 
-.options_cls  > button {
-    pointer-events: none;
+/* .options_cls  > button:nth-child(1) {
+    opacity: 0.4;
+} */
+
+.options_cls  > button:nth-child(1)[data-ai=''] {
     opacity: 0.4;
 }
-.options_cls  > button[data-enabled='0'] {
+
+.options_cls  > button:nth-child(1)[data-ai='0'] {
     border-color: red;
 }
 
-.options_cls  > button[data-enabled='1'] {
+.options_cls  > button:nth-child(1)[data-ai='1'] {
     border-color: green;
 }
-
-/* .measure_cls > span[data-init="1"] {
-    background-color: blue;
-}
-
-.measure_cls > span[data-init="0"] {
-    background-color: red;
-} */
 
 .measure_cls > span {
     background-color: blue;
 }
 
+.measure_cls > span[data-ai=""] {
+    background-color: red;
+    width: 2px;
+    height: 2px;
+}
 
 /* 
    <tfoot>

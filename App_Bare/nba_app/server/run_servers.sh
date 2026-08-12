@@ -12,9 +12,9 @@ if [[ "$1" == "nba" ]]; then
     echo ${eval_pid} // print stdout 
 
 elif [[ "$1" == "binny" ]]; then 
-    node ./server/server2.ts #> tmp 2> /dev/null &
-    # eval_pid=$! # eval command's  process
-    # echo ${eval_pid} // print stdout 
+    node ./server/server2.ts > tmp 2> /dev/null &
+    eval_pid=$! # eval command's  process
+    echo ${eval_pid} // print stdout 
 else
     echo ""
 fi 

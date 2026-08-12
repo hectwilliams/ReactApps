@@ -41,7 +41,9 @@ export async function fetchPages(page?:number): Promise<ServerRecordInterface | 
     
     const params = new URLSearchParams({page: `${page}`});
     const path = `${window.location.origin}/${params}`;
-    
+    console.log(params)
+    console.log(path)
+
     try {
         const response = await fetch( path );
         // method: "GET", 
