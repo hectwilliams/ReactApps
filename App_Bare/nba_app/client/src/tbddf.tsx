@@ -30,16 +30,15 @@ export const temperatureDB = async (node: HTMLDivElement) :Promise<RawInterfaceS
         for (let i = 0 ; i < X_N_SAMPLES; i++) {
             
             for (let j = 0; j < Y_N_SAMPLES ; j++) {
-                let spanElement = document.createElement('span');
+                const spanElement = document.createElement('span');
                 node.append(spanElement);
                 
-                let amplitude = Math.floor(data.data[j]);
+                const amplitude = Math.floor(data.data[j]);
 
                 if (i == (101 - amplitude)) {
                     spanElement.dataset.on = "1";
                     spanElement.dataset.hover = `amp ->  ${  amplitude} `;
                 }
-
 
             }
 
@@ -57,12 +56,6 @@ export const temperatureDB = async (node: HTMLDivElement) :Promise<RawInterfaceS
 
 }
 
-interface HistogramInterface {
-    bucket_id : number;
-    record_count : string;
-    lowest_in_bucket : string;
-
-};
 export const histogramDB = async  (node: HTMLDivElement) :Promise<boolean> => {
     node.replaceChildren();
 
@@ -88,16 +81,16 @@ export const histogramDB = async  (node: HTMLDivElement) :Promise<boolean> => {
 
         for ( const key_index in data.msg )  {
 
-            let record = data.msg[key_index];
-            let id = record.bucket_id; 
-            let count = record.record_count; 
-            let lowest = record.lowest_in_bucket; 
-            let highest = record.highest_in_bucket; 
-            let spanElement = document.createElement('span');
+            const record = data.msg[key_index];
+            const id = record.bucket_id; 
+            const count = record.record_count; 
+            const lowest = record.lowest_in_bucket; 
+            const highest = record.highest_in_bucket; 
+            const spanElement = document.createElement('span');
 
             if (cnt != id) {
                 
-                let se = document.createElement('span');
+                const se = document.createElement('span');
                 
                 se.style.gridColumnStart = cnt + "";
                 se.style.gridColumnEnd = "span 1";
@@ -133,8 +126,8 @@ export const histogramDB = async  (node: HTMLDivElement) :Promise<boolean> => {
          
         return true;
 
-    } catch(error) {
-
+    } catch {
+        // console.log(error)
         return false;
     }
 
@@ -157,11 +150,11 @@ export const setPlot = (node: HTMLDivElement,  tbdd: TBDD) : void => {
     const rows = Y_N_SAMPLES;
     const cols = X_N_SAMPLES;
 
-      interface returnInterfaceSub  {
-            data: Array<number>,
-            min: number,
-            max: number
-        };
+
+
+
+
+
 
 
 
@@ -169,7 +162,7 @@ export const setPlot = (node: HTMLDivElement,  tbdd: TBDD) : void => {
 
         for (let j = 0; j < cols; j++) {
             
-            let spanElement = document.createElement('span');
+            const spanElement = document.createElement('span');
 
             subplot1.append(spanElement);
 
@@ -186,9 +179,9 @@ export const setPlot = (node: HTMLDivElement,  tbdd: TBDD) : void => {
         const resp: RawInterfaceSub | null= await temperatureDB(subplot1);
 
         
-        let parent = node.parentNode as HTMLDivElement;
-        let optionContainer = parent.childNodes[2] as HTMLDivElement;
-        let buttonAI = optionContainer.firstChild as HTMLButtonElement;
+        const parent = node.parentNode as HTMLDivElement;
+        const optionContainer = parent.childNodes[2] as HTMLDivElement;
+        const buttonAI = optionContainer.firstChild as HTMLButtonElement;
         
         if (resp) {
             
@@ -219,19 +212,19 @@ export const setPlot = (node: HTMLDivElement,  tbdd: TBDD) : void => {
 
         }
         
-        let parent = node.parentNode as HTMLDivElement;
-        let optionContainer = parent.childNodes[2] as HTMLDivElement;
-        let buttonAI = optionContainer.firstChild as HTMLButtonElement;
+        const parent = node.parentNode as HTMLDivElement;
+        const optionContainer = parent.childNodes[2] as HTMLDivElement;
+        const buttonAI = optionContainer.firstChild as HTMLButtonElement;
         buttonAI.dataset.ai = "";
     }
 
 }
 
 export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLDivElement | undefined , tbdd: TBDD): Promise<void> => {
-    let ref_value = {data:0};
 
 
-        let parent = node_button.parentNode as HTMLDivElement;
+
+        const parent = node_button.parentNode as HTMLDivElement;
     const rd = node_button.dataset.ai;
 
     node_button.onclick = (event: MouseEvent) =>  { 
@@ -247,9 +240,9 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
     
     node_button.dataset.ai = en;
 
-    let optionContainer = (node_plot?.parentNode as HTMLDivElement).childNodes[3] as HTMLDivElement;
+    const optionContainer = (node_plot?.parentNode as HTMLDivElement).childNodes[3] as HTMLDivElement;
 
-    let plot_node = optionContainer.lastChild as HTMLButtonElement;
+    const plot_node = optionContainer.lastChild as HTMLButtonElement;
     
     if (!plot_node)
         return; 
@@ -261,19 +254,14 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
         plot_node.style.transition = "opacity 0.5s ease-in-out";
         plot_node.dataset.mode = "0";
 
-        let row = 0;
-        let estimation = 22;
-        let estimation_eff = 101 - 22;
-
-       
-
-        let s : RawInterfaceSub = tbdd.raw as RawInterfaceSub;   
-
+        
+        const s : RawInterfaceSub = tbdd.raw as RawInterfaceSub;   
+        
         // const params = new URLSearchParams({predict: `${tbdd.raw}`});
         // const params = new URLSearchParams({predict: `${s}`});
 
         const path = `http://127.0.0.1:50214/predict`;
-
+        
          const method = {
             method: "POST",
             headers: {
@@ -297,25 +285,27 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
             const record = await response.json();
 
             console.log(record.prediction);
-
-            let est = record.prediction;
             
-            let est_eff = Math.round(101 - est); 
+            const est = record.prediction;
+            
+            const est_eff = Math.round(101 - est); 
             
             // ref_value.data = est ;
             tbdd.recent_prediction = est;
+            
+            let row = 0;
 
             while (row < 101) {
     
-                let idx = row * 101 + (101 -1);
+                const idx = row * 101 + (101 -1);
     
-                let spanElement = (plot_node.childNodes[idx] as HTMLSpanElement)
+                const spanElement = (plot_node.childNodes[idx] as HTMLSpanElement)
     
                 if (row == est_eff ){
                     
                     spanElement.dataset.on = "3";
 
-                    spanElement.dataset.hover = `amp ->  ${  estimation} `;
+                    spanElement.dataset.hover = `amp ->  ${  est} `;
                     
                     console.log('element', spanElement);
                 }
@@ -360,15 +350,15 @@ export const setButton = async (node_button: HTMLButtonElement, node_plot: HTMLD
 }
 
 // node is raw plot 
-export const aiButtonPredict = (node: HTMLDivElement): void => {
 
-}
 
-const buttonToggle = (event: MouseEvent) : void => {
-    console.log(this)
-    const node = event.currentTarget as HTMLButtonElement;
-    // setButton(node); // ai button 
-}
+
+
+
+
+
+
+
 
 export const ten_numbers = () => {
     const b = Array(10).fill('N/A');
@@ -420,7 +410,7 @@ const mock = () => {
 
     for (let i = 0; i < 5; i++) {
         
-        let s = `<tr> 
+        const s = `<tr> 
             
             <td> ${i ==0 ? "START" : i == 1?  "EVENT" : i == 4 ? "STOP" : "EVENT" }  </td>
 

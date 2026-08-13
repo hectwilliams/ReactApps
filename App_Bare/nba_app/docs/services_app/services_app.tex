@@ -40,7 +40,8 @@
         Document informs the user how to start the application residing in the nba\_app  directory of repository ReactApps. 
         Applications were developed on MacOS \(Sonoma\). The following programming languages were used throughout fullstack development.
         \begin{itemize}
-            \item \textbf{FrontEnd:} \newline \textmd{Typescript - imperative}
+            \item \textbf{FrontEnd} \newline \textmd{Typescript - imperative}
+            \item \textbf{Server}: \newline  \textmd{Typescript - imperative}
             \item \textbf{Backend}: \newline  \textmd{Postgres - declarative}
             \item \textbf{Script}: \newline  \textmd{Bash - imperative}
         \end{itemize}
@@ -123,7 +124,6 @@
             \label{fig:forecast}
 
         \end{figure}
-
 
     
     \newpagex
@@ -236,40 +236,47 @@ sport_db=> select * from binny.temp;
     \newpagex
     \noindent 
     \section{Tensorflow Model Export}
-    A tensorflow built sequence-to-vector network was exported into Binny. Clients can infer the network/model using \small\textit{ HTTP POST} requests. The following steps were used to create and load model.
+    A tensorflow built sequence-to-vector network is exported into our Binny service. Our AI-Predict button infers the model. The following steps were used to create and load model.
     \begin{itemize}
-
-        \item Create virtual environment using python 3.10   \smallskip
+        \item Create virtual environment using python 3.10  
         \item Install package housing command-line utility tensorflowjs\_converter : 
         \begin{verbatim} 
-pip install --upgrade tensorflowjs  \smallskip
-     \end{verbatim} 
-        \item Train temperaure data using simple DNN of univariate sets  \smallskip
-            
-        \item Export model (tensorflow formatted model) 
+pip install --upgrade protobuf
+pip install --upgrade tensorflowjs  
+        \end{verbatim} 
+        \item Train dataset (i.e. temperature in this case) using your preferred network of choice.   
+        \item Networks   
+
         \begin{itemize}
-            
-            \item \smallskip
-
+            \item DNN Model 
             \begin{verbatim} 
-tensorflowjs_converter  --input_format=tf_saved_model --output_format=tfjs_graph_model $PWD/saved_model_dir  $PWD/web_model_gen_dir
-ensorflowjs_converter --input_format=tf_saved_model --output_format=tfjs_graph_model $PWD/saved_model $PWD/web_model             
-\end{verbatim} 
-            \item Import model into Binny webserver \smallskip
-            \item Validate loaded model  \smallskip
-        \end{itemize} 
+s_model = tf.keras.models.Sequential()
+s_model.add(keras.Input(shape=(N_SAMPLES,)))
+s_model.add(keras.layers.Dense(N_SAMPLES, activation='selu'))
+s_model.add(keras.layers.Dense(N_SAMPLES /2, activation='selu'))
+s_model.add(keras.layers.Dense(N_SAMPLES / 3 + 1 , activation='selu'))
+            \end{verbatim} 
+        
+        \item DNN Recurrent Network
+            \begin{verbatim} 
+input_ = tf.keras.layers.Input(shape=(N_SAMPLES, 1), batch_size = 32, dtype = tf.float32, name= "layer_in")
+x = keras.layers.GRU(1, return_sequences=True, unroll=True, activation="selu", name="layer_gru1")(input_)
+x = keras.layers.GRU(1, unroll=True, activation="selu", name="layer_gru2")(x)
+output_ = keras.layers.Dense(1, name="layer_dense_out")(x)
+s_model = keras.Model(inputs=input_, outputs=output_)
+            \end{verbatim} 
+        \end{itemize}
+
+        \item Convert python keras model to Tensorflow.js   
+            \begin{verbatim} 
+tensorflowjs_converter --input_format=tf_saved_model --output_format=tfjs_graph_model $PWD/saved_model $PWD/web_model             
+            \end{verbatim} 
+        \item Export model  \smallskip 
+            \small\textit{The exported model must use static shapes and not contain dynamic control flow operations(i.e.  while loops in graph model)}.
+        \item Create http route to infer model    \smallskip 
+        \item Validate  \smallskip 
+        
     \end{itemize} 
-
-
 \end{document}
 
 
-% tensorflowjs_converter 
-% --input_format=path/to/save 
-% path/to/saved_model_dir 
-% path/to/output_directory
-
-
-%     apt install python3.10-venv
-
-%     docker exec -it nba-pg psql -d sport\db --username htron
