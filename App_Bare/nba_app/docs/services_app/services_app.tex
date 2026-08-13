@@ -248,7 +248,7 @@ pip install --upgrade tensorflowjs
         \item Networks   
 
         \begin{itemize}
-            \item DNN Stateless Model 
+            \item DNN Model 
             \begin{verbatim} 
 s_model = tf.keras.models.Sequential()
 s_model.add(keras.Input(shape=(N_SAMPLES,)))
@@ -273,8 +273,8 @@ tensorflowjs_converter --input_format=tf_saved_model --output_format=tfjs_graph_
             \end{verbatim} 
         \item Export model  \smallskip 
             \small\textit{The exported model must use static shapes and not contain dynamic control flow operations(i.e.  while loops in graph model)}.
-        \item Make server route to infer model    \smallskip 
-        \item Validate ( Test event/inference)  \smallskip 
+        \item Create http route to infer model    \smallskip 
+        \item Validate  \smallskip 
         
     \end{itemize} 
 \end{document}
