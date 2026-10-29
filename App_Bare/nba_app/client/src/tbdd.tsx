@@ -1,11 +1,8 @@
-import { tbddfconstants, setButton, n_rand_rbg, ten_numbers, WATERFALL_US, setPlot, aiButtonPredict} from './tbddf';
+import { tbddfconstants, setButton, n_rand_rbg, ten_numbers, WATERFALL_US, setPlot} from './tbddf';
 
 
 import * as tbdd_css from './static/css/Tbdd.module.css';
 const tbdd_css_eff :  Record<string, boolean | string | unknown > = tbdd_css;
-
-const X_N_SAMPLES = 100
-const Y_N_SAMPLES = 100
 
 const sectionPlot = (aibutton: HTMLButtonElement,  tbdd: TBDD): HTMLDivElement=> {
     const div = document.createElement('div');
@@ -36,7 +33,7 @@ const sectionMeasure = (): HTMLDivElement =>  {
     div.className = tbdd_css_eff.measure_cls as string;
     const n = 100;
     for (let i = 0 ; i < n**2; i++) {
-        let spanElement = document.createElement('span');
+        const spanElement = document.createElement('span');
         div.append(spanElement);
     }
     return div;
@@ -76,8 +73,8 @@ const setMain = (div: HTMLDivElement, tbdd: TBDD): void => {
 
         this.measureRef  = setInterval( ()=>{
             
-            let items = Array.from(node.childNodes).slice(-n) as Array<HTMLSpanElement>;
-            let random_colors = n_rand_rbg(n);
+            const items = Array.from(node.childNodes).slice(-n) as Array<HTMLSpanElement>;
+            const random_colors = n_rand_rbg(n);
     
             items.forEach ( (item) => {
                 node.removeChild( item  );
@@ -85,7 +82,7 @@ const setMain = (div: HTMLDivElement, tbdd: TBDD): void => {
             
             const active_signatures = ten_numbers();
             for (let i =0; i < n; i++) {
-                let spanElement = document.createElement('span');
+                const spanElement = document.createElement('span');
                 const c = random_colors[i] as number[];
                 if (Math.random() < 0.5 &&  (i in active_signatures) ) {
                     spanElement.style.backgroundColor = `rgb(${ c[0] }, ${ c[1] }, ${ c[2] })`;

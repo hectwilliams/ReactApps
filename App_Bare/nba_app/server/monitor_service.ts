@@ -257,9 +257,9 @@ fastify.post('/predict',  async (request: FastifyRequest, reply: FastifyReply) =
 
     // Update the body data
 
-     interface PayLoadInterface  {
-        data: Array<number>,
-    };
+
+
+
     
     // // Forward internally using fastify.inject
     // const response = await fastify.inject({

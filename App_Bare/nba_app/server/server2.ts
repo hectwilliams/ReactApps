@@ -12,7 +12,7 @@ import type {FastifyRequest, FastifyReply } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import fastifyPostgres from '@fastify/postgres';
-import * as tf2 from '@tensorflow/tfjs';
+// import * as tf2 from '@tensorflow/tfjs';
 import { pathToFileURL } from 'url'; // ESM
 import * as tf from  '@tensorflow/tfjs-node';
 
@@ -37,7 +37,7 @@ import * as tf from  '@tensorflow/tfjs-node';
 
 const fastify = Fastify({logger: true});
 const workDir = process.cwd();
-const processList = {pid:{}} as Record< string, Record<string, number>>;
+// const processList = {pid:{}} as Record< string, Record<string, number>>;
 // Register static file plugin 
 fastify.register(fastifyStatic, {
     // root directory to serve from
@@ -70,7 +70,7 @@ const DB_NAME = "sport_db";
 const DB_URL = `postgresql://${USER_DB}:${PASSWORD_DB}@${HOST_DB}:${PORT_DB}/${DB_NAME}`;  // 'postgres://postgres:password@localhost:5432/postgres'
 // Register database connection 
 fastify.register( fastifyPostgres  , {connectionString: DB_URL} );
-const table = {} as Record<string, object>;
+// const table = {} as Record<string, object>;
 /*
     Handles request for bin data 
 */
@@ -92,7 +92,7 @@ fastify.get('/binnytemp',  async (request: FastifyRequest, reply: FastifyReply) 
 
         const numbers_only =  (result.rows as Array<Record<string, number>>).map(x => {
             
-            let faren = (-1.2 * (x.temp as number)  )* 9/5 + 32;
+            const faren = (-1.2 * (x.temp as number)  )* 9/5 + 32; // c to farenheit 
 
             if ( faren > maxValue ) {
                 maxValue  = faren;
@@ -111,7 +111,7 @@ fastify.get('/binnytemp',  async (request: FastifyRequest, reply: FastifyReply) 
         .send({ data: numbers_only, max: Math.round(Math.max.apply(null, numbers_only)), min: Math.round(Math.min.apply(null, numbers_only) ) } )
         .status(200);
 
-    } catch (err) {
+    } catch  {
             
         reply
         .send(401);
@@ -181,12 +181,20 @@ fastify.get('/binnyhisto', async ( request: FastifyRequest, reply: FastifyReply 
             .send({msg: result.rows})
             .status(200);
 
-    } catch (err) {
+    } catch  {
             
         reply
         .send(401);
     }
 });
+
+const getfname = async () : Promise<string> => {
+    
+        const file_path = path.join(path.join(process.cwd(),'server', 'models',  'temp', 'nonstatic', 'model.json'));
+        // const file_path = path.join(path.join(process.cwd(),'server', 'models', 'temp', 'static',  'model.json'));
+
+        return pathToFileURL(file_path).href as string; 
+};
 
 fastify.post('/predict2', async ( request: FastifyRequest, reply: FastifyReply ) =>  {
     
@@ -195,31 +203,40 @@ fastify.post('/predict2', async ( request: FastifyRequest, reply: FastifyReply )
     };
 
     /* Forecasting limited to vector of 100 numbers  */
-
+    
     try {
 
-        let temperatures = (request.body as Predict2BodyInterface).data;
-        let obj = request.params  as Record<string, string>;
+        const temperatures = (request.body as Predict2BodyInterface).data;
+        // let obj = request.params  as Record<string, string>;
 
-        if (obj === Object.prototype /*strict compare; no coercion*/) {
+        // if (obj === Object.prototype /*strict compare; no coercion*/) {
             
-            obj = Object.assign({}, obj); 
-        }
+        //     obj = Object.assign({}, obj); 
+        // }
 
-        const file_path = path.join(path.join(process.cwd(),'server', 'models', 'model.json'));
-        let file_path_url = pathToFileURL(file_path).href;
-        const model = await tf.loadGraphModel(file_path_url) ;
-        const tensor_temperatures  = tf.tensor([temperatures]);
-        const outputNodeNames = ['Identity', 'output_0']; // required to compute graph's output node upone request 
-        const results =  model.execute(  tensor_temperatures , outputNodeNames );
+        // console.log(tf.memory());
+
+        const model = await tf.loadGraphModel(await getfname()) ;
+        // const tensor_temperatures  = tf.tensor([temperatures]);
+        // const outputNodeNames = ['input_layer_13']; // required to compute graph's output node upone request 
+        
+        // static 
+        // const outputNodeNames = ['Identity', 'input_layer_3']; // required to compute graph's output node upone request 
+        // const results = await model.execute(  tensor_temperatures , outputNodeNames );
+        // const results = await model.executeAsync(  tensor_temperatures  );
+
+        // nonstatic
+        const tensor_temperatures  = tf.tensor([temperatures.map( x=> [x])]);
+
+        const outputNodeNames_n = [  'Identity', 'output_0']; // required to compute graph's output node upone request 
+        const results =  await model.executeAsync(  tensor_temperatures , outputNodeNames_n );
 
         if (Array.isArray(results)) {
             
-            let data = await (results[0] as tf.Tensor).data();
-            let zero = tf.tensor([0]).data() ;
-
+            const data = await (results[0] as tf.Tensor).data();
+            const zero = await  tf.tensor([0]).data() ;
+            const zero_value =  (zero as Float32Array)[0]  as number
             let data_value =  (data as Float32Array)[0]  as number
-            let zero_value =  (data as Float32Array)[0]  as number
 
             if (data_value <= zero_value) {
                 data_value  = zero_value
@@ -232,10 +249,14 @@ fastify.post('/predict2', async ( request: FastifyRequest, reply: FastifyReply )
 
     }  catch(err) {
 
+        console.log(tf.memory());
+        console.log("");
+        console.log("");
         console.log(err);
-
+        console.log("");
+        console.log("");
+        // tf.dispose();
         return reply.send({errMessage: "Model error, check subsystem logic. "}).status(401);
-
     }
 
 });
@@ -248,26 +269,3 @@ try {
     fastify.log.error(err);
     process.exit();
 }
-
-    //  WITH stats AS (
-    //             SELECT 
-    //                 MIN(temp) AS min_val,
-    //                 MAX(temp) AS max_val
-    //             FROM 
-    //                 binny.temp
-    //         ),
-    //         bucketed_data AS (
-    //             SELECT
-    //                 temp, 
-    //                 WIDTH_BUCKET(temp, stats.min_val, stats.max_val, 100) AS bucket_id
-    //             FROM binny.temp, stats
-    //         )
-          
-    //         SELECT 
-    //             bucket_id,
-    //             COUNT(*) AS record_count,
-    //             MIN(temp) AS lowest_in_bucket,
-    //             MAX(temp) AS highest_in_bucket
-    //         FROM 
-    //            bucketed_data
-    //            GROUP BY bucket_id;
