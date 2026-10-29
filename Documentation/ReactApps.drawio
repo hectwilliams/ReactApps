@@ -1,0 +1,37 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="IENB5V1NXzrb_zK5zcT4">
+    <mxGraphModel dx="1767" dy="455" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="React Apps" vertex="1">
+          <mxGeometry height="60" width="120" x="340" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Apps_Bare" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Apps_Signin" vertex="1">
+          <mxGeometry height="60" width="120" x="660" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-4" edge="1" parent="1" source="4T9ZoL7rjzSJBWNGe9F_-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.583;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;" target="4T9ZoL7rjzSJBWNGe9F_-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-5" edge="1" parent="1" source="4T9ZoL7rjzSJBWNGe9F_-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;" target="4T9ZoL7rjzSJBWNGe9F_-1">
+          <mxGeometry relative="1" x="-0.0381" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;Login Page&lt;/li&gt;&lt;li&gt;&amp;nbsp;Wave Generator&lt;/li&gt;&lt;/ul&gt;&lt;div&gt;&lt;i&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;No future updates&lt;/i&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="150" x="500" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;ul&gt;&lt;li&gt;Services&amp;nbsp;&lt;/li&gt;&lt;ul&gt;&lt;li&gt;NBA Server:&lt;/li&gt;&lt;ul&gt;&lt;li&gt;&amp;nbsp;Request player profile from postgres database&amp;nbsp;&amp;nbsp;&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Binny Server:&lt;/li&gt;&lt;ul&gt;&lt;li&gt;Application monitors and characterizes Binny service&lt;/li&gt;&lt;li&gt;TBD&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;/ul&gt;&lt;div&gt;&lt;i&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Started documentation...so thats good :)&amp;nbsp;&lt;/i&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="170" width="360" x="-270" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-10" edge="1" parent="1" source="4T9ZoL7rjzSJBWNGe9F_-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;" target="4T9ZoL7rjzSJBWNGe9F_-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4T9ZoL7rjzSJBWNGe9F_-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="nba_app" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="330" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
